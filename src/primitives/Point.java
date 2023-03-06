@@ -57,4 +57,8 @@ public class Point {
 				+ (this.point.d2 - p.point.d2) * (this.point.d2 - p.point.d2)
 				+ (this.point.d3 - p.point.d3) * (this.point.d3 - p.point.d3);
 	}
+	@Override 
+	public String toString() {
+		return this.point.toString();
+	}
 }

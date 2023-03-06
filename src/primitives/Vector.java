@@ -76,4 +76,9 @@ public class Vector extends Point {
 		double normal =1/this.lengt();
 		return this.scale(normal);
 	}
+	
+	@Override 
+	public String toString() {
+		return this.point.toString();
+	}
 }
