@@ -1,19 +1,26 @@
 package primitives;
 
 /***
- * class represent Ray - half a vector
+ * This class will serve all geometries classes based on a ray - half a vector
+ * represents two-dimensional ray n 3D Cartesian coordinate
  * 
- * @author Tamar
- *
+ * @author Tamar and Ayala
  */
+
 public class Ray {
+
+	/** The head(start point) of the ray */
 	final private Point head;
+
+	/** the direction of the ray */
 	final private Vector dir;
 
 	/***
+	 * Constructor to initialize Ray based object with its head point and direction
+	 * vector values
 	 * 
-	 * @param point vector
-	 * @param p0  point gets starting point and direction vector and build a ray
+	 * @param point  the head point of the ray
+	 * @param vector the direction of the ray.
 	 */
 	public Ray(Point point, Vector v) {
 		this.head = point;
@@ -24,13 +31,11 @@ public class Ray {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj instanceof Ray other) {
-			return other.head.equals(this.head) && other.dir.equals(this.dir);
-		}
-		return false;
+		return obj instanceof Ray other && other.head.equals(this.head) && other.dir.equals(this.dir);
 	}
 
 	/**
+	 * getter for head point
 	 * 
 	 * @return head of ray
 	 */
@@ -39,11 +44,22 @@ public class Ray {
 	}
 
 	/**
+	 * getter for direction vector
 	 * 
-	 * @return diraction of ray
+	 * @return direction of ray
 	 */
 	public Vector getDir() {
 		return this.dir;
+	}
+
+	/***
+	 * calculates the hit point on ray in t distance from head point
+	 * 
+	 * @param t scalar to find the point
+	 * @return point the hit point on ray in t distance from head point
+	 */
+	public Point getPoint(double t) {
+		return this.head.add(this.dir.scale(t));
 	}
 
 	@Override

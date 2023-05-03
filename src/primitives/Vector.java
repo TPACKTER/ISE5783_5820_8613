@@ -1,29 +1,30 @@
 package primitives;
 
 /***
+ * This class will serve all geometries and primitives based on a vector
  * 
- * @author Ayala and tamar
- * class representing a vector entity
+ * @author Ayala and Tamar
  */
 public class Vector extends Point {
 	/***
+	 * Constructor to initialize Vector base object-and its filed-Double3 object
+	 * with its three number values
 	 * 
-	 * @param coord1
-	 * @param coord2
-	 * @param coord3
-	 * first constructor - gets three coordinates and builds a vector
+	 * @param d1 first number value of xyz (Double3)
+	 * @param d2 second number value value of xyz (Double3)
+	 * @param d3 third number value value of xyz (Double3)
 	 */
-	public Vector(double coord1, double coord2, double coord3) {
-		super(coord1, coord2, coord3);
+	public Vector(double d1, double d2, double d3) {
+		super(d1, d2, d3);
 		if (Double3.ZERO.equals(this.xyz)) {
 			throw new IllegalArgumentException("zero-illigal");
 		}
 	}
 
 	/***
+	 * Constructor to initialize Vector based object-with double3 as input.
 	 * 
-	 * @param dPoint double3
-	 * second constructor - gets doble3 point and builds a vector
+	 * @param dPoint for xyz filed(Double3)
 	 */
 	Vector(Double3 dPoint) {
 		super(dPoint);
@@ -32,26 +33,30 @@ public class Vector extends Point {
 		}
 	}
 
-	/***
-	 * @param vec
-	 * @return a new vector that added the vector we got to the vector
+	/**
+	 * Add another vector to this vector
+	 * 
+	 * @param vec right handle side operand for addition
+	 * @return a new vector-result of add in a new Vector object
 	 */
 	public Vector add(Vector vec) {
 		return new Vector(this.xyz.add(vec.xyz));
 	}
 
-	/***
+	/**
+	 * scaling Vector and number
 	 * 
-	 * @param x
-	 * @return the scalded vector (scalded with x)
+	 * @param x handle double operand for scaling a vector
+	 * @return a new vector result of scaling
 	 */
 	public Vector scale(double x) {
-	return 	new Vector(this.xyz.scale(x));
+		return new Vector(this.xyz.scale(x));
 	}
 
 	/***
+	 * dot-Product 2 vectors
 	 * 
-	 * @param vec
+	 * @param vec right handle side operand for dot-Product
 	 * @return a dot product of 2 given vectors
 	 */
 	public double dotProduct(Vector vec) {
@@ -59,10 +64,12 @@ public class Vector extends Point {
 	}
 
 	/***
+	 * crossing product 2 vectors into a new vector which is the normal vector for
+	 * both
 	 * 
-	 * @param vec
-	 * @return a vecrot which is the cross product of the 2 given vectors (a normal
-	 *         vector for both)
+	 * @param vec right handle side operand for cross product
+	 * @return a new vector-cross product of the 2 given vectors -a normal vector
+	 *         for both.
 	 */
 	public Vector crossProduct(Vector vec) {
 		return new Vector(this.xyz.d2 * vec.xyz.d3 - this.xyz.d3 * vec.xyz.d2,
@@ -71,24 +78,28 @@ public class Vector extends Point {
 	}
 
 	/***
+	 * Finds the Squared length of vector
 	 * 
-	 * @return the Squared distance of the vector
+	 * @return result of Squared length
 	 */
 	public double lengthSquared() {
-			return this.dotProduct(this);
+		return this.dotProduct(this);
 	}
 
 	/***
+	 * Finds the length of vector
 	 * 
-	 * @return the length of the vector
+	 * @return the length
 	 */
 	public double length() {
 		return Math.sqrt(this.lengthSquared());
 	}
 
 	/***
+	 * Finds the normalized vector for the given vector- which have the same
+	 * direction but it'ss length is 1
 	 * 
-	 * @return the normalized vector
+	 * @return a new vector- (normalized)
 	 */
 	public Vector normalize() {
 		return this.scale(1 / this.length());
@@ -98,9 +109,7 @@ public class Vector extends Point {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj instanceof Vector other)
-			return super.equals(other);
-		return false;
+		return obj instanceof Vector other && super.equals(other);
 	}
 
 	@Override
