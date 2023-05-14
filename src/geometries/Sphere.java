@@ -2,12 +2,9 @@ package geometries;
 
 import primitives.*;
 
-
 import java.util.List;
 
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
+import static primitives.Util.*;
 
 /***
  * Sphere representing sphere geometry has radius and a center point in 3D
@@ -30,7 +27,6 @@ public class Sphere extends RadialGeometry {
 	public Sphere(Point p, double r) {
 		super(r);
 		this.center = p;
-
 	}
 
 	/**
@@ -69,41 +65,25 @@ public class Sphere extends RadialGeometry {
 
 	@Override
 	public List<Point> findIntersections(Ray ray) {
-		Vector u = null;
-		double tm = 0;
-		double dSquared = 0;
-		if (!center.equals(ray.getHead())) {
-			u = center.subtract(ray.getHead());
-			tm = ray.getDir().dotProduct(u);
-			dSquared = u.lengthSquared() - tm * tm;
-		}
+		if (center.equals(ray.getHead()))
+			return List.of(ray.getPoint(this.radius));
+
+		Vector u = center.subtract(ray.getHead());
+		double tm = ray.getDir().dotProduct(u);
+		double dSquared = u.lengthSquared() - tm * tm;
+
+		double thSquared = alignZero(radiusSquared - dSquared);
 		// Check if the ray misses the sphere
-		if (dSquared > radius * radius) {
+		if (thSquared <= 0)
 			return null;
-		}
 
-		double th = Math.sqrt(radius * radius - dSquared);
-		double t1 = Util.alignZero(tm + th);
-		double t2 = Util.alignZero(tm - th);
-
-		// Check if the intersections are behind the ray's head
-		if (t1 <= 0 && t2 <= 0) {
+		double th = Math.sqrt(thSquared);
+		double t2 = Util.alignZero(tm + th);
+		if (t2 <= 0)
 			return null;
-		}
 
-		// Return the intersection point(s)
-		if (t1 > 0 && t2 > 0 && !Util.isZero(th)) {
-			Point p1 = ray.getPoint(t1);
-			Point p2 = ray.getPoint(t2);
-			return List.of(p1, p2);
-		} else if (t1 > 0) {
-			Point p1 = ray.getPoint(t1);
-			return List.of(p1);
-		} else {
-			Point p2 = ray.getPoint(t2);
-			return List.of(p2);
-		}
+		double t1 = Util.alignZero(tm - th);
+		return t1 <= 0 ? List.of(ray.getPoint(t2)) : List.of(ray.getPoint(t1), ray.getPoint(t2));
 	}
-
 
 }

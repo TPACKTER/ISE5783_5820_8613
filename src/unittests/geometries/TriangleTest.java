@@ -9,14 +9,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-
 import geometries.Triangle;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
 /**
- *  Testing Triangle
+ * Testing Triangle
+ * 
  * @author Ayala and Tamar
  */
 class TriangleTest {

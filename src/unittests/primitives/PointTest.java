@@ -41,6 +41,7 @@ class PointTest {
 		// TC10:testing the adding of a point and vector-while the vector is the
 		// same-but negative
 		assertEquals(new Point(0, 0, 0), p1.add(v1), "the adding does not work correctly");
+
 	}
 
 	/**
@@ -51,6 +52,9 @@ class PointTest {
 		// =======Equivalence Partitions Tests=======
 		// TC01: testing if the distance between two points -with sqrt- is correct
 		assertEquals(Math.sqrt(14), p1.distance(p2), 0.00001, "ERROR: Distance doesn't work correctly");
+		// =============== Boundary Values Tests ==================
+		//TC11: same point- distance 0
+		assertEquals(0, p1.distance(p1), 0.00001, "ERROR: Distance doesn't work correctly");
 	}
 
 	/**

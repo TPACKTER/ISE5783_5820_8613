@@ -61,7 +61,7 @@ class TubeTest {
 		// TC02: Ray starts before Tube and crosses it (2 points)
 		lst = tube.findIntersections(new Ray(new Point(-1, 2, 3), new Vector(1, -1, 0)));
 		assertEquals(2, lst.size(), error);
-		assertEquals(new Point(0,1,3), lst.get(0), error); // closest Point first
+		assertEquals(new Point(0, 1, 3), lst.get(0), error); // closest Point first
 		assertEquals(new Point(1, 0, 3), lst.get(1), error); // farthest Point second
 
 		// TC03: Ray starts inside Tube (1 point)
@@ -194,23 +194,24 @@ class TubeTest {
 		// TC35: ray head is after and under cylinder axis head (0 point)
 		lst = tube.findIntersections(new Ray(new Point(3, 1, -1), new Vector(0, 1, 0)));
 		assertNull(lst, error);
-		// TC36:  ray head is in same x coordinates and under cylinder axis head (0 point)
-        lst = tube.findIntersections(new Ray(new Point(1, 3, -1), new Vector(1, 0, 0)));
-        assertNull(lst, error);
+		// TC36: ray head is in same x coordinates and under cylinder axis head (0
+		// point)
+		lst = tube.findIntersections(new Ray(new Point(1, 3, -1), new Vector(1, 0, 0)));
+		assertNull(lst, error);
 
-        // TC37:  ray head is before and same height as cylinder axis head (0 point)
-        lst = tube.findIntersections(new Ray(new Point(-1, 1, 1), new Vector(0, 1, 0)));
-        assertNull(lst, error);
+		// TC37: ray head is before and same height as cylinder axis head (0 point)
+		lst = tube.findIntersections(new Ray(new Point(-1, 1, 1), new Vector(0, 1, 0)));
+		assertNull(lst, error);
 
-        // TC38:  ray head is after and same height as cylinder axis head (0 point)
-        lst = tube.findIntersections(new Ray(new Point(3, 1, 1), new Vector(0, 1, 0)));
-        assertNull(lst, error);
+		// TC38: ray head is after and same height as cylinder axis head (0 point)
+		lst = tube.findIntersections(new Ray(new Point(3, 1, 1), new Vector(0, 1, 0)));
+		assertNull(lst, error);
 
-        // TC39:  ray head is in same x coordinates and same height as cylinder axis head (0 point)
-        lst = tube.findIntersections(new Ray(new Point(1, 3, 1), new Vector(1, 0, 0)));
-        assertNull(lst, error);
+		// TC39: ray head is in same x coordinates and same height as cylinder axis head
+		// (0 point)
+		lst = tube.findIntersections(new Ray(new Point(1, 3, 1), new Vector(1, 0, 0)));
+		assertNull(lst, error);
 
-       
 	}
 
 }

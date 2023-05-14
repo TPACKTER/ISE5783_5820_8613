@@ -82,7 +82,7 @@ public class Point {
 	/***
 	 * get x coordinate
 	 * 
-	 * @return  x coordinate
+	 * @return x coordinate
 	 */
 	public double getX() {
 		return this.xyz.d1;

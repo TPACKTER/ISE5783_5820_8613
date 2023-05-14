@@ -1,5 +1,9 @@
 package primitives;
 
+import static primitives.Util.*;
+
+import java.util.List;
+
 /***
  * This class will serve all geometries classes based on a ray - half a vector
  * represents two-dimensional ray n 3D Cartesian coordinate
@@ -25,6 +29,22 @@ public class Ray {
 	public Ray(Point point, Vector v) {
 		this.head = point;
 		this.dir = v.normalize();
+	}
+	/**
+	 * gets list of points and return the closet point to ray's head
+	 * @param listpPoints list of points to find the closest from
+	 * @return the closest point to ray's head in the list
+	 */
+	public Point findClosestPoint(List<Point> listpPoints)
+	{
+		if(listpPoints==null || listpPoints.isEmpty()) 
+			return null;
+		Point min= listpPoints.get(0);
+		for (Point point : listpPoints) {
+			if(point.distance(this.head)<min.distance(this.head))
+				min=point;
+		}
+		return min;
 	}
 
 	@Override
@@ -59,7 +79,7 @@ public class Ray {
 	 * @return point the hit point on ray in t distance from head point
 	 */
 	public Point getPoint(double t) {
-		return this.head.add(this.dir.scale(t));
+		return isZero(t) ? this.head : this.head.add(this.dir.scale(t));
 	}
 
 	@Override

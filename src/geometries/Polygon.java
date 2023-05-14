@@ -4,8 +4,6 @@ import static primitives.Util.*;
 
 import java.util.List;
 
-
-
 import primitives.Point;
 import primitives.Ray;
 
@@ -17,7 +15,7 @@ import primitives.Vector;
  * 
  * @author Dan and Tamar and Ayala
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
 	/** List of polygon's vertices */
 	protected final List<Point> vertices;
 	/** Associated plane in which the polygon lays */
@@ -122,6 +120,8 @@ public class Polygon implements Geometry {
 			}
 		}
 		// if absolute sum is equal to number of vertices then the point is within
-		return Math.abs(counter) == this.vertices.size() ? intersectionPoints : null;
+		if (alignZero(counter) < 0)
+			counter = -counter;
+		return counter == this.size ? intersectionPoints : null;
 	}
 }

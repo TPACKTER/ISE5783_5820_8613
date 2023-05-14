@@ -13,7 +13,7 @@ import primitives.Vector;
  * @author Ayala and Tamar
  *
  */
-public class Plane implements Geometry {
+public class Plane extends Geometry {
 	/** A point on the plane */
 	private final Point p0;
 	/** a normal vector for the plane */
@@ -63,11 +63,22 @@ public class Plane implements Geometry {
 	@Override
 	public List<Point> findIntersections(Ray ray) {
 		double nv = this.normal.dotProduct(ray.getDir());
-		//checks if head point is parallel or inside the plane/ ray's head point equals to p0
-		if (Util.isZero(nv)||this.p0.equals(ray.getHead()))
+		// checks if head point is parallel or inside the plane/ ray's head point equals
+		// to p0
+		if (Util.isZero(nv) || this.p0.equals(ray.getHead()))
 			return null;
 		double t = this.normal.dotProduct(this.p0.subtract(ray.getHead())) / nv;
 		return Util.alignZero(t) > 0 ? List.of(ray.getPoint(t)) : null;
+	}
+	@Override
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+		double nv = this.normal.dotProduct(ray.getDir());
+		// checks if head point is parallel or inside the plane/ ray's head point equals
+		// to p0
+		if (Util.isZero(nv) || this.p0.equals(ray.getHead()))
+			return null;
+		double t = this.normal.dotProduct(this.p0.subtract(ray.getHead())) / nv;
+		return Util.alignZero(t) > 0 ? List.of(new GeoPoint(this, ray.getPoint(t)) ) : null;
 	}
 
 }

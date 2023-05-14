@@ -8,11 +8,15 @@ import static primitives.Util.*;
  * @author Tamar and Ayala
  *
  */
-public abstract class RadialGeometry implements Geometry {
+public abstract class RadialGeometry extends Geometry {
 	/***
 	 * the length which represents a radius
 	 */
 	protected final double radius;
+	/***
+	 * the squared radius
+	 */
+	protected final double radiusSquared;
 
 	/**
 	 * constructor for building a shape base radius
@@ -23,7 +27,7 @@ public abstract class RadialGeometry implements Geometry {
 	public RadialGeometry(double radius) {
 		if (alignZero(radius) <= 0)
 			throw new IllegalArgumentException("illegal length");
-		else
-			this.radius = radius;
+		this.radius = radius;
+		this.radiusSquared = radius * radius;
 	}
 }

@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-
 import org.junit.jupiter.api.Test;
 
 import geometries.Sphere;
@@ -17,7 +16,8 @@ import primitives.Vector;
 
 /**
  * Testing Sphere
- * @author Ayala and Tamar 
+ * 
+ * @author Ayala and Tamar
  */
 class SphereTest {
 
@@ -112,8 +112,8 @@ class SphereTest {
 
 		// **** Group: Ray's line is tangent to the sphere
 		// TC19: Ray starts before the tangent point (1 point)!
-		assertEquals(List.of(new Point(1, 1, 2)), s.findIntersections(new Ray(new Point(1, 0, 2), new Vector(0, 2, 0))),
-				"TC19:Ray crosses sphere");
+		assertNull(s.findIntersections(new Ray(new Point(1, 0, 2), new Vector(0, 2, 0))),
+				"TC19:Ray crosses tangent point at sphere");
 
 		// TC20: Ray starts at the tangent point (0 points)
 		assertNull(s.findIntersections(new Ray(new Point(1, 1, 2), new Vector(0, 2, 0))), "TC20:Ray crosses sphere");
