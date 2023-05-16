@@ -4,6 +4,8 @@ import static primitives.Util.*;
 
 import java.util.List;
 
+import geometries.Intersectable.GeoPoint;
+
 /***
  * This class will serve all geometries classes based on a ray - half a vector
  * represents two-dimensional ray n 3D Cartesian coordinate
@@ -38,18 +40,35 @@ public class Ray {
 	 * @return the closest point to ray's head in the list
 	 */
 	public Point findClosestPoint(List<Point> listpPoints) {
-		if (listpPoints == null || listpPoints.isEmpty())
+		return listpPoints == null ? null
+				: findClosestGeoPoint(listpPoints.stream().map(p -> new GeoPoint(null, p)).toList()).point;
+		/*
+		 * if (listpPoints == null || listpPoints.isEmpty()) return null; double
+		 * minDistance = Double.POSITIVE_INFINITY; Point minPoint = null; for (Point
+		 * point : listpPoints) { double dist = point.distance(this.head); if (dist <
+		 * minDistance) { minPoint = point; minDistance = dist; } } return minPoint ;
+		 */
+	}
+
+	/**
+	 * gets list of points and return the closet point to ray's head
+	 * 
+	 * @param listpPoints list of points to find the closest from
+	 * @return the closest point to ray's head in the list
+	 */
+	public GeoPoint findClosestGeoPoint(List<GeoPoint> listpGeoPoints) {
+		if (listpGeoPoints == null || listpGeoPoints.isEmpty())
 			return null;
 		double minDistance = Double.POSITIVE_INFINITY;
-		Point minPoint = null;
-		for (Point point : listpPoints) {
-			double dist = point.distance(this.head);
+		GeoPoint minPoint = null;
+		for (GeoPoint geoPoint : listpGeoPoints) {
+			double dist = geoPoint.point.distance(this.head);
 			if (dist < minDistance) {
-				minPoint  = point;
+				minPoint = geoPoint;
 				minDistance = dist;
 			}
 		}
-		return minPoint ;
+		return minPoint;
 	}
 
 	@Override

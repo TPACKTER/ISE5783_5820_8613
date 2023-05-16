@@ -13,7 +13,7 @@ public class AmbientLight {
 	 * no ambient light
 	 */
 	public static final AmbientLight NONE = new AmbientLight(Color.BLACK, Double3.ZERO);
-	
+
 	/***
 	 * ambient's light intensity
 	 */

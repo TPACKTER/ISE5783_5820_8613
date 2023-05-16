@@ -62,34 +62,13 @@ public class Sphere extends RadialGeometry {
 	public Vector getNormal(Point p) {
 		return p.subtract(this.center).normalize();
 	}
-/*
-	@Override
-	public List<Point> findIntersections(Ray ray) {
-		if (center.equals(ray.getHead()))
-			return List.of(ray.getPoint(this.radius));
 
-		Vector u = center.subtract(ray.getHead());
-		double tm = ray.getDir().dotProduct(u);
-		double dSquared = u.lengthSquared() - tm * tm;
 
-		double thSquared = alignZero(radiusSquared - dSquared);
-		// Check if the ray misses the sphere
-		if (thSquared <= 0)
-			return null;
 
-		double th = Math.sqrt(thSquared);
-		double t2 = Util.alignZero(tm + th);
-		if (t2 <= 0)
-			return null;
-
-		double t1 = Util.alignZero(tm - th);
-		return t1 <= 0 ? List.of(ray.getPoint(t2)) : List.of(ray.getPoint(t1), ray.getPoint(t2));
-	}
-*/
 	@Override
 	public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 		if (center.equals(ray.getHead()))
-			return List.of(new GeoPoint(this,ray.getPoint(this.radius)));
+			return List.of(new GeoPoint(this, ray.getPoint(this.radius)));
 
 		Vector u = center.subtract(ray.getHead());
 		double tm = ray.getDir().dotProduct(u);
@@ -106,6 +85,7 @@ public class Sphere extends RadialGeometry {
 			return null;
 
 		double t1 = Util.alignZero(tm - th);
-		return t1 <= 0 ? List.of(new GeoPoint(this, ray.getPoint(t2))) : List.of(new GeoPoint(this, ray.getPoint(t1)), new GeoPoint(this, ray.getPoint(t2)));
+		return t1 <= 0 ? List.of(new GeoPoint(this, ray.getPoint(t2)))
+				: List.of(new GeoPoint(this, ray.getPoint(t1)), new GeoPoint(this, ray.getPoint(t2)));
 	}
 }

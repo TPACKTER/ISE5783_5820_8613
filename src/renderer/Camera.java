@@ -55,7 +55,6 @@ public class Camera {
 	 */
 	private RayTracerBase rayTracer;
 
-	
 	/***
 	 * Constructor for camera based on location point v-up, and v-to
 	 * 
@@ -172,11 +171,11 @@ public class Camera {
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		if (this.rayTracer == null)
 			throw new MissingResourceException("rayTracer is missing", "RayTracerBase", "rayTracer");
-int nx=this.imageWriter.getNx();
-int ny=this.imageWriter.getNy();
+		int nx = this.imageWriter.getNx();
+		int ny = this.imageWriter.getNy();
 		for (int i = 0; i < nx; i++)
 			for (int j = 0; j < ny; j++)
-				this.imageWriter.writePixel(i, j, caststRay(i, j,nx,ny));
+				this.imageWriter.writePixel(i, j, caststRay(i, j, nx, ny));
 	}
 
 	/***
@@ -186,8 +185,8 @@ int ny=this.imageWriter.getNy();
 	 * @param j - j index parameter
 	 * @return the color of a pixel in a given index
 	 */
-	private Color caststRay(int i, int j,int nx,int ny) {
-		Ray ray = constructRay(nx,ny, i, j);
+	private Color caststRay(int i, int j, int nx, int ny) {
+		Ray ray = constructRay(nx, ny, i, j);
 		return rayTracer.traceRay(ray);
 	}
 
@@ -200,8 +199,8 @@ int ny=this.imageWriter.getNy();
 	public void printGrid(int interval, Color color) {
 		if (this.imageWriter == null)
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
-int nx=this.imageWriter.getNx();
-int ny=this.imageWriter.getNy();
+		int nx = this.imageWriter.getNx();
+		int ny = this.imageWriter.getNy();
 		for (int i = 0; i < nx; i++)
 			for (int j = 0; j < ny; j++)
 				if (i % interval == 0 || j % interval == 0)

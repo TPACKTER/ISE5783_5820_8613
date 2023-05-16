@@ -20,16 +20,9 @@ public abstract class Intersectable {
 	 * @param ray ray to intersect
 	 * @return list of intersection points
 	 */
-	final public List<Point> findIntersections(Ray ray){
-		List<GeoPoint> templisGeoPoints=findGeoIntersections(ray);
-		if(templisGeoPoints!= null) {
-			List<Point> resList = new LinkedList<>();
-			for (GeoPoint geoPoint : templisGeoPoints) {
-				resList.add(geoPoint.point);
-			}
-			return resList;
-		}
-		return null;
+	final public List<Point> findIntersections(Ray ray) {
+		List<GeoPoint> geoList = findGeoIntersections(ray);
+		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
 	}
 
 	final public List<GeoPoint> findGeoIntersections(Ray ray) {
