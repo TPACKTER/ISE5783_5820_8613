@@ -1,5 +1,6 @@
 package geometries;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.platform.commons.util.ToStringBuilder;
@@ -19,9 +20,19 @@ public abstract class Intersectable {
 	 * @param ray ray to intersect
 	 * @return list of intersection points
 	 */
-	abstract public List<Point> findIntersections(Ray ray);
+	final public List<Point> findIntersections(Ray ray){
+		List<GeoPoint> templisGeoPoints=findGeoIntersections(ray);
+		if(templisGeoPoints!= null) {
+			List<Point> resList = new LinkedList<>();
+			for (GeoPoint geoPoint : templisGeoPoints) {
+				resList.add(geoPoint.point);
+			}
+			return resList;
+		}
+		return null;
+	}
 
-	public List<GeoPoint> findGeoIntersections(Ray ray) {
+	final public List<GeoPoint> findGeoIntersections(Ray ray) {
 		return findGeoIntersectionsHelper(ray);
 	}
 

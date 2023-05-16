@@ -59,7 +59,7 @@ public class Plane extends Geometry {
 	public Vector getNormal(Point p) {
 		return this.normal;
 	}
-
+/*
 	@Override
 	public List<Point> findIntersections(Ray ray) {
 		double nv = this.normal.dotProduct(ray.getDir());
@@ -69,7 +69,7 @@ public class Plane extends Geometry {
 			return null;
 		double t = this.normal.dotProduct(this.p0.subtract(ray.getHead())) / nv;
 		return Util.alignZero(t) > 0 ? List.of(ray.getPoint(t)) : null;
-	}
+	}*/
 
 	@Override
 	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {

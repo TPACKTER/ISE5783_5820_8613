@@ -42,7 +42,7 @@ public class Geometries extends Intersectable {
 	public void add(Intersectable... geometries) {
 		this.geometries.addAll(List.of(geometries));
 	}
-
+/*
 	@Override
 	public List<Point> findIntersections(Ray ray) {
 		List<Point> resList = null;
@@ -56,6 +56,7 @@ public class Geometries extends Intersectable {
 		}
 		return resList;
 	}
+	*/
 
 	@Override
 	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
