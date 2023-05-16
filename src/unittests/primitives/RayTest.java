@@ -44,7 +44,7 @@ class RayTest {
 
 		// ============ Equivalence Partitions Tests ==============
 		// TC01:the closest point is in the middle of the list
-		Ray ray = new Ray(new Point(1.9,0,0), new Vector(0, 1, 0));
+		Ray ray = new Ray(new Point(1.9, 0, 0), new Vector(0, 1, 0));
 		assertEquals(new Point(2, 0, 0), ray.findClosestPoint(listpoints), "TC01 testFindClosestPoint");
 		// =============== Boundary Values Tests ==================
 		// TC11:the list is empty(returns null)

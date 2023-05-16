@@ -20,10 +20,13 @@ public abstract class Intersectable {
 	 * @return list of intersection points
 	 */
 	abstract public List<Point> findIntersections(Ray ray);
-	public  List<GeoPoint> findGeoIntersections(Ray ray){
+
+	public List<GeoPoint> findGeoIntersections(Ray ray) {
 		return findGeoIntersectionsHelper(ray);
 	}
+
 	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
+
 	/***
 	 * class which keeps a point on a specific geometry
 	 * 
@@ -51,15 +54,17 @@ public abstract class Intersectable {
 			this.point = point;
 		}
 
-	@Override
-	public boolean equals(Object obj) {
-	if (this == obj)
-		return true;
-	return obj instanceof GeoPoint other && this.point.equals(other.point)&& this.geometry.equals(other.geometry);
-}
-	@Override
-	public String toString() {
-		return "geometry: "+ this.geometry + " point: " + this.point;
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			return obj instanceof GeoPoint other && this.point.equals(other.point)
+					&& this.geometry.equals(other.geometry);
+		}
+
+		@Override
+		public String toString() {
+			return "geometry: " + this.geometry + " point: " + this.point;
+		}
 	}
-}
 }

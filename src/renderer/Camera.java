@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
 
+import javax.imageio.ImageTranscoder;
 import javax.swing.plaf.ColorUIResource;
 
 import org.hamcrest.core.Is;
@@ -54,6 +55,7 @@ public class Camera {
 	 */
 	private RayTracerBase rayTracer;
 
+	
 	/***
 	 * Constructor for camera based on location point v-up, and v-to
 	 * 
@@ -116,8 +118,8 @@ public class Camera {
 		double rY = Util.alignZero(height / nY);
 		double rX = Util.alignZero(width / nX);
 
-		double yI = Util.alignZero(-(i - (nY - 1) / 2.0) * rY);
-		double xJ = Util.alignZero((j - (nX - 1) / 2.0) * rX);
+		double yI = -(i - (nY - 1) / 2.0) * rY;
+		double xJ = (j - (nX - 1) / 2.0) * rX;
 		// avoiding zero vector cases
 		if (!Util.isZero(xJ))
 			pIJ = pIJ.add(right.scale(xJ));
@@ -166,53 +168,53 @@ public class Camera {
 			throw new MissingResourceException("right is missing", "Vector", "right");
 		if (this.to == null)
 			throw new MissingResourceException("to is missing", "Vector", "to");
-		if (Double.isNaN(this.distance))
-			throw new MissingResourceException("distance is missing", "double", "distance");
-		if (Double.isNaN(this.height))
-			throw new MissingResourceException("height is missing", "double", "height");
-		if (Double.isNaN(this.width))
-			throw new MissingResourceException("width is missing", "double", "width");
 		if (this.imageWriter == null)
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		if (this.rayTracer == null)
 			throw new MissingResourceException("rayTracer is missing", "RayTracerBase", "rayTracer");
-	
-	for (int i =0;i<this.imageWriter.getNx();i++)
-		for(int j=0;j<this.imageWriter.getNy(); j++)
-	         this.imageWriter.writePixel(i,j,caststRay(i, j));
+int nx=this.imageWriter.getNx();
+int ny=this.imageWriter.getNy();
+		for (int i = 0; i < nx; i++)
+			for (int j = 0; j < ny; j++)
+				this.imageWriter.writePixel(i, j, caststRay(i, j,nx,ny));
 	}
+
 	/***
 	 * calculate the color in a given indexed pixel
+	 * 
 	 * @param i - x index parameter
 	 * @param j - j index parameter
 	 * @return the color of a pixel in a given index
 	 */
-private Color caststRay(int i, int j) {
-	Ray ray = constructRay(imageWriter.getNx(), imageWriter.getNy(), j, i);
-	return rayTracer.traceRay(ray);
-}
-	/***
-	 * prints  grid's lines to camera's picture, the lines are in the given color
-	 * @param interval the size of a pixel
-	 * @param color color to color the lines at
-	 */
-	public void printGrid(int interval,Color color) {
-		if(this.imageWriter==null)
-			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
-		
-	for (int i =0;i<this.imageWriter.getNx();i++)
-		for(int j=0;j<this.imageWriter.getNy(); j++)
-			if(i%interval==0||j%interval==0)
-				  this.imageWriter.writePixel(i, j, color);
-
-	
+	private Color caststRay(int i, int j,int nx,int ny) {
+		Ray ray = constructRay(nx,ny, i, j);
+		return rayTracer.traceRay(ray);
 	}
+
+	/***
+	 * prints grid's lines to camera's picture, the lines are in the given color
+	 * 
+	 * @param interval the size of a pixel
+	 * @param color    color to color the lines at
+	 */
+	public void printGrid(int interval, Color color) {
+		if (this.imageWriter == null)
+			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
+int nx=this.imageWriter.getNx();
+int ny=this.imageWriter.getNy();
+		for (int i = 0; i < nx; i++)
+			for (int j = 0; j < ny; j++)
+				if (i % interval == 0 || j % interval == 0)
+					this.imageWriter.writePixel(i, j, color);
+
+	}
+
 	/***
 	 * writes the picture to image
 	 */
-public	void writeToImage() {
-	if(this.imageWriter==null)
-		throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
-	this.imageWriter.writeToImage();
-}
+	public void writeToImage() {
+		if (this.imageWriter == null)
+			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
+		this.imageWriter.writeToImage();
+	}
 }

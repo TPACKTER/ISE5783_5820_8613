@@ -14,7 +14,7 @@ public abstract class Geometry extends Intersectable {
 	/***
 	 * the color of the bory
 	 */
-	protected Color emission=Color.BLACK;
+	protected Color emission = Color.BLACK;
 
 	/**
 	 * Finds the normal of the geometry at the given point
@@ -23,19 +23,20 @@ public abstract class Geometry extends Intersectable {
 	 * @return normal vector to geometry at p point
 	 */
 	public abstract Vector getNormal(Point p);
-	
+
 	/**
 	 * getter for the emission filed
+	 * 
 	 * @return emission
 	 */
 	public Color getEmission() {
 		return this.emission;
 	}
-	
+
 	/**
 	 * setter for the emission filed
 	 */
 	public void setEmission(Color color) {
-		this.emission= color;
+		this.emission = color;
 	}
 }

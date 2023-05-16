@@ -30,21 +30,26 @@ public class Ray {
 		this.head = point;
 		this.dir = v.normalize();
 	}
+
 	/**
 	 * gets list of points and return the closet point to ray's head
+	 * 
 	 * @param listpPoints list of points to find the closest from
 	 * @return the closest point to ray's head in the list
 	 */
-	public Point findClosestPoint(List<Point> listpPoints)
-	{
-		if(listpPoints==null || listpPoints.isEmpty()) 
+	public Point findClosestPoint(List<Point> listpPoints) {
+		if (listpPoints == null || listpPoints.isEmpty())
 			return null;
-		Point min= listpPoints.get(0);
+		double minDistance = Double.POSITIVE_INFINITY;
+		Point minPoint = null;
 		for (Point point : listpPoints) {
-			if(point.distance(this.head)<min.distance(this.head))
-				min=point;
+			double dist = point.distance(this.head);
+			if (dist < minDistance) {
+				minPoint  = point;
+				minDistance = dist;
+			}
 		}
-		return min;
+		return minPoint ;
 	}
 
 	@Override
