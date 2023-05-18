@@ -174,8 +174,9 @@ public class Camera {
 		int nx = this.imageWriter.getNx();
 		int ny = this.imageWriter.getNy();
 		for (int i = 0; i < nx; i++)
-			for (int j = 0; j < ny; j++)
+			for (int j = 0; j < ny; j++) {
 				this.imageWriter.writePixel(i, j, caststRay(i, j, nx, ny));
+			}
 	}
 
 	/***

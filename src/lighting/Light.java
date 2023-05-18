@@ -1,0 +1,33 @@
+
+package lighting;
+
+import primitives.*;
+
+/**
+ * class representing Light
+ * 
+ * @author Tamar and Ayala
+ *
+ */
+abstract class Light {
+	private Color intensity;
+
+	/**
+	 * Light constructor based on intensity of light
+	 * 
+	 * @param intensity of light
+	 */
+	protected Light(Color intensity) {
+		this.intensity = intensity;
+	}
+
+	/**
+	 * getter for intensity field
+	 * 
+	 * @return intensity
+	 */
+	Color getIntensity() {
+		return this.intensity;
+	}
+
+}

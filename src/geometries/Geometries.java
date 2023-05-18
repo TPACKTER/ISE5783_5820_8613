@@ -47,7 +47,7 @@ public class Geometries extends Intersectable {
 	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 		List<GeoPoint> resList = null;
 		for (Intersectable intersectable : geometries) {// for each geometry
-			var tempList = intersectable.findGeoIntersectionsHelper(ray);
+			var tempList = intersectable.findGeoIntersections(ray);
 			if (tempList != null) { // if there are intersections continue to shape
 				if (resList == null) // if there were no intersection with any shape yet
 					resList = new LinkedList<>();

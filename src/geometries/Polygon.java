@@ -90,8 +90,6 @@ public class Polygon extends Geometry {
 		return plane.getNormal();
 	}
 
-
-
 	@Override
 	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 		List<GeoPoint> intersectionGeoPoints = plane.findGeoIntersections(ray);

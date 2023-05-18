@@ -24,7 +24,6 @@ public class Triangle extends Polygon {
 		super(p1, p2, p3);
 	}
 
-
 	@Override
 	public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 		// based on the equation ray.head+t*d=(1-u-v)*v0+u*v1+v*v2

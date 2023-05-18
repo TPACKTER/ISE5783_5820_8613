@@ -62,8 +62,7 @@ public abstract class Intersectable {
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			return obj instanceof GeoPoint other && this.point.equals(other.point)
-					&& this.geometry.equals(other.geometry);
+			return obj instanceof GeoPoint other && this.point.equals(other.point) && this.geometry == other.geometry;
 		}
 
 		@Override

@@ -45,7 +45,6 @@ public class Tube extends RadialGeometry {
 		return this.axisRay;
 	}
 
-
 	@Override
 	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 		Point p0 = ray.getHead();

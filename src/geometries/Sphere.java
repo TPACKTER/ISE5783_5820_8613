@@ -63,8 +63,6 @@ public class Sphere extends RadialGeometry {
 		return p.subtract(this.center).normalize();
 	}
 
-
-
 	@Override
 	public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 		if (center.equals(ray.getHead()))
