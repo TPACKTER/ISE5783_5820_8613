@@ -157,7 +157,7 @@ public class Camera {
 	/***
 	 * Throws an exception if one of the elements is missing
 	 */
-	public void renderImage() {
+	public Camera renderImage() {
 
 		if (this.location == null)
 			throw new MissingResourceException("location is missing", "Point", "location");
@@ -177,6 +177,7 @@ public class Camera {
 			for (int j = 0; j < ny; j++) {
 				this.imageWriter.writePixel(i, j, caststRay(i, j, nx, ny));
 			}
+		return this;
 	}
 
 	/***

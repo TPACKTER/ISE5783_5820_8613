@@ -44,7 +44,7 @@ public class PointLight extends Light implements LightSource {
 	 * @param kQ param to set
 	 * @return the updated this
 	 */
-	public PointLight setKQ(double kQ) {
+	public PointLight setKq(double kQ) {
 		this.kQ = kQ;
 		return this;
 	}
@@ -55,7 +55,7 @@ public class PointLight extends Light implements LightSource {
 	 * @param kL param to set
 	 * @return the updated this
 	 */
-	public PointLight setKL(double kL) {
+	public PointLight setKl(double kL) {
 		this.kL = kL;
 		return this;
 	}
@@ -66,15 +66,14 @@ public class PointLight extends Light implements LightSource {
 	 * @param kC param to set
 	 * @return the updated this
 	 */
-	public PointLight setKC(double kC) {
+	public PointLight setKc(double kC) {
 		this.kC = kC;
 		return this;
 	}
 
 	@Override
 	public Color getIntensity(Point p) {
-		return this.getIntensity()
-				.scale(1 / (kC + kL * this.position.distance(p) + kQ * this.position.distance(p)));
+		return this.getIntensity().scale(1 / (kC + kL * this.position.distance(p) + kQ * this.position.distanceSquared(p)));
 	}
 
 	@Override

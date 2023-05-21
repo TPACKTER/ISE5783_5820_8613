@@ -15,10 +15,11 @@ public abstract class Geometry extends Intersectable {
 	 * the color of the bory
 	 */
 	protected Color emission = Color.BLACK;
-/**
- * the material of the bory
- */
+	/**
+	 * the material of the bory
+	 */
 	private Material material = new Material();
+
 	/**
 	 * Finds the normal of the geometry at the given point
 	 * 
@@ -35,7 +36,7 @@ public abstract class Geometry extends Intersectable {
 	public Material getMaterial() {
 		return this.material;
 	}
-	
+
 	/**
 	 * setter for the material filed
 	 */
@@ -43,7 +44,7 @@ public abstract class Geometry extends Intersectable {
 		this.material = material;
 		return this;
 	}
-	
+
 	/**
 	 * getter for the emission filed
 	 * 

@@ -34,9 +34,8 @@ public class Scene {
 	/**
 	 * list of light sources in the scene
 	 */
-	public  List<LightSource> lights =  new LinkedList<>();
-	
-	
+	public List<LightSource> lights = new LinkedList<>();
+
 	/**
 	 * constructor for scene based on name of scene
 	 * 
@@ -78,6 +77,7 @@ public class Scene {
 		this.geometries = geometries;
 		return this;
 	}
+
 	/**
 	 * setter for lights
 	 * 

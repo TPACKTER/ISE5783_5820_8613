@@ -2,6 +2,7 @@ package primitives;
 
 /***
  * class repesenting the material of bories in scene
+ * 
  * @author Tamar and Ayala
  *
  */
@@ -21,54 +22,57 @@ public class Material {
 
 	/**
 	 * setter for kD parameter
+	 * 
 	 * @param double3 kD of material
 	 * @return the updated material
 	 */
-	public Material setKD(Double3 kD) {
+	public Material setKd(Double3 kD) {
 		this.kD = kD;
 		return this;
 	}
-	
+
 	/**
 	 * setter for kD parameter
+	 * 
 	 * @param double kD of material
 	 * @return the updated material
 	 */
-	public Material setKD(double kD) {
+	public Material setKd(double kD) {
 		this.kD = new Double3(kD);
 		return this;
 	}
-	
+
 	/**
 	 * setter for kS parameter
+	 * 
 	 * @param double3 kS of material
 	 * @return the updated material
 	 */
-	public Material setKS(Double3 kS) {
+	public Material setKs(Double3 kS) {
 		this.kS = kS;
 		return this;
 	}
-	
+
 	/**
 	 * setter for kS parameter
+	 * 
 	 * @param double kS of material
 	 * @return the updated material
 	 */
-	public Material setKS(double kS) {
+	public Material setKs(double kS) {
 		this.kS = new Double3(kS);
 		return this;
 	}
-	
 
 	/**
 	 * setter for nShininess parameter
+	 * 
 	 * @param nShininess of material
 	 * @return the updated material
 	 */
-	public Material setNShininess(int nShininess) {
+	public Material setShininess(int nShininess) {
 		this.nShininess = nShininess;
 		return this;
 	}
-	
 
 }
