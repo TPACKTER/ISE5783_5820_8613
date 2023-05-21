@@ -29,7 +29,6 @@ public class RayTracerBasic extends RayTracerBase {
 	public Color traceRay(Ray ray) {
 		var geoPoints = this.scene.geometries.findGeoIntersections(ray);
 		return geoPoints != null ? calcColor(ray.findClosestGeoPoint(geoPoints)) : this.scene.background;
-
 	}
 
 	/***
