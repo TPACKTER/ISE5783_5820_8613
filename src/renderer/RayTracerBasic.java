@@ -37,9 +37,11 @@ public class RayTracerBasic extends RayTracerBase {
 	private Color calcColor(GeoPoint geoPoint, Ray ray) {
 		return scene.ambientLight.getIntensity().add(calcLocalEffects(geoPoint, ray));
 	}
+
 	/***
 	 * calculate the local effect of light on bory in specific point
-	 * @param gp geo point on which the light hits
+	 * 
+	 * @param gp  geo point on which the light hits
 	 * @param ray of light
 	 * @return the local effect of light on bory
 	 */
@@ -61,25 +63,30 @@ public class RayTracerBasic extends RayTracerBase {
 		}
 		return color;
 	}
-/**
- * calc the Specular light effect on bory
- * @param material
- * @param n the normal to the bory
- * @param l the direction vector between the lightSource and the bory
- * @param nl the dotProduct of n*l
- * @param v the direction of the ray
- * @return the Specular light effect value
- */
+
+	/**
+	 * calc the Specular light effect on bory
+	 * 
+	 * @param material
+	 * @param n        the normal to the bory
+	 * @param l        the direction vector between the lightSource and the bory
+	 * @param nl       the dotProduct of n*l
+	 * @param v        the direction of the ray
+	 * @return the Specular light effect value
+	 */
 	private Double3 calcSpecular(Material material, Vector n, Vector l, double nl, Vector v) {
-		return material.kS.scale(Math.pow(Math.max(0, v.scale(-1).dotProduct(l.subtract(n.scale(2*nl)))),material.nShininess));
+		return material.kS
+				.scale(Math.pow(Math.max(0, v.scale(-1).dotProduct(l.subtract(n.scale(2 * nl)))), material.nShininess));
 	}
-/**
- * calc the Diffusive light effect on bory
- * @param material to calc the diffusive effect on
- * @param nl the product of n*l
- * @return the Diffusive light effect value
- */
+
+	/**
+	 * calc the Diffusive light effect on bory
+	 * 
+	 * @param material to calc the diffusive effect on
+	 * @param nl       the product of n*l
+	 * @return the Diffusive light effect value
+	 */
 	private Double3 calcDiffusive(Material material, double nl) {
-		return nl<0? material.kD.scale(-nl):material.kD.scale(nl);
+		return nl < 0 ? material.kD.scale(-nl) : material.kD.scale(nl);
 	}
 }

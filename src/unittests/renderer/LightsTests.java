@@ -2,6 +2,8 @@ package unittests.renderer;
 
 import static java.awt.Color.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import geometries.*;
@@ -53,6 +55,8 @@ public class LightsTests {
 	private final Point sphereLightPosition = new Point(-50, -50, 25);
 	private final Point trianglesLightPosition = new Point(30, 10, -100);
 	private final Vector trianglesLightDirection = new Vector(-2, -2, -2);
+	private Point spPL = new Point(-50, -50, 25); // Sphere test Position of Light
+	private Color spCL = new Color(800, 500, 0); // Sphere test Color of Light
 
 	private final Geometry sphere = new Sphere(sphereCenter, SPHERE_RADIUS).setEmission(sphereColor)
 			.setMaterial(new Material().setKd(KD).setKs(KS).setShininess(SHININESS));
@@ -168,4 +172,51 @@ public class LightsTests {
 				.writeToImage(); //
 	}
 
+	/***
+	 * testing all sources of light on Sphere
+	 */
+	@Test
+	public void TonsOfSphereLights() {
+		scene1.geometries.add(sphere);
+
+		List<LightSource> x = List.of(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002),
+				new PointLight(new Color(255, 0, 255), spPL.add(new Vector(0, 0, 86))).setKl(0.001).setKq(0.0002),
+				new PointLight(new Color(255, 255, 0), spPL.add(new Vector(0, 86, 0))).setKl(0.001).setKq(0.0002),
+				new PointLight(new Color(255, 255, 255), spPL.add(new Vector(86, 0, 0))).setKl(0.001).setKq(0.0002),
+				new SpotLight(new Color(255, 655, 255), spPL.add(new Vector(86, 0, 100)), new Vector(1, 1, -0.5))
+						.setKl(0.001).setKq(0.0001),
+				new SpotLight(new Color(0, 655, 255), spPL.add(new Vector(86, 100, 0)), new Vector(1, 1, -0.5))
+						.setKl(0.001).setKq(0.0001),
+				new SpotLight(new Color(1255, 655, 255), spPL.add(new Vector(86, 100, 100)), new Vector(1, 1, -0.5))
+						.setKl(0.001).setKq(0.0001),
+				new SpotLight(new Color(10000, 655, 255), spPL.add(new Vector(86, 120, 10)), new Vector(1, 1, -0.5))
+						.setKl(0.001).setKq(0.0001));
+		scene1.lights.addAll(x);
+
+		ImageWriter imageWriter = new ImageWriter("TonsOfSphereLights", 1500, 1500);
+		camera1.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene1)) //
+				.renderImage() //
+				.writeToImage(); //
+	}
+
+	/***
+	 * testing all sources of light on 2 Triangles
+	 */
+	@Test
+	public void TonsOfTriangleLights() {
+		scene1.geometries.add(triangle1, triangle2);
+
+		List<LightSource> x = List.of(new DirectionalLight(Color.Mustred, trianglesLightDirection),
+				new SpotLight(Color.Red, new Point(20, 15, -100), trianglesLightDirection),
+				new SpotLight(Color.Red, new Point(100, 15, -10), trianglesLightDirection),
+				new PointLight(Color.Aqua, trianglesLightPosition).setKl(0.001).setKq(0.0002));
+		scene1.lights.addAll(x);
+
+		ImageWriter imageWriter = new ImageWriter("TonsOfTriangleLights", 1500, 1500);
+		camera1.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene1)) //
+				.renderImage() //
+				.writeToImage(); //
+	}
 }
