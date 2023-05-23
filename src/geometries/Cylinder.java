@@ -1,10 +1,8 @@
 package geometries;
 
-import java.util.List;
-
 import primitives.Point;
 import primitives.Ray;
-import primitives.Util;
+import static primitives.Util.*;
 import primitives.Vector;
 
 /**
@@ -39,11 +37,11 @@ public class Cylinder extends Tube {
 		Point pTop = p0.add(dir.scale(this.height));
 
 		// if the point is at the top of the cylinder
-		if (p.equals(pTop) || Util.isZero(dir.dotProduct(p.subtract(pTop))))
+		if (p.equals(pTop) || isZero(dir.dotProduct(p.subtract(pTop))))
 			return dir;
 
 		// if the point is at the base of the cylinder
-		if (p.equals(p0) || Util.isZero(dir.dotProduct(p.subtract(p0))))
+		if (p.equals(p0) || isZero(dir.dotProduct(p.subtract(p0))))
 			return dir.scale(-1);
 
 		return super.getNormal(p);

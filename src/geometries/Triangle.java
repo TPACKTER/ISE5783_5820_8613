@@ -3,6 +3,7 @@ package geometries;
 import java.util.List;
 
 import primitives.*;
+import static primitives.Util.*;
 
 /**
  * Triangle class represent two-dimensional triangle in 3D Cartesian coordinate
@@ -40,17 +41,17 @@ public class Triangle extends Polygon {
 		Vector q = s.crossProduct(e1);
 		// t=q*e2/(ray.head*e1)
 		double t = q.dotProduct(e2) / p.dotProduct(e1);
-		if (Util.alignZero(t) <= 0)
+		if (alignZero(t) <= 0)
 			return null;
 		// u=p*s/(ray.head*e1)
 		double u = p.dotProduct(s) / p.dotProduct(e1);
-		if (Util.alignZero(u) <= 0)
+		if (alignZero(u) <= 0)
 			return null;
 		// u=q*d/(ray.head*e1)
 		double v = q.dotProduct(ray.getDir()) / p.dotProduct(e1);
-		if (Util.alignZero(v) <= 0)
+		if (alignZero(v) <= 0)
 			return null;
-		if (Util.alignZero(u + v - 1) >= 0)
+		if (alignZero(u + v - 1) >= 0)
 			return null;
 
 		return List.of(new GeoPoint(this, vertices.get(0).add(e1.scale(u)).add(e2.scale(v))));

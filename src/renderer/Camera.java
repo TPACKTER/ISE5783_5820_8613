@@ -60,7 +60,7 @@ public class Camera {
 			throw new IllegalArgumentException("not rthogonal");
 		this.up = up.normalize();
 		this.to = to.normalize();
-		this.right = to.crossProduct(up);
+		this.right = this.to.crossProduct(this.up);
 		this.location = location;
 	}
 
@@ -86,7 +86,7 @@ public class Camera {
 	 * setting the view plane's distance
 	 * 
 	 * @param distance the view plane's to set
-	 * @return the updated camera
+	 * @return the updated cameraS
 	 */
 	public Camera setVPDistance(double distance) {
 		if (Util.alignZero(distance) <= 0)

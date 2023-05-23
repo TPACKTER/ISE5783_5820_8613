@@ -20,18 +20,22 @@ public abstract class Intersectable {
 		List<GeoPoint> geoList = findGeoIntersections(ray);
 		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
 	}
-/***
- * find all intersection with specific shape
- * @param ray ray to intersect
- * @return list of intersection  geoPoints
- */
+
+	/**
+	 * find all intersection with specific shape
+	 * 
+	 * @param ray ray to intersect
+	 * @return list of intersection geoPoints
+	 */
 	final public List<GeoPoint> findGeoIntersections(Ray ray) {
 		return findGeoIntersectionsHelper(ray);
 	}
-	/***
- * find all intersection with specific shape
- * @param ray ray to intersect
- * @return list of intersection  geoPoints
+
+	/**
+	 * find all intersection with specific shape
+	 * 
+	 * @param ray ray to intersect
+	 * @return list of intersection geoPoints
 	 */
 	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
 
@@ -66,7 +70,7 @@ public abstract class Intersectable {
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			return obj instanceof GeoPoint other && this.point.equals(other.point) && this.geometry == other.geometry;
+			return obj instanceof GeoPoint other && this.geometry == other.geometry && this.point.equals(other.point);
 		}
 
 		@Override

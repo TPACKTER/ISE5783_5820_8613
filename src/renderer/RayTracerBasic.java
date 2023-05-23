@@ -1,23 +1,27 @@
 package renderer;
 
+import java.util.List;
+
 import geometries.Intersectable.GeoPoint;
 import lighting.*;
 import scene.*;
 import primitives.*;
+import static primitives.Util.*;
 
-/***
+/*
  * class for ray tracing
  * 
  * @author Ayala and Tamar
  *
  */
 public class RayTracerBasic extends RayTracerBase {
+	private static final double DELTA = 0.1;
+
 	/***
 	 * constructor for RayTracerBasic based on scene
 	 * 
 	 * @param scene to initialize the field scene
 	 */
-
 	public RayTracerBasic(Scene scene) {
 		super(scene);
 	}
@@ -26,6 +30,26 @@ public class RayTracerBasic extends RayTracerBase {
 	public Color traceRay(Ray ray) {
 		var geoPoints = this.scene.geometries.findGeoIntersections(ray);
 		return geoPoints != null ? calcColor(ray.findClosestGeoPoint(geoPoints), ray) : this.scene.background;
+	}
+
+	/*
+	 * @param gp the geo point we check on
+	 * 
+	 * @param l the direction of light
+	 * 
+	 * @param n the noraml vector to the shape
+	 * 
+	 * @return true if there is no need to shade in a spesific point
+	 */
+	private boolean unshaded(GeoPoint gp, Vector l, Vector n, double nv) {
+		Vector lightDirection = l.scale(-1); // from point to light source
+
+		Vector epsVector = n.scale(nv < 0 ? DELTA : -DELTA);
+		Point point = gp.point.add(epsVector);
+		Ray lightRay = new Ray(point, lightDirection);
+
+		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
+		return intersections.isEmpty();
 	}
 
 	/***
@@ -39,11 +63,11 @@ public class RayTracerBasic extends RayTracerBase {
 	}
 
 	/***
-	 * calculate the local effect of light on bory in specific point
+	 * calculate the local effect of light on body in specific point
 	 * 
 	 * @param gp  geo point on which the light hits
 	 * @param ray of light
-	 * @return the local effect of light on bory
+	 * @return the local effect of light on body
 	 */
 	private Color calcLocalEffects(GeoPoint gp, Ray ray) {
 		Color color = gp.geometry.getEmission();
@@ -75,8 +99,8 @@ public class RayTracerBasic extends RayTracerBase {
 	 * @return the Specular light effect value
 	 */
 	private Double3 calcSpecular(Material material, Vector n, Vector l, double nl, Vector v) {
-		return material.kS
-				.scale(Math.pow(Math.max(0, v.scale(-1).dotProduct(l.subtract(n.scale(2 * nl)))), material.nShininess));
+		double vr = alignZero(v.dotProduct(l.subtract(n.scale(2 * nl))));
+		return vr >= 0 ? Double3.ZERO : material.kS.scale(Math.pow(-vr, material.nShininess));
 	}
 
 	/**
@@ -87,6 +111,6 @@ public class RayTracerBasic extends RayTracerBase {
 	 * @return the Diffusive light effect value
 	 */
 	private Double3 calcDiffusive(Material material, double nl) {
-		return nl < 0 ? material.kD.scale(-nl) : material.kD.scale(nl);
+		return material.kD.scale(nl < 0 ? -nl : nl);
 	}
 }

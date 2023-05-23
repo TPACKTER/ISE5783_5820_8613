@@ -1,6 +1,7 @@
 package lighting;
 
 import primitives.*;
+import static primitives.Util.*;
 
 /**
  * class representing spot light
@@ -28,6 +29,7 @@ public class SpotLight extends PointLight {
 
 	@Override
 	public Color getIntensity(Point p) {
-		return super.getIntensity(p).scale(Math.max(0, this.direction.dotProduct(this.getL(p))));
+		double dirL = alignZero(this.direction.dotProduct(this.getL(p)));
+		return dirL <= 0 ? Color.BLACK : super.getIntensity(p).scale(dirL);
 	}
 }

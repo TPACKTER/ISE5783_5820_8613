@@ -57,7 +57,7 @@ public class Ray {
 	 * @return the closest point to ray's head in the list
 	 */
 	public GeoPoint findClosestGeoPoint(List<GeoPoint> listpGeoPoints) {
-		if (listpGeoPoints == null || listpGeoPoints.isEmpty())
+		if (listpGeoPoints == null)
 			return null;
 		double minDistance = Double.POSITIVE_INFINITY;
 		GeoPoint minPoint = null;
