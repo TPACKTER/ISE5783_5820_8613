@@ -97,10 +97,7 @@ public class LightsTests {
 				.setKq(0.0001));
 
 		ImageWriter imageWriter = new ImageWriter("lightSphereSpot", 500, 500);
-		camera1.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene1)) //
-				.renderImage() //
-				.writeToImage(); //
+		camera1.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene1)).renderImage().writeToImage();
 	}
 
 	/** Produce a picture of two triangles lighted by a directional light */
@@ -110,10 +107,7 @@ public class LightsTests {
 		scene2.lights.add(new DirectionalLight(trianglesLightColor, trianglesLightDirection));
 
 		ImageWriter imageWriter = new ImageWriter("lightTrianglesDirectional", 500, 500);
-		camera2.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene2)) //
-				.renderImage() //
-				.writeToImage(); //
+		camera2.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene2)).renderImage().writeToImage();
 	}
 
 	/** Produce a picture of two triangles lighted by a point light */
@@ -123,10 +117,7 @@ public class LightsTests {
 		scene2.lights.add(new PointLight(trianglesLightColor, trianglesLightPosition).setKl(0.001).setKq(0.0002));
 
 		ImageWriter imageWriter = new ImageWriter("lightTrianglesPoint", 500, 500);
-		camera2.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene2)) //
-				.renderImage() //
-				.writeToImage(); //
+		camera2.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene2)).renderImage().writeToImage();
 	}
 
 	/** Produce a picture of two triangles lighted by a spotlight */
@@ -137,10 +128,7 @@ public class LightsTests {
 				.setKl(0.001).setKq(0.0001));
 
 		ImageWriter imageWriter = new ImageWriter("lightTrianglesSpot", 500, 500);
-		camera2.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene2)) //
-				.renderImage() //
-				.writeToImage(); //
+		camera2.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene2)).renderImage().writeToImage();
 	}
 
 	/** Produce a picture of a sphere lighted by a narrow spotlight */
@@ -151,10 +139,7 @@ public class LightsTests {
 				.setKl(0.001).setKq(0.00004));
 
 		ImageWriter imageWriter = new ImageWriter("lightSphereSpotSharp", 500, 500);
-		camera1.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene1)) //
-				.renderImage() //
-				.writeToImage(); //
+		camera1.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene1)).renderImage().writeToImage();
 	}
 
 	/** Produce a picture of two triangles lighted by a narrow spotlight */
@@ -166,10 +151,7 @@ public class LightsTests {
 				.setKl(0.001).setKq(0.00004));
 
 		ImageWriter imageWriter = new ImageWriter("lightTrianglesSpotSharp", 500, 500);
-		camera2.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene2)) //
-				.renderImage() //
-				.writeToImage(); //
+		camera2.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene2)).renderImage().writeToImage();
 	}
 
 	/***
@@ -194,10 +176,7 @@ public class LightsTests {
 		scene1.lights.addAll(x);
 
 		ImageWriter imageWriter = new ImageWriter("TonsOfSphereLights", 1500, 1500);
-		camera1.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene1)) //
-				.renderImage() //
-				.writeToImage(); //
+		camera1.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene1)).renderImage().writeToImage();
 	}
 
 	/***
@@ -208,15 +187,12 @@ public class LightsTests {
 		scene1.geometries.add(triangle1, triangle2);
 
 		List<LightSource> x = List.of(new DirectionalLight(Color.Mustred, trianglesLightDirection),
-				new SpotLight(Color.Red, new Point(20, 15, -100), trianglesLightDirection),
-				new SpotLight(Color.Red, new Point(100, 15, -10), trianglesLightDirection),
+				new SpotLight(new Color(RED), new Point(20, 15, -100), trianglesLightDirection),
+				new SpotLight(new Color(RED), new Point(100, 15, -10), trianglesLightDirection),
 				new PointLight(Color.Aqua, trianglesLightPosition).setKl(0.001).setKq(0.0002));
 		scene1.lights.addAll(x);
 
 		ImageWriter imageWriter = new ImageWriter("TonsOfTriangleLights", 1500, 1500);
-		camera1.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene1)) //
-				.renderImage() //
-				.writeToImage(); //
+		camera1.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene1)).renderImage().writeToImage();
 	}
 }

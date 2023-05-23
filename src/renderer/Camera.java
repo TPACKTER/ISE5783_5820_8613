@@ -1,13 +1,6 @@
 package renderer;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.MissingResourceException;
-
-import javax.imageio.ImageTranscoder;
-import javax.swing.plaf.ColorUIResource;
-
-import org.hamcrest.core.Is;
 
 import primitives.*;
 

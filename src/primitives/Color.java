@@ -19,7 +19,6 @@ public class Color {
 	public static final Color BLACK = new Color();
 	public static final Color Aqua = new Color(0, 255, 255);
 	public static final Color Silver = new Color(192, 192, 192);
-	public static final Color Red = new Color(255, 0, 0);
 	public static final Color Mustred = new Color(255, 165, 0);
 
 	/** Default constructor - to generate Black Color (privately) */

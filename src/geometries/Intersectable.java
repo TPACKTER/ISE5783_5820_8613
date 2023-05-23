@@ -1,10 +1,6 @@
 package geometries;
 
-import java.util.LinkedList;
 import java.util.List;
-
-import org.junit.platform.commons.util.ToStringBuilder;
-
 import primitives.*;
 
 /***
@@ -24,11 +20,19 @@ public abstract class Intersectable {
 		List<GeoPoint> geoList = findGeoIntersections(ray);
 		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
 	}
-
+/***
+ * find all intersection with specific shape
+ * @param ray ray to intersect
+ * @return list of intersection  geoPoints
+ */
 	final public List<GeoPoint> findGeoIntersections(Ray ray) {
 		return findGeoIntersectionsHelper(ray);
 	}
-
+	/***
+ * find all intersection with specific shape
+ * @param ray ray to intersect
+ * @return list of intersection  geoPoints
+	 */
 	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
 
 	/***

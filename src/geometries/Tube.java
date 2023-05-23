@@ -5,8 +5,6 @@ import primitives.Vector;
 
 import java.util.*;
 
-import geometries.Intersectable.GeoPoint;
-
 /**
  * Tube class represents tree-dimensional tube in 3D Cartesian coordinate system
  * 

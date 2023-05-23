@@ -12,7 +12,7 @@ public class SpotLight extends PointLight {
 	/*
 	 * direction of light
 	 */
-	private Vector direction;
+	private final Vector direction;
 
 	/**
 	 * SpotLight constructor based on color point and direction of the spotlight

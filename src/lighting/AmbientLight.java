@@ -9,10 +9,10 @@ import primitives.*;
  *
  */
 public class AmbientLight extends Light {
+	
 	/***
 	 * no ambient light
 	 */
-
 	public static final AmbientLight NONE = new AmbientLight(Color.BLACK, Double3.ZERO);
 
 	/**

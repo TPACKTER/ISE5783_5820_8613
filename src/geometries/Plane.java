@@ -2,10 +2,7 @@ package geometries;
 
 import java.util.List;
 
-import primitives.Point;
-import primitives.Ray;
-import primitives.Util;
-import primitives.Vector;
+import primitives.*;
 
 /**
  * Plane class represent a plane in 3D Cartesian coordinate system
