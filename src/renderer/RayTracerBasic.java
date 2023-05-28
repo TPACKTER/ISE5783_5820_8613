@@ -33,23 +33,25 @@ public class RayTracerBasic extends RayTracerBase {
 	}
 
 	/*
-	 * @param gp the geo point we check on
+	 * checks whether a point should be shaded or not
+	 * 
+	 * @param gp the geoPoint we check on
 	 * 
 	 * @param l the direction of light
 	 * 
-	 * @param n the noraml vector to the shape
+	 * @param n the normal vector to the shape
 	 * 
-	 * @return true if there is no need to shade in a spesific point
+	 * @return true if the point should'nt be shaded
 	 */
-	private boolean unshaded(GeoPoint gp, Vector l, Vector n, double nv) {
+	private boolean unshaded(GeoPoint gp, Vector l, Vector n, double nv, double distance) {
 		Vector lightDirection = l.scale(-1); // from point to light source
 
 		Vector epsVector = n.scale(nv < 0 ? DELTA : -DELTA);
 		Point point = gp.point.add(epsVector);
 		Ray lightRay = new Ray(point, lightDirection);
 
-		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
-		return intersections.isEmpty();
+		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay,distance);
+		return intersections == null || intersections.isEmpty();
 	}
 
 	/***
@@ -78,11 +80,15 @@ public class RayTracerBasic extends RayTracerBase {
 			return color;
 		Material material = gp.geometry.getMaterial();
 		for (LightSource lightSource : scene.lights) {
+			double distance = lightSource.getDistance(gp.point);
 			Vector l = lightSource.getL(gp.point);
-			double nl = Util.alignZero(n.dotProduct(l));
+			double nl = alignZero(n.dotProduct(l));
 			if (nl * nv > 0) { // sign(nl) == sing(nv)
-				Color iL = lightSource.getIntensity(gp.point);
-				color = color.add(iL.scale(calcDiffusive(material, nl)), iL.scale(calcSpecular(material, n, l, nl, v)));
+				if (unshaded(gp, l, n, nl,distance)) {
+					Color iL = lightSource.getIntensity(gp.point);
+					color = color.add(iL.scale(calcDiffusive(material, nl)),
+							iL.scale(calcSpecular(material, n, l, nl, v)));
+				}
 			}
 		}
 		return color;

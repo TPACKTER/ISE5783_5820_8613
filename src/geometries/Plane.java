@@ -58,14 +58,14 @@ public class Plane extends Geometry {
 	}
 
 	@Override
-	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double distance) {
 		double nv = this.normal.dotProduct(ray.getDir());
 		// checks if head point is parallel or inside the plane/ ray's head point equals
 		// to p0
 		if (Util.isZero(nv) || this.p0.equals(ray.getHead()))
 			return null;
-		double t = this.normal.dotProduct(this.p0.subtract(ray.getHead())) / nv;
-		return Util.alignZero(t) > 0 ? List.of(new GeoPoint(this, ray.getPoint(t))) : null;
+		double t =  Util.alignZero(this.normal.dotProduct(this.p0.subtract(ray.getHead())) / nv);
+		return t > 0 &&  Util.alignZero(distance-t)>=0? List.of(new GeoPoint(this, ray.getPoint(t))) : null;
 	}
 
 }

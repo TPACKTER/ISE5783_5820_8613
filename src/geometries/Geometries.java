@@ -43,10 +43,10 @@ public class Geometries extends Intersectable {
 	}
 
 	@Override
-	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double distance) {
 		List<GeoPoint> resList = null;
 		for (Intersectable intersectable : geometries) {// for each geometry
-			var tempList = intersectable.findGeoIntersections(ray);
+			var tempList = intersectable.findGeoIntersections(ray,distance);
 			if (tempList != null) { // if there are intersections continue to shape
 				if (resList == null) // if there were no intersection with any shape yet
 					resList = new LinkedList<>();

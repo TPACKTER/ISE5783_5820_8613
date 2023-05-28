@@ -26,7 +26,7 @@ public class Triangle extends Polygon {
 	}
 
 	@Override
-	public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+	public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double distance) {
 		// based on the equation ray.head+t*d=(1-u-v)*v0+u*v1+v*v2
 
 		// e1=v1-v0
@@ -53,7 +53,7 @@ public class Triangle extends Polygon {
 			return null;
 		if (alignZero(u + v - 1) >= 0)
 			return null;
-
-		return List.of(new GeoPoint(this, vertices.get(0).add(e1.scale(u)).add(e2.scale(v))));
+		Point point=vertices.get(0).add(e1.scale(u)).add(e2.scale(v));
+		return alignZero(point.distance(ray.getHead())-distance)>0?null: List.of(new GeoPoint(this,point));
 	}
 }

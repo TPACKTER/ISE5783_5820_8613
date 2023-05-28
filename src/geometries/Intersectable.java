@@ -20,7 +20,7 @@ public abstract class Intersectable {
 		List<GeoPoint> geoList = findGeoIntersections(ray);
 		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
 	}
-
+	
 	/**
 	 * find all intersection with specific shape
 	 * 
@@ -28,16 +28,27 @@ public abstract class Intersectable {
 	 * @return list of intersection geoPoints
 	 */
 	final public List<GeoPoint> findGeoIntersections(Ray ray) {
-		return findGeoIntersectionsHelper(ray);
+		return findGeoIntersectionsHelper(ray,Double.POSITIVE_INFINITY);
+	}
+	
+	/**
+	 * find all intersection with specific shape within a bounder distance
+	 * 
+	 * @param double distance the value of upper bounder
+	 * @param ray ray to intersect
+	 * @return list of intersection geoPoints within the given distance
+	 */
+	final public List<GeoPoint> findGeoIntersections(Ray ray, double distance) {
+		return findGeoIntersectionsHelper(ray,distance);
 	}
 
 	/**
-	 * find all intersection with specific shape
-	 * 
+	 * find all intersection with specific shape within a bounder distance
+	 * @param double distance the value of upper bounder
 	 * @param ray ray to intersect
-	 * @return list of intersection geoPoints
+	 * @return list of intersection geoPoints within the given distance
 	 */
-	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
+	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double distance);
 
 	/***
 	 * class which keeps a point on a specific geometry

@@ -2,8 +2,9 @@ package geometries;
 
 import primitives.*;
 import primitives.Vector;
+import  java.util.*;
 
-import java.util.*;
+import static primitives.Util.*;
 
 /**
  * Tube class represents tree-dimensional tube in 3D Cartesian coordinate system
@@ -44,7 +45,7 @@ public class Tube extends RadialGeometry {
 	}
 
 	@Override
-	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double distance) {
 		Point p0 = ray.getHead();
 		Vector v = ray.getDir();
 		Point pa = this.axisRay.getHead();
@@ -60,7 +61,7 @@ public class Tube extends RadialGeometry {
 		Vector vecA = v;
 		try {
 			double vva = v.dotProduct(va); // (v,va)
-			if (!Util.isZero(vva))
+			if (!isZero(vva))
 				vecA = v.subtract(va.scale(vva)); // v-(v,va)va
 			a = vecA.lengthSquared(); // (v-(v,va)va)^2
 		} catch (IllegalArgumentException e) {
@@ -71,7 +72,7 @@ public class Tube extends RadialGeometry {
 			Vector deltaP = p0.subtract(pa); // p0-pa
 			Vector deltaPMinusDeltaPVaVa = deltaP;
 			double deltaPVa = deltaP.dotProduct(va); // (delP,va)va)
-			if (!Util.isZero(deltaPVa))
+			if (!isZero(deltaPVa))
 				deltaPMinusDeltaPVaVa = deltaP.subtract(va.scale(deltaPVa)); // (delP-(delP,va)va)
 			b = 2 * (vecA.dotProduct(deltaPMinusDeltaPVaVa)); // 2(v-(v,va)va,delP-(delP,va)va)
 			c = deltaPMinusDeltaPVaVa.lengthSquared() - radiusSquared; // (delP-(delP,va)va)^2 - r^2
@@ -86,11 +87,11 @@ public class Tube extends RadialGeometry {
 			return null;
 		double towa = 2 * a;
 
-		double t2 = Util.alignZero((-b + Math.sqrt(descriminant)) / towa);
-		if (t2 <= 0)
+		double t2 = alignZero((-b + Math.sqrt(descriminant)) / towa);
+		if (t2 <= 0 || alignZero(t2 - distance)>0)
 			return null;
 		double t1 = Util.alignZero((-b - Math.sqrt(descriminant)) / towa);
-		return t1 <= 0 ? List.of(new GeoPoint(this, ray.getPoint(t2)))
+		return t1 <= 0 && alignZero(distance -t1)>=0? List.of(new GeoPoint(this, ray.getPoint(t2)))
 				: List.of(new GeoPoint(this, ray.getPoint(t1)), new GeoPoint(this, ray.getPoint(t2)));
 	}
 }

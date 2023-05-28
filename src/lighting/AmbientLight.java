@@ -9,7 +9,7 @@ import primitives.*;
  *
  */
 public class AmbientLight extends Light {
-	
+
 	/***
 	 * no ambient light
 	 */
