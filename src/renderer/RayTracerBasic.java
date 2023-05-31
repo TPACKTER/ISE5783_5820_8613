@@ -16,6 +16,9 @@ import static primitives.Util.*;
  */
 public class RayTracerBasic extends RayTracerBase {
 	private static final double DELTA = 0.1;
+	private static final int MAX_CALC_COLOR_LEVEL = 10;
+	private static final double MIN_CALC_COLOR_K = 0.001;
+	private static final double INITIAL_K = 1.0;
 
 	/***
 	 * constructor for RayTracerBasic based on scene
@@ -28,8 +31,8 @@ public class RayTracerBasic extends RayTracerBase {
 
 	@Override
 	public Color traceRay(Ray ray) {
-		var geoPoints = this.scene.geometries.findGeoIntersections(ray);
-		return geoPoints != null ? calcColor(ray.findClosestGeoPoint(geoPoints), ray) : this.scene.background;
+		var geoPoint = this.findClosestIntersection(ray);
+		return geoPoint != null ? calcColor(geoPoint, ray) : this.scene.background;
 	}
 
 	/*
@@ -50,20 +53,41 @@ public class RayTracerBasic extends RayTracerBase {
 		Point point = gp.point.add(epsVector);
 		Ray lightRay = new Ray(point, lightDirection);
 
-		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay,distance);
+		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, distance);
 		return intersections == null || intersections.isEmpty();
 	}
-
-	/***
-	 * calculate the color of a given point
-	 * 
-	 * @param point
-	 * @return the color of the point
+	/**
+	 * calculating the closest intersection point to ray's head
+	 * @param ray ray to check point neer by
+	 * @return closest intersection point to ray's head
 	 */
-	private Color calcColor(GeoPoint geoPoint, Ray ray) {
-		return scene.ambientLight.getIntensity().add(calcLocalEffects(geoPoint, ray));
+	private GeoPoint findClosestIntersection(Ray ray) {
+		return ray.findClosestGeoPoint(this.scene.geometries.findGeoIntersections(ray));
 	}
 
+/**
+ *  calculate the color of a given point
+ * recursive wrap method
+ * @param geoPoint point to calc the color of
+ * @param ray ray who hits the point
+ * @return the color of a given point
+ */
+	private Color calcColor(GeoPoint geoPoint, Ray ray) {
+		return calcColor(geoPoint, ray, MAX_CALC_COLOR_LEVEL, new Double3(INITIAL_K))
+				.add(scene.ambientLight.getIntensity());
+		}
+/**
+ * calculate the color of a given point
+ * recursive method
+ * @param geoPoint point to calc the color of
+ * @param ray ray who hits the point
+ * @param level level of recurs
+ * @param k
+ * @return the color of a given point
+ */
+	private Color calcColor(GeoPoint intersection, Ray ray,int level, Double3 k) {Color color = calcLocalEffects(intersection, ray);
+			return 1 == level ? color: color.add(calcGlobalEffects(intersection, ray, level, k));
+	}
 	/***
 	 * calculate the local effect of light on body in specific point
 	 * 
@@ -84,7 +108,7 @@ public class RayTracerBasic extends RayTracerBase {
 			Vector l = lightSource.getL(gp.point);
 			double nl = alignZero(n.dotProduct(l));
 			if (nl * nv > 0) { // sign(nl) == sing(nv)
-				if (unshaded(gp, l, n, nl,distance)) {
+				if (unshaded(gp, l, n, nl, distance)) {
 					Color iL = lightSource.getIntensity(gp.point);
 					color = color.add(iL.scale(calcDiffusive(material, nl)),
 							iL.scale(calcSpecular(material, n, l, nl, v)));
@@ -93,6 +117,31 @@ public class RayTracerBasic extends RayTracerBase {
 		}
 		return color;
 	}
+
+	/***
+	 * calculate the global effect of light on body in specific point
+	 * 
+	 * @param gp  geo point on which the light hits
+	 * @param ray of light
+	 * @return the global effect of light on body
+	 */
+	private Color calcGlobalEffects(GeoPoint gp, Ray ray, int level, Double3 k) {
+		Color color = Color.BLACK;
+		Vector v = ray.getDir();
+		Vector n = gp.geometry.getNormal(gp.point);
+		Material material = gp.geometry.getMaterial();
+		return calcColorGLobalEffect(constructReflectedRay(gp, v, n), level, k, material.kR)
+				.add(calcColorGLobalEffect(constructRefractedRay(gp, v, n), level, k, material.kT));
+	}
+
+	private Color calcGlobalEffect(Ray ray, int level, Double3 k, Double3 kx) {
+			Double3 kkx = k.product(kx);
+			if (kkx.lowerThan(MIN_CALC_COLOR_K)) return Color.BLACK;
+			GeoPoint gp = findClosestIntersection(ray);
+			if (gp == null) return scene.background.scale(kx);
+			return isZero(gp.geometry.getNormal(gp.point).dotProduct(ray.getDir()))
+			? Color.BLACK : calcColor(gp, ray, level – 1, kkx);
+			}
 
 	/**
 	 * calc the Specular light effect on bory
