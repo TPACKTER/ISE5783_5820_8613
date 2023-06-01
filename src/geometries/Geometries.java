@@ -25,14 +25,16 @@ public class Geometries extends Intersectable {
 	public Geometries() {
 	}
 
-	/***
+	/**
 	 * constructor of geometries based on unlimited number of geometries
+	 * 
+	 * @param geometries
 	 */
 	public Geometries(Intersectable... geometries) {
 		add(geometries);
 	}
 
-	/***
+	/**
 	 * adding unlimited number of geometries to the group
 	 * 
 	 * @param geometries - unlimited number of intersectable geometries to add to
@@ -43,10 +45,10 @@ public class Geometries extends Intersectable {
 	}
 
 	@Override
-	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double distance) {
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double distance) {
 		List<GeoPoint> resList = null;
 		for (Intersectable intersectable : geometries) {// for each geometry
-			var tempList = intersectable.findGeoIntersections(ray,distance);
+			var tempList = intersectable.findGeoIntersections(ray, distance);
 			if (tempList != null) { // if there are intersections continue to shape
 				if (resList == null) // if there were no intersection with any shape yet
 					resList = new LinkedList<>();

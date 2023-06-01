@@ -15,9 +15,9 @@ import primitives.Vector;
  * @author Ayala
  */
 class VectorTest {
-	Vector v1 = new Vector(1, 1, 1);
-	Vector v2 = new Vector(-1, -1, 1);
-	Vector v3 = new Vector(-1, -1, -1);
+	private Vector v1 = new Vector(1, 1, 1);
+	private Vector v2 = new Vector(-1, -1, 1);
+	private Vector v3 = new Vector(-1, -1, -1);
 
 	/**
 	 * Test method for contractor

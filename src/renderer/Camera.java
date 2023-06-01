@@ -149,6 +149,7 @@ public class Camera {
 
 	/***
 	 * Throws an exception if one of the elements is missing
+	 * @return
 	 */
 	public Camera renderImage() {
 

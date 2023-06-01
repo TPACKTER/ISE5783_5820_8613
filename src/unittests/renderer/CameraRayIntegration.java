@@ -9,7 +9,7 @@ import primitives.*;
 import renderer.*;
 
 /***
- * integration testing camera&ray through barriers
+ * integration testing camera &amp; ray through barriers
  * 
  * @author Ayala and Tamar
  *

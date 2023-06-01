@@ -17,8 +17,11 @@ public class Color {
 
 	/** Black color = (0,0,0) */
 	public static final Color BLACK = new Color();
-	public static final Color Aqua = new Color(0, 255, 255);
+	/** Agua color constant */
+	public static final Color AQUA = new Color(0, 255, 255);
+	/** Silver color constant */
 	public static final Color Silver = new Color(192, 192, 192);
+	/** Mustred color constant */
 	public static final Color Mustred = new Color(255, 165, 0);
 
 	/** Default constructor - to generate Black Color (privately) */

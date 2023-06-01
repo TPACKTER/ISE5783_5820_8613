@@ -26,7 +26,7 @@ public class Ray {
 	 * vector values
 	 * 
 	 * @param point  the head point of the ray
-	 * @param vector the direction of the ray.
+	 * @param v the direction of the ray.
 	 */
 	public Ray(Point point, Vector v) {
 		this.head = point;
@@ -53,7 +53,7 @@ public class Ray {
 	/**
 	 * gets list of points and return the closet point to ray's head
 	 * 
-	 * @param listpPoints list of points to find the closest from
+	 * @param listpGeoPoints list of points to find the closest from
 	 * @return the closest point to ray's head in the list
 	 */
 	public GeoPoint findClosestGeoPoint(List<GeoPoint> listpGeoPoints) {

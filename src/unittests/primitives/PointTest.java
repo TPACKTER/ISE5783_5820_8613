@@ -13,10 +13,10 @@ import primitives.Vector;
  * @author Ayala and Tamar
  */
 class PointTest {
-	Point p1 = new Point(1, 2, 3);
-	Point p2 = new Point(2, 4, 6);
-	Point p3 = new Point(-1, -2, -3);
-	Vector v1 = new Vector(-1, -2, -3);
+	private Point p1 = new Point(1, 2, 3);
+	private Point p2 = new Point(2, 4, 6);
+	private Point p3 = new Point(-1, -2, -3);
+	private Vector v1 = new Vector(-1, -2, -3);
 
 	/** Test method for {@link primitives.Point#subtract(primitives.Point)}. */
 	@Test

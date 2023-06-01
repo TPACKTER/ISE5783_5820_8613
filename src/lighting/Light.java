@@ -10,6 +10,9 @@ import primitives.*;
  *
  */
 abstract class Light {
+	/**
+	 * Original intensity of the light - I<sub>0</sub>
+	 */
 	protected final Color intensity;
 
 	/**

@@ -31,7 +31,7 @@ public class SpotLight extends PointLight {
 		this.direction = direction.normalize();
 	}
 
-	/*
+	/**
 	 * setter for narrowBeam parameter
 	 * 
 	 * @param narrowBeam param to set

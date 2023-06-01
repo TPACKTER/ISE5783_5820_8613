@@ -34,7 +34,7 @@ public abstract class Intersectable {
 	/**
 	 * find all intersection with specific shape within a bounder distance
 	 * 
-	 * @param double distance the value of upper bounder
+	 * @param distance the value of upper bounder
 	 * @param ray ray to intersect
 	 * @return list of intersection geoPoints within the given distance
 	 */
@@ -44,8 +44,8 @@ public abstract class Intersectable {
 
 	/**
 	 * find all intersection with specific shape within a bounder distance
-	 * @param double distance the value of upper bounder
 	 * @param ray ray to intersect
+	 * @param distance the value of upper bounder
 	 * @return list of intersection geoPoints within the given distance
 	 */
 	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double distance);

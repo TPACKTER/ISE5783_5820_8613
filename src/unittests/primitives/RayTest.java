@@ -38,6 +38,9 @@ class RayTest {
 
 	}
 
+	/**
+	 * Tests for {@link primitives.Ray#findClosestPoint(List)}
+	 */
 	@Test
 	void testFindClosestPoint() {
 		List<Point> listpoints = List.of(new Point(0, 0, 0), new Point(2, 0, 0), new Point(0, 0, 1));

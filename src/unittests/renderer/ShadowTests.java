@@ -26,7 +26,12 @@ public class ShadowTests {
 			.setVPSize(200, 200).setVPDistance(1000) //
 			.setRayTracer(new RayTracerBasic(scene));
 
-	/** Helper function for the tests in this module */
+	/** Helper function for the tests in this module 
+	 * 
+	 * @param pictName
+	 * @param triangle
+	 * @param spotLocation
+	 */
 	void sphereTriangleHelper(String pictName, Triangle triangle, Point spotLocation) {
 		scene.geometries.add(sphere, triangle.setEmission(new Color(BLUE)).setMaterial(trMaterial));
 		scene.lights.add( //
@@ -37,7 +42,9 @@ public class ShadowTests {
 				.writeToImage();
 	}
 
-	/** Produce a picture of a sphere and triangle with point light and shade */
+	/** Produce a picture of a sphere and triangle with point light and shade 
+	 * 
+	 */
 	@Test
 	public void sphereTriangleInitial() {
 		sphereTriangleHelper("shadowSphereTriangleInitial", //

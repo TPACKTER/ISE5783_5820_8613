@@ -22,7 +22,7 @@ public abstract class RadialGeometry extends Geometry {
 	 * constructor for building a shape base radius
 	 * 
 	 * @param radius the length of the radius
-	 * @throws IllegalArgumentExceptio at the case of non-positive radius
+	 * @throws IllegalArgumentException at the case of non-positive radius
 	 */
 	public RadialGeometry(double radius) {
 		if (alignZero(radius) <= 0)

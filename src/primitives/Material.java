@@ -32,7 +32,7 @@ public class Material {
 		/**
 		 * setter for kT parameter
 		 * 
-		 * @param double3 kT of material
+		 * @param kT of material
 		 * @return the updated material
 		 */
 		public Material setKt(Double3 kT) {
@@ -42,7 +42,7 @@ public class Material {
 		/**
 		 * setter for kR parameter
 		 * 
-		 * @param double3 kR of material
+		 * @param kR of material
 		 * @return the updated material
 		 */
 		public Material setKr(Double3 kR) {
@@ -52,7 +52,7 @@ public class Material {
 		/**
 		 * setter for kT parameter
 		 * 
-		 * @param double kT of material
+		 * @param kT of material
 		 * @return the updated material
 		 */
 		public Material setKt(double kT) {
@@ -62,7 +62,7 @@ public class Material {
 		/**
 		 * setter for kR parameter
 		 * 
-		 * @param double kR of material
+		 * @param kR of material
 		 * @return the updated material
 		 */
 		public Material setKr(double kR) {
@@ -72,7 +72,7 @@ public class Material {
 	/**
 	 * setter for kD parameter
 	 * 
-	 * @param double3 kD of material
+	 * @param kD of material
 	 * @return the updated material
 	 */
 	public Material setKd(Double3 kD) {
@@ -83,7 +83,7 @@ public class Material {
 	/**
 	 * setter for kD parameter
 	 * 
-	 * @param double kD of material
+	 * @param kD of material
 	 * @return the updated material
 	 */
 	public Material setKd(double kD) {
@@ -94,7 +94,7 @@ public class Material {
 	/**
 	 * setter for kS parameter
 	 * 
-	 * @param double3 kS of material
+	 * @param kS of material
 	 * @return the updated material
 	 */
 	public Material setKs(Double3 kS) {
@@ -105,7 +105,7 @@ public class Material {
 	/**
 	 * setter for kS parameter
 	 * 
-	 * @param double kS of material
+	 * @param kS of material
 	 * @return the updated material
 	 */
 	public Material setKs(double kS) {

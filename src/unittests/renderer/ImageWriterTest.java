@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
  * @author Ayala and Tamar
  */
 class ImageWriterTest {
-	int width = 800;
-	int length = 500;
-	int sizeOfPixel = 50;
+	private int width = 800;
+	private int length = 500;
+	private int step = 50;
 
 	/**
 	 * Test method for
@@ -25,14 +25,9 @@ class ImageWriterTest {
 	@Test
 	void testImageWriter() {
 		ImageWriter imageWriter = new ImageWriter("testImageWriter", width, length);
-
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < length; j++)
-				if (i % sizeOfPixel == 0 || j % sizeOfPixel == 0)
-					imageWriter.writePixel(i, j, Color.Aqua);
-				else
-					imageWriter.writePixel(i, j, Color.Silver);
-
+				imageWriter.writePixel(i, j, i % step == 0 || j % step == 0 ? Color.AQUA : Color.Silver);
 		imageWriter.writeToImage();
 	}
 

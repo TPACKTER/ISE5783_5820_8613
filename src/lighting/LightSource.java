@@ -2,7 +2,7 @@ package lighting;
 
 import primitives.*;
 
-/*
+/**
  * interface for all outside lights
  * @author Tamar and Ayala
  *

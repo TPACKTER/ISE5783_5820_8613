@@ -188,7 +188,7 @@ public class LightsTests {
 		List<LightSource> x = List.of(new DirectionalLight(Color.Mustred, trianglesLightDirection),
 				new SpotLight(new Color(RED), new Point(20, 15, -100), trianglesLightDirection),
 				new SpotLight(new Color(RED), new Point(100, 15, -10), trianglesLightDirection),
-				new PointLight(Color.Aqua, trianglesLightPosition).setKl(0.001).setKq(0.0002));
+				new PointLight(Color.AQUA, trianglesLightPosition).setKl(0.001).setKq(0.0002));
 		scene1.lights.addAll(x);
 
 		ImageWriter imageWriter = new ImageWriter("TonsOfTriangleLights", 1500, 1500);
