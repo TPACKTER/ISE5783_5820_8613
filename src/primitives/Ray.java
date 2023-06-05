@@ -15,6 +15,8 @@ import geometries.Intersectable.GeoPoint;
 
 public class Ray {
 
+	private static final double DELTA = 0.1;
+
 	/** The head(start point) of the ray */
 	final private Point head;
 
@@ -25,12 +27,25 @@ public class Ray {
 	 * Constructor to initialize Ray based object with its head point and direction
 	 * vector values
 	 * 
-	 * @param point  the head point of the ray
-	 * @param v the direction of the ray.
+	 * @param point the head point of the ray
+	 * @param v     the direction of the ray.
 	 */
 	public Ray(Point point, Vector v) {
 		this.head = point;
 		this.dir = v.normalize();
+	}
+
+	/**
+	 * 
+	 * @param head
+	 * @param direction
+	 * @param normal
+	 */
+	public Ray(Point head, Vector direction, Vector normal) {
+		double scale = Util.alignZero(direction.dotProduct(normal));
+		this.head = isZero(scale) ? head: head.add(normal.scale(scale>0?DELTA:-DELTA));
+		this.dir = direction.normalize();
+
 	}
 
 	/**

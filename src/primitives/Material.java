@@ -23,7 +23,7 @@ public class Material {
 	 * the body's transparency
 	 */
 	 public Double3 kT=Double3.ZERO;
-	 /**\
+	 /**
 	  * the body's reflection
 	  */
 	 public Double3 kR=Double3.ZERO;
