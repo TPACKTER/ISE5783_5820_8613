@@ -40,8 +40,8 @@ public abstract class Geometry extends Intersectable {
 	/**
 	 * setter for the material filed
 	 * 
-	 * @param material
-	 * @return
+	 * @param material material to set
+	 * @return the updated material
 	 */
 	public Geometry setMaterial(Material material) {
 		this.material = material;
@@ -60,8 +60,8 @@ public abstract class Geometry extends Intersectable {
 	/**
 	 * setter for the emission filed
 	 * 
-	 * @param color
-	 * @return
+	 * @param color color of emission
+	 * @return the updated geometry
 	 */
 	public Geometry setEmission(Color color) {
 		this.emission = color;

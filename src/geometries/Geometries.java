@@ -28,7 +28,7 @@ public class Geometries extends Intersectable {
 	/**
 	 * constructor of geometries based on unlimited number of geometries
 	 * 
-	 * @param geometries
+	 * @param geometries geometries to initial
 	 */
 	public Geometries(Intersectable... geometries) {
 		add(geometries);

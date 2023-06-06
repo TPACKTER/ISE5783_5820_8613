@@ -37,9 +37,9 @@ public class Ray {
 
 	/**
 	 * 
-	 * @param head
-	 * @param direction
-	 * @param normal
+	 * @param head head point of ray
+	 * @param direction direction vector of ray
+	 * @param normal normal vector of ray
 	 */
 	public Ray(Point head, Vector direction, Vector normal) {
 		double scale = Util.alignZero(direction.dotProduct(normal));
