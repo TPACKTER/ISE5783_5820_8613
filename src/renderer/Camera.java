@@ -47,6 +47,40 @@ public class Camera {
 	 * in charge of the ray tracing of the point
 	 */
 	private RayTracerBase rayTracer;
+	
+
+    /** Depth Of Filed properties. **/
+
+	/**
+	 * boolean variable that determines whether to use depth of filed.
+ 	 */
+    boolean isDepthOfField=false;
+    /**
+     *  Plane variable called FOCAL_PLANE .
+     */
+    private Plane FOCAL_PLANE;
+    /**
+     * number with integer square for the matrix of points.
+     */
+    private int APERTURE_NUMBER_OF_POINTS = 100;
+
+    /**
+     * Declaring a variable called apertureSize of type double.
+     */
+    private double apertureSize;
+
+    /**
+     * Creating an array of Point objects.
+     */
+    private Point[] aperturePoints;
+
+    /** Focal plane parameters. **/
+
+    /**
+     * as instructed it is a constant value of the class.
+     */
+    private double FP_distance;
+
 
 	/***
 	 * Constructor for camera based on location point v-up, and v-to
@@ -124,6 +158,16 @@ public class Camera {
 		return new Ray(location, vIJ);
 
 	}
+	  /**
+     *sets for the depth of field to true or false.
+     *
+     * @param isDepthOfField If true, the camera will have a depth of field effect.
+     * @return The camera object itself.
+     */
+    public Camera setDepthOfField(boolean isDepthOfField) {
+        this.isDepthOfField = isDepthOfField;
+        return this;
+    }
 
 	/***
 	 * set for camera's ImageWriter
@@ -183,6 +227,10 @@ public class Camera {
 	 */
 	private Color caststRay(int i, int j, int nx, int ny) {
 		Ray ray = constructRay(nx, ny, i, j);
+		if(this.isDepthOfField) {
+			return averageColor(ray);//the color calc with depth
+		}
+		
 		return rayTracer.traceRay(ray);
 	}
 
@@ -202,6 +250,24 @@ public class Camera {
 				if (i % interval == 0 || j % interval == 0)
 					this.imageWriter.writePixel(i, j, color);
 
+	}
+	/**
+	 * 
+	 * @param ray
+	 * @return
+	 */
+	private Color averageColor(Ray ray) {
+		Color averageColor = Color.BLACK;
+		int numOfPoints = this.aperturePoints.length;
+		Point focalPoint = this.FOCAL_PLANE.findGeoIntersections(ray).get(0).point;
+		for (Point aperturePoint : this.aperturePoints) {
+		    Ray apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
+		    Color apertureColor = rayTracer.traceRay(apertureRay);
+		    averageColor = averageColor.add(apertureColor);
+		}
+
+		averageColor = averageColor.reduce(numOfPoints);
+		return averageColor;
 	}
 
 	/***
