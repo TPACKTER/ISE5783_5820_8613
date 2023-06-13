@@ -121,7 +121,7 @@ public class RayTracerBasic extends RayTracerBase {
 	/**
 	 * calculating the closest intersection point to ray's head
 	 * 
-	 * @param ray ray to check point neer by
+	 * @param ray ray to check point near by
 	 * @return closest intersection point to ray's head
 	 */
 	private GeoPoint findClosestIntersection(Ray ray) {
@@ -146,7 +146,7 @@ public class RayTracerBasic extends RayTracerBase {
 	 * @param geoPoint point to calc the color of
 	 * @param ray      ray who hits the point
 	 * @param level    level of recurs
-	 * @param k
+	 * @param k        attenuation coefficient of ray's influence
 	 * @return the color of a given point
 	 */
 	private Color calcColor(GeoPoint intersection, Ray ray, int level, Double3 k) {
@@ -154,11 +154,13 @@ public class RayTracerBasic extends RayTracerBase {
 		return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
 	}
 
-	/***
+	/**
 	 * calculate the global effect of light on body in specific point
 	 * 
-	 * @param gp  geo point on which the light hits
-	 * @param ray of light
+	 * @param gp    geo point on which the light hits
+	 * @param ray   of light
+	 * @param level level of recurse
+	 * @param k     attenuation coefficient of ray's influence
 	 * @return the global effect of light on body
 	 */
 	private Color calcGlobalEffects(GeoPoint gp, Ray ray, int level, Double3 k) {
@@ -170,6 +172,7 @@ public class RayTracerBasic extends RayTracerBase {
 	}
 
 	/**
+	 * creates a Refraction ray
 	 * 
 	 * @param gp geoPoint of shape
 	 * @param v  refracted ray direction
@@ -181,16 +184,26 @@ public class RayTracerBasic extends RayTracerBase {
 	}
 
 	/**
+	 * creates a reflection ray
 	 * 
 	 * @param gp geoPoint of shape
-	 * @param v
-	 * @param n
-	 * @return
+	 * @param v  reflected ray direction
+	 * @param n  normal to the shape
+	 * @return the reflected ray
 	 */
 	private Ray constructReflectedRay(GeoPoint gp, Vector v, Vector n) {
 		return new Ray(gp.point, v.subtract(n.scale(2 * v.dotProduct(n))), n);
 	}
 
+	/**
+	 * calc the color of global effect
+	 * 
+	 * @param ray   ray of
+	 * @param level level of recurs
+	 * @param k     attenuation coefficient of ray's influence
+	 * @param kx    transperancy's coefficient
+	 * @return color of global effect
+	 */
 	private Color calcColorGlobalEffect(Ray ray, int level, Double3 k, Double3 kx) {
 		Double3 kkx = k.product(kx);
 		if (kkx.lowerThan(MIN_CALC_COLOR_K))
@@ -220,7 +233,7 @@ public class RayTracerBasic extends RayTracerBase {
 	}
 
 	/**
-	 * calc the Diffusive light effect on bory
+	 * calc the Diffusive light effect on body
 	 * 
 	 * @param material to calc the diffusive effect on
 	 * @param nl       the product of n*l

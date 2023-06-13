@@ -37,13 +37,13 @@ public class Ray {
 
 	/**
 	 * 
-	 * @param head head point of ray
+	 * @param head      head point of ray
 	 * @param direction direction vector of ray
-	 * @param normal normal vector of ray
+	 * @param normal    normal vector of ray
 	 */
 	public Ray(Point head, Vector direction, Vector normal) {
 		double scale = Util.alignZero(direction.dotProduct(normal));
-		this.head = isZero(scale) ? head: head.add(normal.scale(scale>0?DELTA:-DELTA));
+		this.head = isZero(scale) ? head : head.add(normal.scale(scale > 0 ? DELTA : -DELTA));
 		this.dir = direction.normalize();
 
 	}

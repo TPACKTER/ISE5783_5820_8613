@@ -1,8 +1,11 @@
 package renderer;
 
+import java.util.List;
 import java.util.MissingResourceException;
-
+import java.util.LinkedList;
+import geometries.Plane;
 import primitives.*;
+
 
 /***
  * Class representing camera
@@ -48,6 +51,32 @@ public class Camera {
 	 */
 	private RayTracerBase rayTracer;
 
+	/** Depth Of Filed properties. **/
+
+	/**
+	 * boolean variable that determines whether to use depth of filed.
+	 */
+	boolean isDepthOfField = false;
+	/**
+	 * number with integer square for the matrix of points.
+	 */
+	private int numOfPointsOnAperture = 81;
+	/**
+	 * Declaring a variable called apertureSize of type double.
+	 */
+	private double apertureSize = 9;
+	/**
+	 * Creating an array of Point objects.
+	 */
+	private Point[] aperturePoints;
+
+	private double apertureDistance = 0;
+
+	/**
+	 * Plane variable called FOCAL_PLANE .
+	 */
+	private Plane focalPlain;
+
 	/***
 	 * Constructor for camera based on location point v-up, and v-to
 	 * 
@@ -82,11 +111,156 @@ public class Camera {
 
 	}
 
+	/**
+	 * sets for the depth of field to true or false.
+	 *
+	 * @param isDepthOfField If true, the camera will have a depth of field effect.
+	 * @return The camera object itself.
+	 */
+	public Camera setDepthOfField(boolean isDepthOfField) {
+		this.isDepthOfField = isDepthOfField;
+		return this;
+	}
+
+	/**
+	 * set NumOfPointsOnAperture
+	 * 
+	 * @param num number with integer square for the appture
+	 * @return the updated camera
+	 */
+	public Camera setNumOfPointsOnAperture(int num) {
+		this.numOfPointsOnAperture = num;
+		return this;
+	}
+
+	/**
+	 * set apertureSize
+	 * 
+	 * @param size of row and calm of the Aperture
+	 * @return the updated camera
+	 */
+	public Camera setApertureSize(double size) {
+		this.apertureSize = size;
+		return this;
+	}
+
+	/**
+	 * sets the focal plane
+	 *
+	 * @param distance distance of focal plane from camera
+	 * @return The camera object itself.
+	 */
+	public Camera setfocalPlaneDistance(double distance) {
+		this.focalPlain = new Plane(this.location.add(to.scale(distance)), this.to);
+		return this;
+	}
+
+	/**
+	 * setter for the distance of Aperture from camera
+	 * 
+	 * @param distance distance to set
+	 * @return updated camera
+	 */
+	public Camera setApertureDictance(double distance1) {
+		this.apertureDistance = distance1;
+		return this;
+	}
+
+	/**
+	 * setter for number of points of DoF
+	 * 
+	 * @param numOfPoints to set
+	 * @return the updated camera
+	 */
+	public Camera setNumOfPoints(int numOfPoints) {
+		this.numOfPointsOnAperture = numOfPoints;
+		return this;
+	}
+
+	/**
+	 * 
+	 *generate the Target Area Points
+	 * @param numOfPoints to set on the target area
+	 * @param targetSize the size of the target area
+	 * @param jitter the level of jitter to get the point at
+	 * @param p to build the target area from
+	 * @param upvec the up direction
+	 * @param tovec the to direction
+	 * @return an array of the target area points.
+	 * 
+	 */
+	private Point[] generateTargertAreaPoints(int numOfPoints, double targetSize, double jitter, Point p,Vector upvec,Vector tovec) {
+		int numOfPointsOnLine = (int) Math.sqrt(numOfPoints);
+		double space = targetSize / numOfPointsOnLine;
+		upvec=upvec.normalize();
+		tovec=tovec.normalize();
+Vector rightvec=tovec.crossProduct(upvec).normalize();
+		List<Point> TargerAreaPointList = new LinkedList<>();
+
+		for (int j = 0; j < numOfPointsOnLine; j++) {
+			TargerAreaPointList.add(p);
+			for (int i = 1; i < numOfPointsOnLine; i++) {
+				p = p.add(rightvec.scale(space + getRandom(-jitter, jitter)));
+				TargerAreaPointList.add(p);
+			}
+			p = p.add(rightvec.scale(-space * (numOfPointsOnLine - 1) + getRandom(-jitter, jitter))
+					.add(upvec.scale(-space + getRandom(-jitter, jitter))));
+		}
+
+		return TargerAreaPointList.toArray(new Point[TargerAreaPointList.size()]);
+	}
+
+	/**
+	 * generate Aperture Points
+	 * 
+	 */
+	private void generateAperturePoints() {
+		int numOfPointsOnLine = (int) Math.sqrt(this.numOfPointsOnAperture);
+		double space = apertureSize / numOfPointsOnLine;
+		double jitter = 0.1;
+
+		Point p = location.add(up.scale(apertureSize - space / 2 + getRandom(-jitter, jitter)))
+				.add(right.scale(-apertureSize + space / 2 + getRandom(-jitter, jitter)))
+				.add(apertureDistance == 0 ? to : to.scale(apertureDistance));
+
+		this.aperturePoints = generateTargertAreaPoints(this.numOfPointsOnAperture, apertureSize, jitter, p,up,to);
+	}
+/**
+ * gives a random number between 2 given numbers
+ * @param min minimum number
+ * @param max maximum number
+ * @return random number between min and max
+ */
+	private double getRandom(double min, double max) {
+		return min + Math.random() * (max - min);
+	}
+
+	/**
+	 * calculates the average color dof
+	 * 
+	 * @param ray to find the averaged color for
+	 * @return the averaged color (dof)
+	 */
+	private Color averageBeamColor(Ray ray) {
+		this.generateAperturePoints();
+		Color averageColor = Color.BLACK;
+		Point focalPoint = this.focalPlain.findGeoIntersections(ray).get(0).point;// (new
+																					// Ray(this.location,this.to)).get(0).point;
+		for (Point aperturePoint : this.aperturePoints) {
+			Ray apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
+			Color apertureColor = rayTracer.traceRay(apertureRay);
+			averageColor = averageColor.add(apertureColor);
+		}
+
+		averageColor = averageColor.reduce(this.numOfPointsOnAperture);
+		return averageColor;
+	}
+
 	/***
 	 * setting the view plane's distance
 	 * 
 	 * @param distance the view plane's to set
-	 * @return the updated cameraS
+	 * @return the updated camera
 	 */
 	public Camera setVPDistance(double distance) {
 		if (Util.alignZero(distance) <= 0)
@@ -122,7 +296,6 @@ public class Camera {
 		Vector vIJ = pIJ.subtract(location);
 
 		return new Ray(location, vIJ);
-
 	}
 
 	/***
@@ -149,6 +322,7 @@ public class Camera {
 
 	/***
 	 * Throws an exception if one of the elements is missing
+	 * 
 	 * @return the rendered image
 	 */
 	public Camera renderImage() {
@@ -165,6 +339,8 @@ public class Camera {
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		if (this.rayTracer == null)
 			throw new MissingResourceException("rayTracer is missing", "RayTracerBase", "rayTracer");
+		if (this.isDepthOfField && this.focalPlain == null)
+			throw new MissingResourceException("you must set a distance for focal plane", "Plane", "focal plane");
 		int nx = this.imageWriter.getNx();
 		int ny = this.imageWriter.getNy();
 		for (int i = 0; i < nx; i++)
@@ -183,6 +359,10 @@ public class Camera {
 	 */
 	private Color caststRay(int i, int j, int nx, int ny) {
 		Ray ray = constructRay(nx, ny, i, j);
+		if (this.isDepthOfField) {
+			return averageBeamColor(ray);// the color calc with depth
+		}
+
 		return rayTracer.traceRay(ray);
 	}
 

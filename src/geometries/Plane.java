@@ -64,8 +64,8 @@ public class Plane extends Geometry {
 		// to p0
 		if (Util.isZero(nv) || this.p0.equals(ray.getHead()))
 			return null;
-		double t =  Util.alignZero(this.normal.dotProduct(this.p0.subtract(ray.getHead())) / nv);
-		return t > 0 &&  Util.alignZero(distance-t)>=0? List.of(new GeoPoint(this, ray.getPoint(t))) : null;
+		double t = Util.alignZero(this.normal.dotProduct(this.p0.subtract(ray.getHead())) / nv);
+		return t > 0 && Util.alignZero(distance - t) >= 0 ? List.of(new GeoPoint(this, ray.getPoint(t))) : null;
 	}
 
 }

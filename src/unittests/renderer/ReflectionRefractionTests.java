@@ -2,16 +2,14 @@ package unittests.renderer;
 
 import static java.awt.Color.*;
 
-import java.util.List;
+
 
 import org.junit.jupiter.api.Test;
 
 import geometries.*;
-import geometries.Sphere;
-import geometries.Triangle;
 import lighting.AmbientLight;
-import lighting.DirectionalLight;
-import lighting.LightSource;
+
+
 import lighting.PointLight;
 import lighting.SpotLight;
 import primitives.*;
@@ -109,12 +107,15 @@ public class ReflectionRefractionTests {
 				.writeToImage();
 	}
 
+	/**
+	 * Produce a picture of a bird,shoes affect of reflaction and refrection
+	 */
 	@Test
 	public void TransparentReflactionAngryBirdsTest() {
 		Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1))
 
 				.setVPSize(200, 200).setVPDistance(1000);
-		//נקודות לקרבולת ראשונה
+		// points for fist crest
 		Point a = new Point(-10, -10, 80);
 		Point b = new Point(-10, 10, 80);
 		Point c = new Point(-20, 10, 80);
@@ -129,7 +130,7 @@ public class ReflectionRefractionTests {
 		Point b2 = new Point(8, 5, 70);
 		Point c2 = new Point(2, 5, 70);
 		Point d2 = new Point(2, -5, 70);
-//נקודות לקרבולת שנייה
+////points for secound crest	
 		Point aa = new Point(-10, 80, 10);
 		Point bb = new Point(-10, 80, -10);
 		Point cc = new Point(-20, 80, -10);
@@ -144,7 +145,7 @@ public class ReflectionRefractionTests {
 		Point bb2 = new Point(8, 70, 5);
 		Point cc2 = new Point(2, 70, 5);
 		Point dd2 = new Point(2, 70, -5);
-//נקודות לקרבולת שלישית
+//points for third crest
 		Point aaa = new Point(-10, -80, 10);
 		Point bbb = new Point(-10, -80, -10);
 		Point ccc = new Point(-20, -80, -10);
@@ -163,24 +164,24 @@ public class ReflectionRefractionTests {
 
 		scene.geometries.add( //
 
-				new Sphere(new Point(0, 0, 0), 60d).setEmission(new Color(RED)) // ראש
+				new Sphere(new Point(0, 0, 0), 60d).setEmission(new Color(RED)) // head
 						.setMaterial(new Material().setKs(0.15).setShininess(10).setKd(0.2).setKt(0)),
-				// עין ימנית
+				// right eye
 				new Sphere(new Point(60, 20, 20), 15).setEmission(new Color(WHITE)) //
 						.setMaterial(new Material().setKd(0.1).setKs(0).setShininess(10).setKt(0)),
-				// אישון
-				new Sphere(new Point(75, 20, 20), 5).setEmission(new Color(BLACK)) 
+				// Pupil
+				new Sphere(new Point(75, 20, 20), 5).setEmission(new Color(BLACK))
 						.setMaterial(new Material().setKd(0.1).setKs(0).setShininess(10).setKt(0)),
-				// עין שמאלית
-				new Sphere(new Point(60, -20, 20), 15).setEmission(new Color(WHITE)) 
+				// left eye
+				new Sphere(new Point(60, -20, 20), 15).setEmission(new Color(WHITE))
 						.setMaterial(new Material().setKd(0.1).setKs(0).setShininess(10).setKt(0)),
-				// אישון
-				new Sphere(new Point(75, -20, 20), 5).setEmission(new Color(BLACK)) 
+				// Pupil
+				new Sphere(new Point(75, -20, 20), 5).setEmission(new Color(BLACK))
 						.setMaterial(new Material().setKd(0.1).setKs(0).setShininess(10).setKt(0)),
-				// משולשי עזר
+				// help triangle
 				new Triangle(new Point(60, -15, -3), new Point(60, 15, -3), new Point(60, 0, -20)),
 				new Triangle(new Point(60, -15, -3), new Point(60, 15, -3), new Point(60, 0, 20)),
-				// מקור עליון
+				// upper beak
 				new Triangle(new Point(60, -15, -3), new Point(60, 15, -3), new Point(80, 0, 10))
 						.setEmission(new Color(225, 175, 0))
 						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
@@ -190,7 +191,7 @@ public class ReflectionRefractionTests {
 				new Triangle(new Point(60, 0, 20), new Point(60, 15, -3), new Point(80, 0, 10))
 						.setEmission(new Color(225, 175, 0))
 						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
-				// מקור תחתון
+				// Under beak
 				new Triangle(new Point(60, -15, -3), new Point(60, 15, -3), new Point(80, 0, -10))
 						.setEmission(new Color(225, 175, 0))
 						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
@@ -200,12 +201,12 @@ public class ReflectionRefractionTests {
 				new Triangle(new Point(60, 0, -20), new Point(60, 15, -3), new Point(80, 0, -10))
 						.setEmission(new Color(225, 175, 0))
 						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
-				// גבה ימנית
+				// right eyebrow
 				new Polygon(new Point(75, 5, 28), new Point(75, 35, 30), new Point(75, 35, 45), new Point(75, 5, 35)),
-				// גבה שמאלית
+				// left eyebrow
 				new Polygon(new Point(75, -5, 28), new Point(75, -35, 30), new Point(75, -35, 45),
 						new Point(75, -5, 35)),
-				// כרבולת
+				// crest
 //0
 				new Polygon(a, b, c, d).setEmission(new Color(GREEN)).setMaterial(new Material().setKd(0.05)),
 				new Polygon(a, b, new Point(4, 0, 55)).setEmission(new Color(GREEN)),
@@ -228,10 +229,10 @@ public class ReflectionRefractionTests {
 				// 2
 				new Polygon(a2, b2, c2, d2).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(a2, b2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
-				new Polygon(c2, d2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)) ,
+				new Polygon(c2, d2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(b2, d2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(c2, a2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
-				// כנף ימנית
+				// right wing
 //0
 				new Polygon(aa, bb, cc, dd).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(aa, bb, new Point(4, 55, 0)).setEmission(new Color(GREEN))
@@ -255,10 +256,10 @@ public class ReflectionRefractionTests {
 				// 2
 				new Polygon(aa2, bb2, cc2, dd2).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(aa2, bb2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
-				new Polygon(cc2, dd2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)) ,
-				 new Polygon(bb2, dd2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc2, dd2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(bb2, dd2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(cc2, aa2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
-				// כנף שמאלית
+				// left wing
 				// 0
 				new Polygon(aaa, bbb, ccc, ddd).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(aaa, bbb, new Point(4, -55, 0)).setEmission(new Color(GREEN))
@@ -283,15 +284,15 @@ public class ReflectionRefractionTests {
 				new Polygon(aa21, bb21, cc21, dd21).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(aa21, bb21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(cc21, dd21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
-				 new Polygon(bb21, dd21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(bb21, dd21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
 				new Polygon(cc21, aa21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1))
-				// מישור
+				// plane
 				,
 				new Plane(new Point(0, 0, -63), new Point(1, 0, -63), new Point(0, 1, -63))
 						.setEmission(new Color(30, 30, 30))
-						
+
 						.setMaterial(new Material().setKr(1)),
-				new Sphere(new Point(0, 80, 20), 20d).setEmission(new Color(GREEN)) 
+				new Sphere(new Point(0, 80, 20), 20d).setEmission(new Color(GREEN))
 						.setMaterial(new Material().setKd(0.2).setKs(0).setShininess(5).setKt(1)),
 				new Tube(2, new Ray(new Point(0, 80, 20), new Vector(1, 1, -0.5))).setEmission(new Color(BLUE))
 						.setMaterial(new Material().setKr(1)));
@@ -300,9 +301,219 @@ public class ReflectionRefractionTests {
 				.setKl(4E-12).setKq(2E-10));
 
 		ImageWriter imageWriter = new ImageWriter("angryBirdsTest", 600, 600);
-		camera.setImageWriter(imageWriter) 
-				.setRayTracer(new RayTracerBasic(scene)) 
-				.renderImage() //
+		camera.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene)).renderImage() //
 				.writeToImage();
+	}
+	/***
+	 *testing dof
+	 */
+	@Test
+	void dof() {
+		Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1))
+
+				.setVPSize(200, 200).setVPDistance(800);//800
+		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
+		// points for fist crest
+		Point a = new Point(-10, -10, 80);
+		Point b = new Point(-10, 10, 80);
+		Point c = new Point(-20, 10, 80);
+		Point d = new Point(-20, -10, 80);
+
+		Point a1 = new Point(1, -8, 75);
+		Point b1 = new Point(1, 8, 75);
+		Point c1 = new Point(-6, 8, 75);
+		Point d1 = new Point(-6, -8, 75);
+
+		Point a2 = new Point(8, -5, 70);
+		Point b2 = new Point(8, 5, 70);
+		Point c2 = new Point(2, 5, 70);
+		Point d2 = new Point(2, -5, 70);
+////points for secound crest	
+		Point aa = new Point(-10, 80, 10);
+		Point bb = new Point(-10, 80, -10);
+		Point cc = new Point(-20, 80, -10);
+		Point dd = new Point(-20, 80, 10);
+
+		Point aa1 = new Point(1, 75, -8);
+		Point bb1 = new Point(1, 75, 8);
+		Point cc1 = new Point(-6, 75, 8);
+		Point dd1 = new Point(-6, 75, -8);
+
+		Point aa2 = new Point(8, 70, -5);
+		Point bb2 = new Point(8, 70, 5);
+		Point cc2 = new Point(2, 70, 5);
+		Point dd2 = new Point(2, 70, -5);
+//points for third crest
+		Point aaa = new Point(-10, -80, 10);
+		Point bbb = new Point(-10, -80, -10);
+		Point ccc = new Point(-20, -80, -10);
+		Point ddd = new Point(-20, -80, 10);
+
+		Point aa11 = new Point(1, -75, -8);
+		Point bb11 = new Point(1, -75, 8);
+		Point cc11 = new Point(-6, -75, 8);
+		Point dd11 = new Point(-6, -75, -8);
+
+		Point aa21 = new Point(8, -70, -5);
+		Point bb21 = new Point(8, -70, 5);
+		Point cc21 = new Point(2, -70, 5);
+		Point dd21 = new Point(2, -70, -5);
+		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
+
+		scene.geometries.add( 
+/*
+				new Sphere(new Point(0, 0, 0), 60d).setEmission(new Color(RED)) // head
+						.setMaterial(new Material().setKs(0.15).setShininess(10).setKd(0.2).setKt(0)),
+				// right eye
+				new Sphere(new Point(60, 20, 20), 15).setEmission(new Color(WHITE)) //
+						.setMaterial(new Material().setKd(0.1).setKs(0).setShininess(10).setKt(0)),
+				// Pupil
+				new Sphere(new Point(75, 20, 20), 5).setEmission(new Color(BLACK))
+						.setMaterial(new Material().setKd(0.1).setKs(0).setShininess(10).setKt(0)),
+				// left eye
+				new Sphere(new Point(60, -20, 20), 15).setEmission(new Color(WHITE))
+						.setMaterial(new Material().setKd(0.1).setKs(0).setShininess(10).setKt(0)),
+				// Pupil
+				new Sphere(new Point(75, -20, 20), 5).setEmission(new Color(BLACK))
+						.setMaterial(new Material().setKd(0.1).setKs(0).setShininess(10).setKt(0)),
+				// help triangle
+				new Triangle(new Point(60, -15, -3), new Point(60, 15, -3), new Point(60, 0, -20)),
+				new Triangle(new Point(60, -15, -3), new Point(60, 15, -3), new Point(60, 0, 20)),
+				// upper beak
+				new Triangle(new Point(60, -15, -3), new Point(60, 15, -3), new Point(80, 0, 10))
+						.setEmission(new Color(225, 175, 0))
+						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
+				new Triangle(new Point(60, -15, -3), new Point(60, 0, 20), new Point(80, 0, 10))
+						.setEmission(new Color(225, 175, 0))
+						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
+				new Triangle(new Point(60, 0, 20), new Point(60, 15, -3), new Point(80, 0, 10))
+						.setEmission(new Color(225, 175, 0))
+						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
+				// Under beak
+				new Triangle(new Point(60, -15, -3), new Point(60, 15, -3), new Point(80, 0, -10))
+						.setEmission(new Color(225, 175, 0))
+						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
+				new Triangle(new Point(60, -15, -3), new Point(60, 0, -20), new Point(80, 0, -10))
+						.setEmission(new Color(225, 175, 0))
+						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
+				new Triangle(new Point(60, 0, -20), new Point(60, 15, -3), new Point(80, 0, -10))
+						.setEmission(new Color(225, 175, 0))
+						.setMaterial(new Material().setKd(0.5).setKs(10).setShininess(10).setKt(0)),
+				// right eyebrow
+				new Polygon(new Point(75, 5, 28), new Point(75, 35, 30), new Point(75, 35, 45), new Point(75, 5, 35)),
+				// left eyebrow
+				new Polygon(new Point(75, -5, 28), new Point(75, -35, 30), new Point(75, -35, 45),
+						new Point(75, -5, 35)),
+				// crest
+//0
+				new Polygon(a, b, c, d).setEmission(new Color(GREEN)).setMaterial(new Material().setKd(0.05)),
+				new Polygon(a, b, new Point(4, 0, 55)).setEmission(new Color(GREEN)),
+				new Polygon(c, d, new Point(4, 0, 55)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(b, d, new Point(4, 0, 55)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(c, a, new Point(4, 0, 55)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				// 1
+				new Polygon(a1, b1, c1, d1).setMaterial(new Material().setKd(0.1).setKs(0.1)),
+				new Polygon(a, b, new Point(4, 0, 55)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(c1, d1, new Point(4, 0, 55)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(b1, d1, new Point(4, 0, 55)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(c1, a1, new Point(4, 0, 55)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				// 2
+				new Polygon(a2, b2, c2, d2).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(a2, b2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(c2, d2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(b2, d2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(c2, a2, new Point(4, 0, 55)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				// right wing
+//0
+				new Polygon(aa, bb, cc, dd).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(aa, bb, new Point(4, 55, 0)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc, dd, new Point(4, 55, 0)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(bb, cc, new Point(4, 55, 0)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc, aa, new Point(4, 55, 0)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				// 1
+				new Polygon(aa1, bb1, cc1, dd1).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(aa1, bb1, new Point(4, 55, 0)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc1, dd1, new Point(4, 55, 0)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(bb1, dd1, new Point(4, 55, 0)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc1, aa1, new Point(4, 55, 0)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				// 2
+				new Polygon(aa2, bb2, cc2, dd2).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(aa2, bb2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc2, dd2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(bb2, dd2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc2, aa2, new Point(4, 55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				// left wing
+				// 0
+				new Polygon(aaa, bbb, ccc, ddd).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(aaa, bbb, new Point(4, -55, 0)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(ccc, ddd, new Point(4, -55, 0)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(bbb, ddd, new Point(4, -55, 0)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(ccc, aaa, new Point(4, -55, 0)).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				// 1
+				new Polygon(aa11, bb11, cc11, dd11).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(aa11, bb11, new Point(4, -55, 0)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc11, dd11, new Point(4, -55, 0)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(bb11, dd11, new Point(4, -55, 0)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc11, aa11, new Point(4, -55, 0)).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				// 2
+				new Polygon(aa21, bb21, cc21, dd21).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(aa21, bb21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc21, dd21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(bb21, dd21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1)),
+				new Polygon(cc21, aa21, new Point(4, -55, 0)).setMaterial(new Material().setKd(0.05).setKs(0.1))
+				// plane
+				,
+				new Plane(new Point(0, 0, -63), new Point(1, 0, -63), new Point(0, 1, -63))
+						.setEmission(new Color(30, 30, 30))
+
+						.setMaterial(new Material().setKr(1)),
+				new Sphere(new Point(0, 80, 20), 20d).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.2).setKs(0).setShininess(5).setKt(1))*/
+
+				new Tube(5, new Ray(new Point(1000, 10, 20), new Vector(-1,0 , 0.1))).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.4)),			new Sphere( new Point(800, 10, 40),10).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.4)),			new Sphere( new Point(900, 10, 30),10).setEmission(new Color(YELLOW))
+						.setMaterial(new Material().setKd(0.4)),			new Sphere( new Point(1000, 10, 20),10).setEmission(new Color(RED))
+		.setMaterial(new Material().setKd(0.4)),			new Sphere( new Point(1100, 10, 10),10).setEmission(new Color(GREEN))
+		.setMaterial(new Material().setKd(0.4)),	new Sphere( new Point(1200, 10, 0),10).setEmission(new Color(YELLOW))
+		.setMaterial(new Material().setKd(0.4)),			new Sphere( new Point(1300, 10, -10),10).setEmission(new Color(RED))
+		.setMaterial(new Material().setKd(0.4)),			new Sphere( new Point(1400, 10, -20),10).setEmission(new Color(GREEN))
+		.setMaterial(new Material().setKd(0.4)));
+
+
+	
+
+		scene.lights.add(new PointLight(new Color(700, 400, 400), new Point(1300, 20, 20)) //
+				.setKl(4E-12).setKq(2E-10));
+
+		ImageWriter imageWriter = new ImageWriter("focus", 600, 600);
+		camera.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene)).renderImage().setDepthOfField(true).setfocalPlaneDistance(400) .renderImage()//
+				.writeToImage();
+	
+
+
 	}
 }

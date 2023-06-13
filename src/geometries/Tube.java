@@ -2,7 +2,7 @@ package geometries;
 
 import primitives.*;
 import primitives.Vector;
-import  java.util.*;
+import java.util.*;
 
 import static primitives.Util.*;
 
@@ -88,10 +88,10 @@ public class Tube extends RadialGeometry {
 		double towa = 2 * a;
 
 		double t2 = alignZero((-b + Math.sqrt(descriminant)) / towa);
-		if (t2 <= 0 || alignZero(t2 - distance)>0)
+		if (t2 <= 0 || alignZero(t2 - distance) > 0)
 			return null;
 		double t1 = Util.alignZero((-b - Math.sqrt(descriminant)) / towa);
-		return t1 <= 0 && alignZero(distance -t1)>=0? List.of(new GeoPoint(this, ray.getPoint(t2)))
+		return t1 <= 0 && alignZero(distance - t1) >= 0 ? List.of(new GeoPoint(this, ray.getPoint(t2)))
 				: List.of(new GeoPoint(this, ray.getPoint(t1)), new GeoPoint(this, ray.getPoint(t2)));
 	}
 }

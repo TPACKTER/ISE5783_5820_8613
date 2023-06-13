@@ -17,7 +17,7 @@ public class DirectionalLight extends Light implements LightSource {
 	/**
 	 * DirectionalLight constructor based on color and direction of the spotlight
 	 * 
-	 * @param color of light
+	 * @param color     of light
 	 * @param direction of directionLight
 	 */
 	public DirectionalLight(Color color, Vector direction) {
@@ -38,6 +38,6 @@ public class DirectionalLight extends Light implements LightSource {
 
 	@Override
 	public double getDistance(Point p) {
-		return  Double.POSITIVE_INFINITY;
+		return Double.POSITIVE_INFINITY;
 	}
 }

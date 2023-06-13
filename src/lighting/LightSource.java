@@ -4,6 +4,7 @@ import primitives.*;
 
 /**
  * interface for all outside lights
+ * 
  * @author Tamar and Ayala
  *
  */
@@ -24,9 +25,10 @@ public interface LightSource {
 	 * @return the direction vector
 	 */
 	public Vector getL(Point p);
-	
+
 	/**
 	 * calc the distance from lightSource to point
+	 * 
 	 * @param p the point to calc distance from
 	 * @return the distance from lightSource to point
 	 */

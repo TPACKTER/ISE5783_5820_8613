@@ -53,7 +53,7 @@ public class Triangle extends Polygon {
 			return null;
 		if (alignZero(u + v - 1) >= 0)
 			return null;
-		Point point=vertices.get(0).add(e1.scale(u)).add(e2.scale(v));
-		return alignZero(point.distance(ray.getHead())-distance)>0?null: List.of(new GeoPoint(this,point));
+		Point point = vertices.get(0).add(e1.scale(u)).add(e2.scale(v));
+		return alignZero(point.distance(ray.getHead()) - distance) > 0 ? null : List.of(new GeoPoint(this, point));
 	}
 }
