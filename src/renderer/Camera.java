@@ -5,7 +5,8 @@ import java.util.MissingResourceException;
 import java.util.LinkedList;
 import geometries.Plane;
 import primitives.*;
-
+import java.util.HashMap;
+import java.util.Map;
 
 /***
  * Class representing camera
@@ -60,7 +61,10 @@ public class Camera {
 	/**
 	 * number with integer square for the matrix of points.
 	 */
-	private int numOfPointsOnAperture = 81;
+	private int numOfRays = 1;
+	boolean isAdeptive=false;
+
+private int numOfPointsOnAperture = 81;
 	/**
 	 * Declaring a variable called apertureSize of type double.
 	 */
@@ -92,7 +96,25 @@ public class Camera {
 		this.right = this.to.crossProduct(this.up);
 		this.location = location;
 	}
-
+	/**
+	 * setter for NumOfRays
+	 * @param num to ser for NumOfRays
+	 * @return the updated camera
+	 */
+	public Camera setNumOfRays(int num) {
+		this.numOfRays=num;
+		return this;
+	}
+	/**
+	 * setter for adeptive 
+	 * @param adp to set adeptive 
+	 * @return the updated camera
+	 */
+	public Camera isAdeptive (boolean adp) {
+		this.isAdeptive=true;
+		return this;
+	}
+	
 	/***
 	 * setting the view plane's size
 	 * 
@@ -179,22 +201,24 @@ public class Camera {
 
 	/**
 	 * 
-	 *generate the Target Area Points
+	 * generate the Target Area Points
+	 * 
 	 * @param numOfPoints to set on the target area
-	 * @param targetSize the size of the target area
-	 * @param jitter the level of jitter to get the point at
-	 * @param p to build the target area from
-	 * @param upvec the up direction
-	 * @param tovec the to direction
+	 * @param targetSize  the size of the target area
+	 * @param jitter      the level of jitter to get the point at
+	 * @param p           to build the target area from
+	 * @param upvec       the up direction
+	 * @param tovec       the to direction
 	 * @return an array of the target area points.
 	 * 
 	 */
-	private Point[] generateTargertAreaPoints(int numOfPoints, double targetSize, double jitter, Point p,Vector upvec,Vector tovec) {
+	private Point[] generateTargertAreaPoints(int numOfPoints, double targetSize, double jitter, Point p, Vector upvec,
+			Vector tovec) {
 		int numOfPointsOnLine = (int) Math.sqrt(numOfPoints);
 		double space = targetSize / numOfPointsOnLine;
-		upvec=upvec.normalize();
-		tovec=tovec.normalize();
-Vector rightvec=tovec.crossProduct(upvec).normalize();
+		upvec = upvec.normalize();
+		tovec = tovec.normalize();
+		Vector rightvec = tovec.crossProduct(upvec).normalize();
 		List<Point> TargerAreaPointList = new LinkedList<>();
 
 		for (int j = 0; j < numOfPointsOnLine; j++) {
@@ -223,14 +247,16 @@ Vector rightvec=tovec.crossProduct(upvec).normalize();
 				.add(right.scale(-apertureSize + space / 2 + getRandom(-jitter, jitter)))
 				.add(apertureDistance == 0 ? to : to.scale(apertureDistance));
 
-		this.aperturePoints = generateTargertAreaPoints(this.numOfPointsOnAperture, apertureSize, jitter, p,up,to);
+		this.aperturePoints = generateTargertAreaPoints(this.numOfPointsOnAperture, apertureSize, jitter, p, up, to);
 	}
-/**
- * gives a random number between 2 given numbers
- * @param min minimum number
- * @param max maximum number
- * @return random number between min and max
- */
+
+	/**
+	 * gives a random number between 2 given numbers
+	 * 
+	 * @param min minimum number
+	 * @param max maximum number
+	 * @return random number between min and max
+	 */
 	private double getRandom(double min, double max) {
 		return min + Math.random() * (max - min);
 	}
@@ -345,10 +371,102 @@ Vector rightvec=tovec.crossProduct(upvec).normalize();
 		int ny = this.imageWriter.getNy();
 		for (int i = 0; i < nx; i++)
 			for (int j = 0; j < ny; j++) {
-				this.imageWriter.writePixel(i, j, caststRay(i, j, nx, ny));
+				this.imageWriter.writePixel(i, j, castRay(i, j, nx, ny));
 			}
 		return this;
 	}
+
+	private Color superSampling(Point center, double pixcelSize) {
+		Color color;
+		double space = 0.5 * pixcelSize;
+		Vector upv = this.up.scale(space);
+		Vector rightv = this.right.scale(space);
+		Point upLeft = center.add(upv).subtract(rightv);
+		Point upRight = center.add(upv).add(rightv);
+		Point downLeft = center.subtract(upv).subtract(rightv);
+		Point downRight = center.subtract(upv).add(rightv);
+
+		Map<Point, Color> pointsColors = new HashMap<>();
+		Ray ray;
+		if (!pointsColors.containsKey(center)) {
+			ray = new Ray(this.location, center.subtract(location));
+			pointsColors.put(center, rayTracer.traceRay(ray));
+		}
+		if (!pointsColors.containsKey(upLeft)) {
+			ray = new Ray(this.location, upLeft.subtract(location));
+			pointsColors.put(upLeft, rayTracer.traceRay(ray));
+		}
+		if (!pointsColors.containsKey(upRight)) {
+			ray = new Ray(this.location, upRight.subtract(location));
+			pointsColors.put(upRight, rayTracer.traceRay(ray));
+		}
+		if (!pointsColors.containsKey(downLeft)) {
+			ray = new Ray(this.location, upRight.subtract(location));
+			pointsColors.put(upRight, rayTracer.traceRay(ray));
+		}
+		if (!pointsColors.containsKey(downRight)) {
+			ray = new Ray(this.location, downRight.subtract(location));
+			pointsColors.put(downRight, rayTracer.traceRay(ray));
+		}
+		if (!pointsColors.get(upLeft).equals (pointsColors.get(upRight)) && pointsColors.get(upLeft).equals (pointsColors.get(downLeft)) && pointsColors.get(upLeft).equals(pointsColors.get(downRight)) && pointsColors.get(upRight).equals(pointsColors.get(downLeft))
+				&& pointsColors.get(upRight).equals(pointsColors.get(downRight)) && pointsColors.get(downLeft).equals(pointsColors.get(downRight))) {
+			Point upMid= center.add(upv);
+			Point leftMid= center.subtract(rightv);
+			Point rightMid= center.add(rightv);
+			Point dounMid= center.subtract(upv);
+		color=	superSamplingRecursive(upLeft,upMid,leftMid,center,space,pointsColors).add(
+			superSamplingRecursive(upMid,upRight,center,rightMid,space,pointsColors)).add(
+			superSamplingRecursive(leftMid,center,downLeft,dounMid,space,pointsColors)).add(
+			superSamplingRecursive(center,rightMid,dounMid,downRight,space,pointsColors));
+		color=color.scale(0.25);
+		}
+		
+		color=pointsColors.get(upRight).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft)).add(pointsColors.get(downRight).scale(0.25));
+		return color;
+
+	}
+
+private Color superSamplingRecursive(Point upLeft,Point upRight,Point downLeft,Point downRight,double pixcelSize,Map<Point, Color> pointsColors) {
+	Color color;
+	Ray ray;
+	
+	if (!pointsColors.containsKey(upLeft)) {
+		ray = new Ray(this.location, upLeft.subtract(location));
+		pointsColors.put(upLeft, rayTracer.traceRay(ray));
+	}
+	if (!pointsColors.containsKey(upRight)) {
+		ray = new Ray(this.location, upRight.subtract(location));
+		pointsColors.put(upRight, rayTracer.traceRay(ray));
+	}
+	if (!pointsColors.containsKey(downLeft)) {
+		ray = new Ray(this.location, upRight.subtract(location));
+		pointsColors.put(upRight, rayTracer.traceRay(ray));
+	}
+	if (!pointsColors.containsKey(downRight)) {
+		ray = new Ray(this.location, downRight.subtract(location));
+		pointsColors.put(downRight, rayTracer.traceRay(ray));
+	}
+	if  (!pointsColors.get(upLeft).equals (pointsColors.get(upRight)) && pointsColors.get(upLeft).equals (pointsColors.get(downLeft)) && pointsColors.get(upLeft).equals(pointsColors.get(downRight)) && pointsColors.get(upRight).equals(pointsColors.get(downLeft))
+			&& pointsColors.get(upRight).equals(pointsColors.get(downRight)) && pointsColors.get(downLeft).equals(pointsColors.get(downRight)))  {
+		double space=pixcelSize/2;
+		Vector upv = this.up.scale(space);
+		Vector rightv = this.right.scale(space);
+		Point center=upLeft.add(rightv).subtract(upv);
+		Point upMid= center.add(upv);
+		Point leftMid= center.subtract(rightv);
+		Point rightMid= center.add(rightv);
+		Point dounMid= center.subtract(upv);
+	 color=	superSamplingRecursive(upLeft,upMid,leftMid,center,space,pointsColors).add(
+		superSamplingRecursive(upMid,upRight,center,rightMid,space,pointsColors)).add(
+		superSamplingRecursive(leftMid,center,downLeft,dounMid,space,pointsColors)).add(
+		superSamplingRecursive(center,rightMid,dounMid,downRight,space,pointsColors));
+	color=color.scale(0.25);
+	}
+	else
+		color=pointsColors.get(upRight).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft)).add(pointsColors.get(downRight).scale(0.25));
+	return color ;	
+	
+}
 
 	/***
 	 * calculate the color in a given indexed pixel
@@ -357,7 +475,7 @@ Vector rightvec=tovec.crossProduct(upvec).normalize();
 	 * @param j - j index parameter
 	 * @return the color of a pixel in a given index
 	 */
-	private Color caststRay(int i, int j, int nx, int ny) {
+	private Color castRay(int i, int j, int nx, int ny) {
 		Ray ray = constructRay(nx, ny, i, j);
 		if (this.isDepthOfField) {
 			return averageBeamColor(ray);// the color calc with depth

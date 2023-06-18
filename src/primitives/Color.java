@@ -1,5 +1,7 @@
 package primitives;
 
+import static primitives.Util.isZero;
+
 /**
  * Wrapper class for java.jwt.Color The constructors operate with any
  * non-negative RGB values. The colors are maintained without upper limit of
@@ -146,5 +148,22 @@ public class Color {
 	@Override
 	public String toString() {
 		return "rgb:" + rgb;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof Color other) {
+		    double dx = this.rgb.d1 -  other.rgb.d1;
+			double dy = this.rgb.d2 - other.rgb.d2;
+			double dz = this.rgb.d3 -  other.rgb.d3;
+			dx=dx<0?-dx:dx;
+			dy=dy<0?-dy:dy;
+			dz=dz<0?-dz:dz;
+			return dx<0.5&&dy<0.5&&dz<0.5;
+		}
+			
+		return false;
 	}
 }
