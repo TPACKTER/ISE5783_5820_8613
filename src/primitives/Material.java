@@ -27,7 +27,11 @@ public class Material {
 	 * the body's reflection
 	 */
 	public Double3 kR = Double3.ZERO;
-
+public double gs=0;
+public Material setGs(double num) {
+	this.gs = num;
+	return this;
+}
 	/**
 	 * setter for kT parameter
 	 * 

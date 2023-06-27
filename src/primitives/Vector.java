@@ -121,4 +121,7 @@ public class Vector extends Point {
 	public String toString() {
 		return "->" + super.toString();
 	}
+	public Vector getOrtogonal() {
+		return new Vector(-this.getY(),this.getX(),0);
+	}
 }

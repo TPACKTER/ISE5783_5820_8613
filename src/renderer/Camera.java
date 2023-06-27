@@ -58,17 +58,31 @@ public class Camera {
 	 * boolean variable that determines whether to use depth of filed.
 	 */
 	boolean isDepthOfField = false;
+	public Camera isDepthOfField(boolean bool) {
+		this.isDepthOfField=bool;
+		
+		return this;
+	}
+	
 	/**
 	 * number with integer square for the matrix of points.
 	 */
 	private int numOfRays = 1;
 	boolean isAdeptive=false;
+	Grid apature;
+	boolean anti=false;
+	
+	public Camera SetAnti(boolean bool, int num) {
+		this.anti=bool;
+		this.numOfRays=num;
+		return this;
+	}
 
 private int numOfPointsOnAperture = 81;
 	/**
 	 * Declaring a variable called apertureSize of type double.
 	 */
-	private double apertureSize = 9;
+	private double apertureSize = 0;
 	/**
 	 * Creating an array of Point objects.
 	 */
@@ -79,7 +93,9 @@ private int numOfPointsOnAperture = 81;
 	/**
 	 * Plane variable called FOCAL_PLANE .
 	 */
-	private Plane focalPlain;
+	private double focalPlain=10;
+	
+	
 
 	/***
 	 * Constructor for camera based on location point v-up, and v-to
@@ -173,7 +189,7 @@ private int numOfPointsOnAperture = 81;
 	 * @return The camera object itself.
 	 */
 	public Camera setfocalPlaneDistance(double distance) {
-		this.focalPlain = new Plane(this.location.add(to.scale(distance)), this.to);
+		this.focalPlain = distance;
 		return this;
 	}
 
@@ -186,6 +202,7 @@ private int numOfPointsOnAperture = 81;
 	public Camera setApertureDictance(double distance1) {
 		this.apertureDistance = distance1;
 		return this;
+		
 	}
 
 	/**
@@ -199,88 +216,12 @@ private int numOfPointsOnAperture = 81;
 		return this;
 	}
 
-	/**
-	 * 
-	 * generate the Target Area Points
-	 * 
-	 * @param numOfPoints to set on the target area
-	 * @param targetSize  the size of the target area
-	 * @param jitter      the level of jitter to get the point at
-	 * @param p           to build the target area from
-	 * @param upvec       the up direction
-	 * @param tovec       the to direction
-	 * @return an array of the target area points.
-	 * 
-	 */
-	private Point[] generateTargertAreaPoints(int numOfPoints, double targetSize, double jitter, Point p, Vector upvec,
-			Vector tovec) {
-		int numOfPointsOnLine = (int) Math.sqrt(numOfPoints);
-		double space = targetSize / numOfPointsOnLine;
-		upvec = upvec.normalize();
-		tovec = tovec.normalize();
-		Vector rightvec = tovec.crossProduct(upvec).normalize();
-		List<Point> TargerAreaPointList = new LinkedList<>();
 
-		for (int j = 0; j < numOfPointsOnLine; j++) {
-			TargerAreaPointList.add(p);
-			for (int i = 1; i < numOfPointsOnLine; i++) {
-				p = p.add(rightvec.scale(space + getRandom(-jitter, jitter)));
-				TargerAreaPointList.add(p);
-			}
-			p = p.add(rightvec.scale(-space * (numOfPointsOnLine - 1) + getRandom(-jitter, jitter))
-					.add(upvec.scale(-space + getRandom(-jitter, jitter))));
-		}
 
-		return TargerAreaPointList.toArray(new Point[TargerAreaPointList.size()]);
-	}
 
-	/**
-	 * generate Aperture Points
-	 * 
-	 */
-	private void generateAperturePoints() {
-		int numOfPointsOnLine = (int) Math.sqrt(this.numOfPointsOnAperture);
-		double space = apertureSize / numOfPointsOnLine;
-		double jitter = 0.1;
 
-		Point p = location.add(up.scale(apertureSize - space / 2 + getRandom(-jitter, jitter)))
-				.add(right.scale(-apertureSize + space / 2 + getRandom(-jitter, jitter)))
-				.add(apertureDistance == 0 ? to : to.scale(apertureDistance));
 
-		this.aperturePoints = generateTargertAreaPoints(this.numOfPointsOnAperture, apertureSize, jitter, p, up, to);
-	}
 
-	/**
-	 * gives a random number between 2 given numbers
-	 * 
-	 * @param min minimum number
-	 * @param max maximum number
-	 * @return random number between min and max
-	 */
-	private double getRandom(double min, double max) {
-		return min + Math.random() * (max - min);
-	}
-
-	/**
-	 * calculates the average color dof
-	 * 
-	 * @param ray to find the averaged color for
-	 * @return the averaged color (dof)
-	 */
-	private Color averageBeamColor(Ray ray) {
-		this.generateAperturePoints();
-		Color averageColor = Color.BLACK;
-		Point focalPoint = this.focalPlain.findGeoIntersections(ray).get(0).point;// (new
-																					// Ray(this.location,this.to)).get(0).point;
-		for (Point aperturePoint : this.aperturePoints) {
-			Ray apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
-			Color apertureColor = rayTracer.traceRay(apertureRay);
-			averageColor = averageColor.add(apertureColor);
-		}
-
-		averageColor = averageColor.reduce(this.numOfPointsOnAperture);
-		return averageColor;
-	}
 
 	/***
 	 * setting the view plane's distance
@@ -294,7 +235,53 @@ private int numOfPointsOnAperture = 81;
 		this.distance = distance;
 		return this;
 	}
+	private Color constructthoughtBeemRay(int nX,int nY,int j,int i) {
+		Point pIJ =location.add(to.scale(distance));
+	      
+		double rY = Util.alignZero(height / nY);
+		double rX = Util.alignZero(width / nX);
 
+		double yI = -(i - (nY - 1) / 2.0) * rY;
+		double xJ = (j - (nX - 1) / 2.0) * rX;
+		// avoiding zero vector cases
+		if (!Util.isZero(xJ))
+			pIJ = pIJ.add(right.scale(xJ));
+
+		if (!Util.isZero(yI))
+			pIJ = pIJ.add(up.scale(yI));
+		
+		Vector vIJ = pIJ.subtract(location).normalize();
+	
+		Grid anti=new Grid(this.numOfRays, this.distance,rY, up, vIJ,this.location);
+		if(this.isAdeptive)
+		{
+			if(this.apertureSize>0&&this.numOfRays>1)
+				return anti.superSampling(location, pIJ, rY, ray1->this.rayTracer.traceRays((List<Ray>)(this.apature.superSamplingForAppture(ray1.getPoint(focalPlain),this.location.add(apertureDistance==0?to:to.scale(this.apertureDistance)), this.apertureSize,ray2->this.rayTracer.traceRay(ray2),this.numOfPointsOnAperture)[1])),this.numOfRays);
+			if(this.numOfRays>1)
+			return anti.superSampling(this.location, pIJ, rY, ray->this.rayTracer.traceRay(ray), 1);
+			if(this.apertureSize>0) {
+				  Ray ray = constructRay(nX, nY, j, i);
+					return (Color)this.apature.superSamplingForAppture(ray.getPoint(focalPlain),this.location.add(apertureDistance==0?to:to.scale(this.apertureDistance)) ,  this.apertureSize, ray1->this.rayTracer.traceRay(ray1), this.numOfPointsOnAperture)[0];
+			}
+			
+		}
+		else
+			
+		if(this.apertureSize>0&&this.numOfRays>1)
+		{
+			List<Ray> rays=anti.gridRays( 0, null);
+			 List<Ray> dof=new LinkedList<Ray>();
+			  for(Ray ray:rays) 
+				  dof.addAll(this.apature.gridRays( 2 ,ray.getPoint(focalPlain)));
+			return  rayTracer.traceRays(dof);
+		}
+		if(this.apertureSize>0) {
+			  Ray ray = constructRay(nX, nY,j , i);
+			return this.rayTracer.traceRays(this.apature.gridRays(2,ray.getPoint(focalPlain) ));
+		}
+		return this.rayTracer.traceRays(anti.gridRays( 0,null));
+		
+	}
 	/***
 	 * construct a ray through a pixel
 	 * 
@@ -305,6 +292,8 @@ private int numOfPointsOnAperture = 81;
 	 * @return ray starts at the camera and go though the given pixel
 	 */
 	public Ray constructRay(int nX, int nY, int j, int i) {
+
+		
 		Point pIJ = location.add(to.scale(distance));
 
 		double rY = Util.alignZero(height / nY);
@@ -365,108 +354,26 @@ private int numOfPointsOnAperture = 81;
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		if (this.rayTracer == null)
 			throw new MissingResourceException("rayTracer is missing", "RayTracerBase", "rayTracer");
-		if (this.isDepthOfField && this.focalPlain == null)
+		if (this.isDepthOfField && this.focalPlain == 0)
 			throw new MissingResourceException("you must set a distance for focal plane", "Plane", "focal plane");
+		if(this.apertureSize!=0) {
+			//public Grid(int nXY, double distance, double gd,Vector upVec,Vector toVec) {
+			this.apature=new Grid((int)Math.sqrt(this.numOfPointsOnAperture),this.apertureDistance,this.apertureSize,this.up,this.to,this.location);
+		}
 		int nx = this.imageWriter.getNx();
 		int ny = this.imageWriter.getNy();
 		for (int i = 0; i < nx; i++)
 			for (int j = 0; j < ny; j++) {
+				if(i%100==0&&j%100==0)
+				{
+					int x=0;
+				}
 				this.imageWriter.writePixel(i, j, castRay(i, j, nx, ny));
 			}
 		return this;
 	}
 
-	private Color superSampling(Point center, double pixcelSize) {
-		Color color;
-		double space = 0.5 * pixcelSize;
-		Vector upv = this.up.scale(space);
-		Vector rightv = this.right.scale(space);
-		Point upLeft = center.add(upv).subtract(rightv);
-		Point upRight = center.add(upv).add(rightv);
-		Point downLeft = center.subtract(upv).subtract(rightv);
-		Point downRight = center.subtract(upv).add(rightv);
 
-		Map<Point, Color> pointsColors = new HashMap<>();
-		Ray ray;
-		if (!pointsColors.containsKey(center)) {
-			ray = new Ray(this.location, center.subtract(location));
-			pointsColors.put(center, rayTracer.traceRay(ray));
-		}
-		if (!pointsColors.containsKey(upLeft)) {
-			ray = new Ray(this.location, upLeft.subtract(location));
-			pointsColors.put(upLeft, rayTracer.traceRay(ray));
-		}
-		if (!pointsColors.containsKey(upRight)) {
-			ray = new Ray(this.location, upRight.subtract(location));
-			pointsColors.put(upRight, rayTracer.traceRay(ray));
-		}
-		if (!pointsColors.containsKey(downLeft)) {
-			ray = new Ray(this.location, upRight.subtract(location));
-			pointsColors.put(upRight, rayTracer.traceRay(ray));
-		}
-		if (!pointsColors.containsKey(downRight)) {
-			ray = new Ray(this.location, downRight.subtract(location));
-			pointsColors.put(downRight, rayTracer.traceRay(ray));
-		}
-		if (!pointsColors.get(upLeft).equals (pointsColors.get(upRight)) && pointsColors.get(upLeft).equals (pointsColors.get(downLeft)) && pointsColors.get(upLeft).equals(pointsColors.get(downRight)) && pointsColors.get(upRight).equals(pointsColors.get(downLeft))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downRight)) && pointsColors.get(downLeft).equals(pointsColors.get(downRight))) {
-			Point upMid= center.add(upv);
-			Point leftMid= center.subtract(rightv);
-			Point rightMid= center.add(rightv);
-			Point dounMid= center.subtract(upv);
-		color=	superSamplingRecursive(upLeft,upMid,leftMid,center,space,pointsColors).add(
-			superSamplingRecursive(upMid,upRight,center,rightMid,space,pointsColors)).add(
-			superSamplingRecursive(leftMid,center,downLeft,dounMid,space,pointsColors)).add(
-			superSamplingRecursive(center,rightMid,dounMid,downRight,space,pointsColors));
-		color=color.scale(0.25);
-		}
-		
-		color=pointsColors.get(upRight).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft)).add(pointsColors.get(downRight).scale(0.25));
-		return color;
-
-	}
-
-private Color superSamplingRecursive(Point upLeft,Point upRight,Point downLeft,Point downRight,double pixcelSize,Map<Point, Color> pointsColors) {
-	Color color;
-	Ray ray;
-	
-	if (!pointsColors.containsKey(upLeft)) {
-		ray = new Ray(this.location, upLeft.subtract(location));
-		pointsColors.put(upLeft, rayTracer.traceRay(ray));
-	}
-	if (!pointsColors.containsKey(upRight)) {
-		ray = new Ray(this.location, upRight.subtract(location));
-		pointsColors.put(upRight, rayTracer.traceRay(ray));
-	}
-	if (!pointsColors.containsKey(downLeft)) {
-		ray = new Ray(this.location, upRight.subtract(location));
-		pointsColors.put(upRight, rayTracer.traceRay(ray));
-	}
-	if (!pointsColors.containsKey(downRight)) {
-		ray = new Ray(this.location, downRight.subtract(location));
-		pointsColors.put(downRight, rayTracer.traceRay(ray));
-	}
-	if  (!pointsColors.get(upLeft).equals (pointsColors.get(upRight)) && pointsColors.get(upLeft).equals (pointsColors.get(downLeft)) && pointsColors.get(upLeft).equals(pointsColors.get(downRight)) && pointsColors.get(upRight).equals(pointsColors.get(downLeft))
-			&& pointsColors.get(upRight).equals(pointsColors.get(downRight)) && pointsColors.get(downLeft).equals(pointsColors.get(downRight)))  {
-		double space=pixcelSize/2;
-		Vector upv = this.up.scale(space);
-		Vector rightv = this.right.scale(space);
-		Point center=upLeft.add(rightv).subtract(upv);
-		Point upMid= center.add(upv);
-		Point leftMid= center.subtract(rightv);
-		Point rightMid= center.add(rightv);
-		Point dounMid= center.subtract(upv);
-	 color=	superSamplingRecursive(upLeft,upMid,leftMid,center,space,pointsColors).add(
-		superSamplingRecursive(upMid,upRight,center,rightMid,space,pointsColors)).add(
-		superSamplingRecursive(leftMid,center,downLeft,dounMid,space,pointsColors)).add(
-		superSamplingRecursive(center,rightMid,dounMid,downRight,space,pointsColors));
-	color=color.scale(0.25);
-	}
-	else
-		color=pointsColors.get(upRight).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft)).add(pointsColors.get(downRight).scale(0.25));
-	return color ;	
-	
-}
 
 	/***
 	 * calculate the color in a given indexed pixel
@@ -476,14 +383,36 @@ private Color superSamplingRecursive(Point upLeft,Point upRight,Point downLeft,P
 	 * @return the color of a pixel in a given index
 	 */
 	private Color castRay(int i, int j, int nx, int ny) {
-		Ray ray = constructRay(nx, ny, i, j);
-		if (this.isDepthOfField) {
-			return averageBeamColor(ray);// the color calc with depth
+		
+		  if(this.numOfRays>1||this.isAdeptive||this.isDepthOfField) {
+			 return constructthoughtBeemRay(nx, ny, i, j);
+			/*  if (this.apertureSize>0) {
+				  List<Ray> dof=new LinkedList<Ray>();
+				  for(Ray ray:rays) 
+					  dof.addAll(this.apature.gridRays( ray.getPoint(focalPlain).subtract(new Point(0,0,0)),2 ,this.location));
+				return  rayTracer.traceRays(dof);	  
+				  
+			  }
+	     return rayTracer.traceRays(rays);
+	      */
+	        }
+	       
+		  Ray ray = constructRay(nx, ny, i, j);
+/*
+		if (this.apertureSize>0) {
+			if(this.isAdeptive==true) {
+				  return superSampling(this.location.add(to.scale(this.focalPlain)),this.apertureSize);
+			}
+			
+			return rayTracer.traceRays(this.apature.gridRays( ray.getPoint(focalPlain).subtract(new Point(0,0,0)),2 ,this.location));
+		//	return averageBeamColor(ray);// the color calc with depth
 		}
+		*/
 
 		return rayTracer.traceRay(ray);
-	}
-
+	        }
+	
+	
 	/***
 	 * prints grid's lines to camera's picture, the lines are in the given color
 	 * 
@@ -509,5 +438,33 @@ private Color superSamplingRecursive(Point upLeft,Point upRight,Point downLeft,P
 		if (this.imageWriter == null)
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		this.imageWriter.writeToImage();
+	}
+	/**
+	 * calculates the average color dof
+	 * 
+	 * @param ray to find the averaged color for
+	 * @return the averaged color (dof)
+	 */
+	public  Color averageBeamColor(Ray ray) {
+		this.generateAperturePoints();
+		Color averageColor = Color.BLACK;
+		Point focalPoint = ray.getPoint(focalPlain);// (new
+																					// Ray(this.location,this.to)).get(0).point;
+		for (Point aperturePoint : this.aperturePoints) {
+			Ray apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
+			Color apertureColor = rayTracer.traceRay(apertureRay);
+			averageColor = averageColor.add(apertureColor);
+		}
+
+		averageColor = averageColor.reduce(this.numOfPointsOnAperture);
+		return averageColor;
+	}
+	/**
+	 * generate Aperture Points
+	 * 
+	 */
+	private void generateAperturePoints() {
+		double jitter = 0.1;
+		this.aperturePoints =Grid.generateTargertAreaPoints(this.location,this.numOfPointsOnAperture, apertureSize, jitter, up, to, right,this.apertureDistance);
 	}
 }
