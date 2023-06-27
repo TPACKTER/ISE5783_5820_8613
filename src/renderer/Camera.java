@@ -2,6 +2,7 @@ package renderer;
 
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.function.Function;
 import java.util.LinkedList;
 import geometries.Plane;
 import primitives.*;
@@ -54,31 +55,24 @@ public class Camera {
 
 	/** Depth Of Filed properties. **/
 
-	/**
-	 * boolean variable that determines whether to use depth of filed.
-	 */
-	boolean isDepthOfField = false;
-	public Camera isDepthOfField(boolean bool) {
-		this.isDepthOfField=bool;
-		
-		return this;
-	}
-	
+
+
 	/**
 	 * number with integer square for the matrix of points.
 	 */
 	private int numOfRays = 1;
-	boolean isAdeptive=false;
+	boolean isAdeptive = false;
 	Grid apature;
-	boolean anti=false;
-	
+	boolean anti = false;
+/*
 	public Camera SetAnti(boolean bool, int num) {
-		this.anti=bool;
-		this.numOfRays=num;
+		this.anti = bool;
+		this.numOfRays = num;
 		return this;
 	}
+	*/
 
-private int numOfPointsOnAperture = 81;
+	private int numOfPointsOnAperture = 81;
 	/**
 	 * Declaring a variable called apertureSize of type double.
 	 */
@@ -86,16 +80,14 @@ private int numOfPointsOnAperture = 81;
 	/**
 	 * Creating an array of Point objects.
 	 */
-	private Point[] aperturePoints;
+
 
 	private double apertureDistance = 0;
 
 	/**
 	 * Plane variable called FOCAL_PLANE .
 	 */
-	private double focalPlain=10;
-	
-	
+	private double focalPlain = 10;
 
 	/***
 	 * Constructor for camera based on location point v-up, and v-to
@@ -109,28 +101,32 @@ private int numOfPointsOnAperture = 81;
 			throw new IllegalArgumentException("not rthogonal");
 		this.up = up.normalize();
 		this.to = to.normalize();
-		this.right = this.to.crossProduct(this.up);
+		this.right = this.to.crossProduct(this.up).normalize();
 		this.location = location;
 	}
+
 	/**
 	 * setter for NumOfRays
+	 * 
 	 * @param num to ser for NumOfRays
 	 * @return the updated camera
 	 */
 	public Camera setNumOfRays(int num) {
-		this.numOfRays=num;
+		this.numOfRays = num;
 		return this;
 	}
+
 	/**
-	 * setter for adeptive 
-	 * @param adp to set adeptive 
+	 * setter for adeptive
+	 * 
+	 * @param adp to set adeptive
 	 * @return the updated camera
 	 */
-	public Camera isAdeptive (boolean adp) {
-		this.isAdeptive=true;
+	public Camera isAdeptive(boolean adp) {
+		this.isAdeptive = true;
 		return this;
 	}
-	
+
 	/***
 	 * setting the view plane's size
 	 * 
@@ -148,17 +144,19 @@ private int numOfPointsOnAperture = 81;
 		return this;
 
 	}
-
+/*
 	/**
 	 * sets for the depth of field to true or false.
 	 *
 	 * @param isDepthOfField If true, the camera will have a depth of field effect.
 	 * @return The camera object itself.
 	 */
+	/*
 	public Camera setDepthOfField(boolean isDepthOfField) {
 		this.isDepthOfField = isDepthOfField;
 		return this;
 	}
+	*/
 
 	/**
 	 * set NumOfPointsOnAperture
@@ -188,8 +186,8 @@ private int numOfPointsOnAperture = 81;
 	 * @param distance distance of focal plane from camera
 	 * @return The camera object itself.
 	 */
-	public Camera setfocalPlaneDistance(double distance) {
-		this.focalPlain = distance;
+	public Camera setfocalPlaneDistance(double distance1) {
+		this.focalPlain = distance1;
 		return this;
 	}
 
@@ -202,26 +200,21 @@ private int numOfPointsOnAperture = 81;
 	public Camera setApertureDictance(double distance1) {
 		this.apertureDistance = distance1;
 		return this;
-		
-	}
 
+	}
+/*
 	/**
 	 * setter for number of points of DoF
 	 * 
 	 * @param numOfPoints to set
 	 * @return the updated camera
 	 */
-	public Camera setNumOfPoints(int numOfPoints) {
-		this.numOfPointsOnAperture = numOfPoints;
+	/*
+	public Camera setNumOfRays(int numOfPoints) {
+		this.numOfRays = numOfPoints;
 		return this;
 	}
-
-
-
-
-
-
-
+	*/
 
 	/***
 	 * setting the view plane's distance
@@ -235,65 +228,8 @@ private int numOfPointsOnAperture = 81;
 		this.distance = distance;
 		return this;
 	}
-	private Color constructthoughtBeemRay(int nX,int nY,int j,int i) {
-		Point pIJ =location.add(to.scale(distance));
-	      
-		double rY = Util.alignZero(height / nY);
-		double rX = Util.alignZero(width / nX);
 
-		double yI = -(i - (nY - 1) / 2.0) * rY;
-		double xJ = (j - (nX - 1) / 2.0) * rX;
-		// avoiding zero vector cases
-		if (!Util.isZero(xJ))
-			pIJ = pIJ.add(right.scale(xJ));
-
-		if (!Util.isZero(yI))
-			pIJ = pIJ.add(up.scale(yI));
-		
-		Vector vIJ = pIJ.subtract(location).normalize();
-	
-		Grid anti=new Grid(this.numOfRays, this.distance,rY, up, vIJ,this.location);
-		if(this.isAdeptive)
-		{
-			if(this.apertureSize>0&&this.numOfRays>1)
-				return anti.superSampling(location, pIJ, rY, ray1->this.rayTracer.traceRays((List<Ray>)(this.apature.superSamplingForAppture(ray1.getPoint(focalPlain),this.location.add(apertureDistance==0?to:to.scale(this.apertureDistance)), this.apertureSize,ray2->this.rayTracer.traceRay(ray2),this.numOfPointsOnAperture)[1])),this.numOfRays);
-			if(this.numOfRays>1)
-			return anti.superSampling(this.location, pIJ, rY, ray->this.rayTracer.traceRay(ray), 1);
-			if(this.apertureSize>0) {
-				  Ray ray = constructRay(nX, nY, j, i);
-					return (Color)this.apature.superSamplingForAppture(ray.getPoint(focalPlain),this.location.add(apertureDistance==0?to:to.scale(this.apertureDistance)) ,  this.apertureSize, ray1->this.rayTracer.traceRay(ray1), this.numOfPointsOnAperture)[0];
-			}
-			
-		}
-		else
-			
-		if(this.apertureSize>0&&this.numOfRays>1)
-		{
-			List<Ray> rays=anti.gridRays( 0, null);
-			 List<Ray> dof=new LinkedList<Ray>();
-			  for(Ray ray:rays) 
-				  dof.addAll(this.apature.gridRays( 2 ,ray.getPoint(focalPlain)));
-			return  rayTracer.traceRays(dof);
-		}
-		if(this.apertureSize>0) {
-			  Ray ray = constructRay(nX, nY,j , i);
-			return this.rayTracer.traceRays(this.apature.gridRays(2,ray.getPoint(focalPlain) ));
-		}
-		return this.rayTracer.traceRays(anti.gridRays( 0,null));
-		
-	}
-	/***
-	 * construct a ray through a pixel
-	 * 
-	 * @param nX numbers of columns
-	 * @param nY numbers of rows
-	 * @param j  y index of pixel to construct the ray through
-	 * @param i  x index of pixel to construct the ray through
-	 * @return ray starts at the camera and go though the given pixel
-	 */
-	public Ray constructRay(int nX, int nY, int j, int i) {
-
-		
+	private Color constructthoughtBeemRay(int nX, int nY, int j, int i) {
 		Point pIJ = location.add(to.scale(distance));
 
 		double rY = Util.alignZero(height / nY);
@@ -308,7 +244,89 @@ private int numOfPointsOnAperture = 81;
 		if (!Util.isZero(yI))
 			pIJ = pIJ.add(up.scale(yI));
 
-		Vector vIJ = pIJ.subtract(location);
+		Vector vIJ = pIJ.subtract(location).normalize();
+
+		Grid anti = new Grid(this.numOfRays, this.distance, rY, up, vIJ, this.location);
+		if (this.isAdeptive) {
+			/*
+			 * if(this.apertureSize>0&&this.numOfRays>1) {
+			 * 
+			 * return anti.superSampling(location, pIJ,
+			 * rY,ray->this.adaptiveDofAnti(ray),this.numOfRays); }
+			 */
+			if (this.numOfRays > 1)
+				return anti.superSampling(this.location, pIJ, rY, ray -> this.rayTracer.traceRay(ray), 1);
+			if (this.apertureSize > 0) {
+
+				double top = pIJ.distance(this.location) * (this.focalPlain / this.distance);
+				return (Color) this.apature.superSamplingForAppture(this.location.add(vIJ.scale(top)),
+						this.location.add(apertureDistance == 0 ? to : to.scale(this.apertureDistance)),
+						this.apertureSize, ray1 -> this.rayTracer.traceRay(ray1), this.numOfPointsOnAperture)[0];
+			}
+
+		}
+
+		if (this.apertureSize > 0 && this.numOfRays > 1) {
+			List<Ray> rays = anti.gridRays(0, null);
+			List<Ray> dof = new LinkedList<Ray>();
+			for (Ray ray : rays)
+				dof.addAll(this.apature.gridRays(2, ray.getPoint(focalPlain)));
+			return rayTracer.traceRays(dof);
+		}
+		if (this.apertureSize > 0) {
+
+			double top = pIJ.distance(this.location) * (this.focalPlain / this.distance);
+
+			return this.rayTracer.traceRays(this.apature.gridRays(2, this.location.add(vIJ.scale(top))));
+		}
+		return this.rayTracer.traceRays(anti.gridRays(0, null));
+
+	}
+	/*
+	 * private Color adaptiveDofAnti(Ray ray) {
+	 * 
+	 * Function<Ray,List<Ray>>
+	 * traceRays2=ray1->(List<Ray>)(this.apature.superSamplingForAppture(ray1.
+	 * getPoint(top),this.location.add(apertureDistance==0?to:to.scale(this.
+	 * apertureDistance)),
+	 * this.apertureSize,traceRay1,this.numOfPointsOnAperture)[1])));
+	 * Function<Ray,List<Ray>> traceRays3=this.rayTracer.traceRay()
+	 * 
+	 * double top= pIJ.distance(this.location)*(this.focalPlain/this.distance);
+	 * Function<Ray,Color> traceRay1=ray2->this.rayTracer.traceRay(ray2);
+	 * Function<Ray,Color>
+	 * fun=ray1->(Color)(this.rayTracer.traceRays((List<Ray>)(this.apature.
+	 * superSamplingForAppture(ray1.getPoint(top),this.location.add(apertureDistance
+	 * ==0?to:to.scale(this.apertureDistance)),
+	 * this.apertureSize,traceRay1,this.numOfPointsOnAperture)[0]))); return null; }
+	 */
+
+	/***
+	 * construct a ray through a pixel
+	 * 
+	 * @param nX numbers of columns
+	 * @param nY numbers of rows
+	 * @param j  y index of pixel to construct the ray through
+	 * @param i  x index of pixel to construct the ray through
+	 * @return ray starts at the camera and go though the given pixel
+	 */
+	public Ray constructRay(int nX, int nY, int j, int i) {
+
+		Point pIJ = location.add(to.scale(distance));
+
+		double rY = Util.alignZero(height / nY);
+		double rX = Util.alignZero(width / nX);
+
+		double yI = -(i - (nY - 1) / 2.0) * rY;
+		double xJ = (j - (nX - 1) / 2.0) * rX;
+		// avoiding zero vector cases
+		if (!Util.isZero(xJ))
+			pIJ = pIJ.add(right.scale(xJ));
+
+		if (!Util.isZero(yI))
+			pIJ = pIJ.add(up.scale(yI));
+
+		Vector vIJ = pIJ.subtract(location).normalize();
 
 		return new Ray(location, vIJ);
 	}
@@ -354,26 +372,21 @@ private int numOfPointsOnAperture = 81;
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		if (this.rayTracer == null)
 			throw new MissingResourceException("rayTracer is missing", "RayTracerBase", "rayTracer");
-		if (this.isDepthOfField && this.focalPlain == 0)
+		if (this.apertureSize > 0 && this.focalPlain == 0)
 			throw new MissingResourceException("you must set a distance for focal plane", "Plane", "focal plane");
-		if(this.apertureSize!=0) {
-			//public Grid(int nXY, double distance, double gd,Vector upVec,Vector toVec) {
-			this.apature=new Grid((int)Math.sqrt(this.numOfPointsOnAperture),this.apertureDistance,this.apertureSize,this.up,this.to,this.location);
+		if (this.apertureSize > 0) {
+
+			this.apature = new Grid((int) Math.sqrt(this.numOfPointsOnAperture), this.apertureDistance,
+					this.apertureSize, this.up, this.to, this.location);
 		}
 		int nx = this.imageWriter.getNx();
 		int ny = this.imageWriter.getNy();
 		for (int i = 0; i < nx; i++)
 			for (int j = 0; j < ny; j++) {
-				if(i%100==0&&j%100==0)
-				{
-					int x=0;
-				}
 				this.imageWriter.writePixel(i, j, castRay(i, j, nx, ny));
 			}
 		return this;
 	}
-
-
 
 	/***
 	 * calculate the color in a given indexed pixel
@@ -383,36 +396,15 @@ private int numOfPointsOnAperture = 81;
 	 * @return the color of a pixel in a given index
 	 */
 	private Color castRay(int i, int j, int nx, int ny) {
-		
-		  if(this.numOfRays>1||this.isAdeptive||this.isDepthOfField) {
-			 return constructthoughtBeemRay(nx, ny, i, j);
-			/*  if (this.apertureSize>0) {
-				  List<Ray> dof=new LinkedList<Ray>();
-				  for(Ray ray:rays) 
-					  dof.addAll(this.apature.gridRays( ray.getPoint(focalPlain).subtract(new Point(0,0,0)),2 ,this.location));
-				return  rayTracer.traceRays(dof);	  
-				  
-			  }
-	     return rayTracer.traceRays(rays);
-	      */
-	        }
-	       
-		  Ray ray = constructRay(nx, ny, i, j);
-/*
-		if (this.apertureSize>0) {
-			if(this.isAdeptive==true) {
-				  return superSampling(this.location.add(to.scale(this.focalPlain)),this.apertureSize);
-			}
-			
-			return rayTracer.traceRays(this.apature.gridRays( ray.getPoint(focalPlain).subtract(new Point(0,0,0)),2 ,this.location));
-		//	return averageBeamColor(ray);// the color calc with depth
-		}
-		*/
+
+		if (this.numOfRays > 1 || this.isAdeptive || this.apertureSize > 0)
+			return constructthoughtBeemRay(nx, ny, i, j);
+
+		Ray ray = constructRay(nx, ny, i, j);
 
 		return rayTracer.traceRay(ray);
-	        }
-	
-	
+	}
+
 	/***
 	 * prints grid's lines to camera's picture, the lines are in the given color
 	 * 
@@ -439,32 +431,5 @@ private int numOfPointsOnAperture = 81;
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		this.imageWriter.writeToImage();
 	}
-	/**
-	 * calculates the average color dof
-	 * 
-	 * @param ray to find the averaged color for
-	 * @return the averaged color (dof)
-	 */
-	public  Color averageBeamColor(Ray ray) {
-		this.generateAperturePoints();
-		Color averageColor = Color.BLACK;
-		Point focalPoint = ray.getPoint(focalPlain);// (new
-																					// Ray(this.location,this.to)).get(0).point;
-		for (Point aperturePoint : this.aperturePoints) {
-			Ray apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
-			Color apertureColor = rayTracer.traceRay(apertureRay);
-			averageColor = averageColor.add(apertureColor);
-		}
 
-		averageColor = averageColor.reduce(this.numOfPointsOnAperture);
-		return averageColor;
-	}
-	/**
-	 * generate Aperture Points
-	 * 
-	 */
-	private void generateAperturePoints() {
-		double jitter = 0.1;
-		this.aperturePoints =Grid.generateTargertAreaPoints(this.location,this.numOfPointsOnAperture, apertureSize, jitter, up, to, right,this.apertureDistance);
-	}
 }

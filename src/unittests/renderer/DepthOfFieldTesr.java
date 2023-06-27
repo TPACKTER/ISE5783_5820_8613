@@ -67,8 +67,8 @@ class DepthOfFieldTesr {
 			camera.setImageWriter(new ImageWriter("dof", 600, 600)) //
 					.setRayTracer(new RayTracerBasic(scene)) //
 				//.renderImage() //
-				.setDepthOfField(true).setfocalPlaneDistance(400)//
-				.setApertureSize(9).setNumOfPointsOnAperture(9)//
+				.setfocalPlaneDistance(400)//
+				.setApertureSize(9).setNumOfPointsOnAperture(81)//
 				.renderImage() //
 				.writeToImage();
 
@@ -102,8 +102,7 @@ class DepthOfFieldTesr {
 					.setVPSize(200, 200).setVPDistance(800);// 800
 			camera.setImageWriter(new ImageWriter("antialaysing", 600, 600)) //
 					.setRayTracer(new RayTracerBasic(scene)) //
-					.setDepthOfField(false).setfocalPlaneDistance(0)//
-					.setApertureSize(0).SetAnti(true, 40)
+					.setNumOfRays(40)//
 				.renderImage() //
 				.writeToImage();
 
@@ -137,12 +136,11 @@ class DepthOfFieldTesr {
 					.setVPSize(200, 200).setVPDistance(800);// 800
 			camera.setImageWriter(new ImageWriter("reg", 600, 600)) //
 					.setRayTracer(new RayTracerBasic(scene)) //
-					.setDepthOfField(false).setfocalPlaneDistance(0)//
-					.setApertureSize(0).SetAnti(false, 1)
 				.renderImage() //
 				.writeToImage();
 
 	}
+	/*
 	@Test
 	void adaptiveantiandddof() {
 
@@ -172,11 +170,12 @@ class DepthOfFieldTesr {
 		camera.setImageWriter(new ImageWriter("adaptiveantiandddof", 600, 600)) //
 				.setRayTracer(new RayTracerBasic(scene)) //
 				.setDepthOfField(true).setfocalPlaneDistance(400)//
-				.setApertureSize(9).SetAnti(true, 40).isAdeptive(true)
+				.setApertureSize(9).setNumOfPointsOnAperture(81).SetAnti(true, 40).isAdeptive(true)
 			.renderImage() //
 			.writeToImage();
 
 }
+*/
 	@Test
 	void adaptiveanti() {
 
@@ -205,7 +204,7 @@ class DepthOfFieldTesr {
 				.setVPSize(200, 200).setVPDistance(800);// 800
 		camera.setImageWriter(new ImageWriter("adaptiveandanti", 600, 600)) //
 				.setRayTracer(new RayTracerBasic(scene)) //
-				.isAdeptive(true).SetAnti(true, 9)//
+				.isAdeptive(true).setNumOfRays(40)//
 			.renderImage() //
 			.writeToImage();
 
@@ -238,8 +237,8 @@ class DepthOfFieldTesr {
 				.setVPSize(200, 200).setVPDistance(800);// 800
 		camera.setImageWriter(new ImageWriter("adaptiveanfdof", 600, 600)) //
 				.setRayTracer(new RayTracerBasic(scene))
-				.setDepthOfField(true).setfocalPlaneDistance(400)//
-				.setApertureSize(9)//
+				.setfocalPlaneDistance(400)//
+				.setApertureSize(9).setNumOfPointsOnAperture(81)//
 				.isAdeptive(true)//
 			.renderImage() //
 			.writeToImage();
@@ -273,14 +272,14 @@ class DepthOfFieldTesr {
 				.setVPSize(200, 200).setVPDistance(800);// 800
 		camera.setImageWriter(new ImageWriter("antialaysinganddof", 600, 600)) //
 				.setRayTracer(new RayTracerBasic(scene)) //
-				.setDepthOfField(true).setfocalPlaneDistance(400)//
-				.setApertureSize(9).SetAnti(true, 10)
+				.setfocalPlaneDistance(400)//
+				.setApertureSize(9).setNumOfPointsOnAperture(81).setNumOfRays(40)//
 			.renderImage() //
 			.writeToImage();
 
 }
 	
-	
+	/*
 	@Test
 	public void reflactiomamdrefrecction() {
 		Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1))
@@ -305,7 +304,7 @@ class DepthOfFieldTesr {
 		ImageWriter imageWriter = new ImageWriter("refray", 600, 600);
 		camera.setImageWriter(imageWriter).setRayTracer(new RayTracerBasic(scene)).renderImage() //
 				.writeToImage();
-	}
+	}*/
 
 }
 
