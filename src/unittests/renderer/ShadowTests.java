@@ -26,7 +26,8 @@ public class ShadowTests {
 			.setVPSize(200, 200).setVPDistance(1000) //
 			.setRayTracer(new RayTracerBasic(scene));
 
-	/** Helper function for the tests in this module 
+	/**
+	 * Helper function for the tests in this module
 	 * 
 	 * @param pictName
 	 * @param triangle
@@ -42,7 +43,8 @@ public class ShadowTests {
 				.writeToImage();
 	}
 
-	/** Produce a picture of a sphere and triangle with point light and shade 
+	/**
+	 * Produce a picture of a sphere and triangle with point light and shade
 	 * 
 	 */
 	@Test
@@ -51,46 +53,47 @@ public class ShadowTests {
 				new Triangle(new Point(-70, -40, 0), new Point(-40, -70, 0), new Point(-68, -68, -4)), //
 				new Point(-100, -100, 200));
 	}
-	 /**
-     * Sphere-Triangle shading - move triangle up-right
-     */
-    @Test
-    public void sphereTriangleMove1() {
-            sphereTriangleHelper("shadowSphereTriangleMove2", //
-                            new Triangle(new Point(-62, -32, 0), new Point(-32, -62, 0), new Point(-60, -60, -4)), //
-                            new Point(-100, -100, 200));
-    }
 
-    /**
-     * Sphere-Triangle shading - move triangle upper-righter
-     */
-    @Test
-    public void sphereTriangleMove2() {
-            sphereTriangleHelper("shadowSphereTriangleMove1", //
-                            new Triangle(new Point(-49, -19, 0), new Point(-19, -49, 0), new Point(-47, -47, -4)), //
-                            new Point(-100, -100, 200));
-    }
+	/**
+	 * Sphere-Triangle shading - move triangle up-right
+	 */
+	@Test
+	public void sphereTriangleMove1() {
+		sphereTriangleHelper("shadowSphereTriangleMove2", //
+				new Triangle(new Point(-62, -32, 0), new Point(-32, -62, 0), new Point(-60, -60, -4)), //
+				new Point(-100, -100, 200));
+	}
 
-    /**
-     * Sphere-Triangle shading - move spot closer
-     */
-    @Test
-    public void sphereTriangleSpot1() {
-            sphereTriangleHelper("shadowSphereTriangleSpot1", //
-                            new Triangle(new Point(-70, -40, 0), new Point(-40, -70, 0), new Point(-68, -68, -4)), //
-                            new Point(-88, -88, 120));
-    }
+	/**
+	 * Sphere-Triangle shading - move triangle upper-righter
+	 */
+	@Test
+	public void sphereTriangleMove2() {
+		sphereTriangleHelper("shadowSphereTriangleMove1", //
+				new Triangle(new Point(-49, -19, 0), new Point(-19, -49, 0), new Point(-47, -47, -4)), //
+				new Point(-100, -100, 200));
+	}
 
-    /**
-     * Sphere-Triangle shading - move spot even more close
-     */
-    @Test
-    public void sphereTriangleSpot2() {
-            sphereTriangleHelper("shadowSphereTriangleSpot2", //
-                            new Triangle(new Point(-70, -40, 0), new Point(-40, -70, 0), new Point(-68, -68, -4)), //
-                            new Point(-76, -76, 70));
-    }
-	
+	/**
+	 * Sphere-Triangle shading - move spot closer
+	 */
+	@Test
+	public void sphereTriangleSpot1() {
+		sphereTriangleHelper("shadowSphereTriangleSpot1", //
+				new Triangle(new Point(-70, -40, 0), new Point(-40, -70, 0), new Point(-68, -68, -4)), //
+				new Point(-88, -88, 120));
+	}
+
+	/**
+	 * Sphere-Triangle shading - move spot even more close
+	 */
+	@Test
+	public void sphereTriangleSpot2() {
+		sphereTriangleHelper("shadowSphereTriangleSpot2", //
+				new Triangle(new Point(-70, -40, 0), new Point(-40, -70, 0), new Point(-68, -68, -4)), //
+				new Point(-76, -76, 70));
+	}
+
 	/**
 	 * Produce a picture of a two triangles lighted by a spot light with a Sphere
 	 * producing a shading

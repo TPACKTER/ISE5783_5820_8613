@@ -3,7 +3,7 @@ package geometries;
 import static primitives.Util.*;
 
 import java.util.List;
-import static primitives.Util.*;
+
 import primitives.*;
 
 /**
@@ -88,15 +88,13 @@ public class Polygon extends Geometry {
 
 	@Override
 	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double distance) {
-		List<GeoPoint> intersectionGeoPoints = plane.findGeoIntersections(ray);
-		if (intersectionGeoPoints == null) {
+		List<GeoPoint> intersectionGeoPoints = plane.findGeoIntersections(ray, distance);
+		if (intersectionGeoPoints == null)
 			return null;
-		}
+
 		// if there is a potential point to check within the distance
 		Point intersectionPoint = intersectionGeoPoints.get(0).point;
-		if(alignZero(intersectionPoint.distance(ray.getHead())-distance)>0)
-			return null;
-		
+
 		// check if the intersection point is within the polygon
 		int counter = 0;
 		for (int i = 0; i < this.size; i++) {
@@ -106,9 +104,7 @@ public class Polygon extends Geometry {
 			Vector normal = null;
 			try {
 				normal = edge.crossProduct(intersectionPoint.subtract(vertex1)).normalize();
-
 			} catch (Exception e) {
-
 				return null;
 			}
 			// counting the number of normals who has the same sign
