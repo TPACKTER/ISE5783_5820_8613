@@ -58,6 +58,12 @@ public class Camera {
 	 * boolean variable that determines whether to use depth of filed.
 	 */
 	boolean isDepthOfField = false;
+	
+	/**
+	 * set variable that determines whether to use depth of filed
+	 * @param bool a value to set the variable
+	 * @return the updated camera
+	 */
 	public Camera isDepthOfField(boolean bool) {
 		this.isDepthOfField=bool;
 		
@@ -112,6 +118,9 @@ private int numOfPointsOnAperture = 81;
 		this.right = this.to.crossProduct(this.up);
 		this.location = location;
 	}
+	
+	/*********** setters ***********/
+	
 	/**
 	 * setter for NumOfRays
 	 * @param num to ser for NumOfRays
@@ -132,7 +141,7 @@ private int numOfPointsOnAperture = 81;
 	}
 	
 	/***
-	 * setting the view plane's size
+	 * setter for the view plane's size
 	 * 
 	 * @param width  the view plane's width
 	 * @param height the view plane's width height
@@ -150,7 +159,7 @@ private int numOfPointsOnAperture = 81;
 	}
 
 	/**
-	 * sets for the depth of field to true or false.
+	 * setter for the depth of field to true or false.
 	 *
 	 * @param isDepthOfField If true, the camera will have a depth of field effect.
 	 * @return The camera object itself.
@@ -161,7 +170,7 @@ private int numOfPointsOnAperture = 81;
 	}
 
 	/**
-	 * set NumOfPointsOnAperture
+	 * setter for the NumOfPointsOnAperture
 	 * 
 	 * @param num number with integer square for the appture
 	 * @return the updated camera
@@ -172,7 +181,7 @@ private int numOfPointsOnAperture = 81;
 	}
 
 	/**
-	 * set apertureSize
+	 * setter for the apertureSize
 	 * 
 	 * @param size of row and calm of the Aperture
 	 * @return the updated camera
@@ -183,7 +192,7 @@ private int numOfPointsOnAperture = 81;
 	}
 
 	/**
-	 * sets the focal plane
+	 * setter for the focal plane
 	 *
 	 * @param distance distance of focal plane from camera
 	 * @return The camera object itself.
@@ -216,15 +225,8 @@ private int numOfPointsOnAperture = 81;
 		return this;
 	}
 
-
-
-
-
-
-
-
-	/***
-	 * setting the view plane's distance
+	/**
+	 * setter for the view plane's distance
 	 * 
 	 * @param distance the view plane's to set
 	 * @return the updated camera
@@ -235,6 +237,38 @@ private int numOfPointsOnAperture = 81;
 		this.distance = distance;
 		return this;
 	}
+	
+
+	/***
+	 * setter for camera's ImageWriter
+	 * 
+	 * @param imageWriter to set imageWriter field
+	 * @return the updated camera
+	 */
+	public Camera setImageWriter(ImageWriter imageWriter) {
+		this.imageWriter = imageWriter;
+		return this;
+	}
+
+	/***
+	 * setter for camera's RayTracerBase
+	 * 
+	 * @param rayTracerBase to set rayTracerBase field
+	 * @return the updated camera
+	 */
+	public Camera setRayTracer(RayTracerBase rayTracerBase) {
+		this.rayTracer = rayTracerBase;
+		return this;
+	}
+
+	/**
+	 * 
+	 * @param nX
+	 * @param nY
+	 * @param j
+	 * @param i
+	 * @return
+	 */
 	private Color constructthoughtBeemRay(int nX,int nY,int j,int i) {
 		Point pIJ =location.add(to.scale(distance));
 	      
@@ -282,59 +316,8 @@ private int numOfPointsOnAperture = 81;
 		return this.rayTracer.traceRays(anti.gridRays( 0,null));
 		
 	}
-	/***
-	 * construct a ray through a pixel
-	 * 
-	 * @param nX numbers of columns
-	 * @param nY numbers of rows
-	 * @param j  y index of pixel to construct the ray through
-	 * @param i  x index of pixel to construct the ray through
-	 * @return ray starts at the camera and go though the given pixel
-	 */
-	public Ray constructRay(int nX, int nY, int j, int i) {
 
-		
-		Point pIJ = location.add(to.scale(distance));
-
-		double rY = Util.alignZero(height / nY);
-		double rX = Util.alignZero(width / nX);
-
-		double yI = -(i - (nY - 1) / 2.0) * rY;
-		double xJ = (j - (nX - 1) / 2.0) * rX;
-		// avoiding zero vector cases
-		if (!Util.isZero(xJ))
-			pIJ = pIJ.add(right.scale(xJ));
-
-		if (!Util.isZero(yI))
-			pIJ = pIJ.add(up.scale(yI));
-
-		Vector vIJ = pIJ.subtract(location);
-
-		return new Ray(location, vIJ);
-	}
-
-	/***
-	 * set for camera's ImageWriter
-	 * 
-	 * @param imageWriter to set imageWriter field
-	 * @return the updated camera
-	 */
-	public Camera setImageWriter(ImageWriter imageWriter) {
-		this.imageWriter = imageWriter;
-		return this;
-	}
-
-	/***
-	 * set for camera's RayTracerBase
-	 * 
-	 * @param rayTracerBase to set rayTracerBase field
-	 * @return the updated camera
-	 */
-	public Camera setRayTracer(RayTracerBase rayTracerBase) {
-		this.rayTracer = rayTracerBase;
-		return this;
-	}
-
+	
 	/***
 	 * Throws an exception if one of the elements is missing
 	 * 
@@ -373,7 +356,36 @@ private int numOfPointsOnAperture = 81;
 		return this;
 	}
 
+	/***
+	 * construct a ray through a pixel
+	 * 
+	 * @param nX numbers of columns
+	 * @param nY numbers of rows
+	 * @param j  y index of pixel to construct the ray through
+	 * @param i  x index of pixel to construct the ray through
+	 * @return ray starts at the camera and go though the given pixel
+	 */
+	public Ray constructRay(int nX, int nY, int j, int i) {
 
+		
+		Point pIJ = location.add(to.scale(distance));
+
+		double rY = Util.alignZero(height / nY);
+		double rX = Util.alignZero(width / nX);
+
+		double yI = -(i - (nY - 1) / 2.0) * rY;
+		double xJ = (j - (nX - 1) / 2.0) * rX;
+		// avoiding zero vector cases
+		if (!Util.isZero(xJ))
+			pIJ = pIJ.add(right.scale(xJ));
+
+		if (!Util.isZero(yI))
+			pIJ = pIJ.add(up.scale(yI));
+
+		Vector vIJ = pIJ.subtract(location);
+
+		return new Ray(location, vIJ);
+	}
 
 	/***
 	 * calculate the color in a given indexed pixel
