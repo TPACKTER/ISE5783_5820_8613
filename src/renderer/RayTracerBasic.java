@@ -177,7 +177,6 @@ public class RayTracerBasic extends RayTracerBase {
 		Color color = calcLocalEffects(intersection, ray, k);
 		return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
 	}
-
 	/**
 	 * calculate the global effect of light on body in specific point
 	 * 
@@ -271,18 +270,14 @@ public class RayTracerBasic extends RayTracerBase {
 		Double3 kkx = k.product(kx);
 		if (kkx.lowerThan(MIN_CALC_COLOR_K))
 			return Color.BLACK;
-		Color color = primitives.Color.BLACK;
-		// for each ray
+
+		GeoPoint gp = findClosestIntersection(ray);
+		if (gp == null)
+			return scene.background.scale(kx);
+
+		return isZero(gp.geometry.getNormal(gp.point).dotProduct(ray.getDir())) ? Color.BLACK
+				: calcColor(gp, ray, level - 1, kkx).scale(kx);
 	
-			GeoPoint gp = findClosestIntersection(ray);
-			if (gp == null)
-				color = color.add(scene.background.scale(kx));
-			else if (!isZero(gp.geometry.getNormal(gp.point).dotProduct(ray.getDir())))
-				color = color.add(calcColor(gp, ray, level - 1, kkx).scale(kx));
-		
-
-		return color ;
-
 	}
 
 	/**
