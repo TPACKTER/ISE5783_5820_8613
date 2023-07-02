@@ -22,6 +22,7 @@ public class RayTracerBasic extends RayTracerBase {
 	private int nXY = 22;
 	/* The distance to the grid */
 	private double distanceGrid = 1;
+
 	/***
 	 * constructor for RayTracerBasic based on scene
 	 * 
@@ -33,30 +34,27 @@ public class RayTracerBasic extends RayTracerBase {
 
 	@Override
 	public Color traceRay(Ray ray) {
-	
+
 		var geoPoint = this.findClosestIntersection(ray);
 		return geoPoint == null ? this.scene.background : calcColor(geoPoint, ray);
 	}
-	  /**
-		  * @param rays List of surrounding rays
-		  * @return average color
-		  */
-	@Override
-		 public Color traceRays(List<Ray> rays) 
-		 {
-		 	if(rays == null)
-		 		return scene.background;
-		     Color color = scene.background;
-		     for (Ray ray : rays) 
-		     {
-		     	color = color.add(traceRay(ray));
-		     }
-	
-		  //   color = color.add(scene.ambientLight.getIntensity());
-		     int size = rays.size();
-		    return color.reduce(size);
-		     
-		 }
+	/*
+	 * /**
+	 * 
+	 * @param rays List of surrounding rays
+	 * 
+	 * @return average color
+	 */
+	/*
+	 * @Override public Color traceRays(List<Ray> rays) { if(rays == null) return
+	 * scene.background; Color color = scene.background; for (Ray ray : rays) {
+	 * color = color.add(traceRay(ray)); }
+	 * 
+	 * // color = color.add(scene.ambientLight.getIntensity()); int size =
+	 * rays.size(); return color.reduce(size);
+	 * 
+	 * }
+	 */
 
 	/***
 	 * calculate the local effect of light on body in specific point
@@ -177,6 +175,7 @@ public class RayTracerBasic extends RayTracerBase {
 		Color color = calcLocalEffects(intersection, ray, k);
 		return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
 	}
+
 	/**
 	 * calculate the global effect of light on body in specific point
 	 * 
@@ -190,7 +189,7 @@ public class RayTracerBasic extends RayTracerBase {
 		Vector v = ray.getDir();
 		Vector n = gp.geometry.getNormal(gp.point);
 		Material material = gp.geometry.getMaterial();
-		
+
 		return calcColorGlobalEffect(constructReflectedRay(gp, v, n), level, k, material.kR)
 				.add(calcColorGlobalEffect(constructRefractedRay(gp, v, n), level, k, material.kT));
 	}
@@ -202,37 +201,36 @@ public class RayTracerBasic extends RayTracerBase {
 	 * @param v  refracted ray direction
 	 * @param n  normal to the shape
 	 * @return the refracted ray
-	 */
-	private List<Ray> constructRefractedRays(Point p, Vector v, Vector n, double gs) {
-		Ray transparencyRay = new Ray(p, v, n);
-		if (isZero(gs))
-			return List.of(transparencyRay);
-		return	new Grid(nXY,distanceGrid , gs,v.getOrtogonal(),v,transparencyRay.getHead()).gridRays(1,null);
-		
-		// return gridRays(n, transparencyRay, 1, gd);
-	}
-
-	/**
-	 * creates a reflection ray
+	 *//*
+		 * private List<Ray> constructRefractedRays(Point p, Vector v, Vector n, double
+		 * gs) { Ray transparencyRay = new Ray(p, v, n); if (isZero(gs)) return
+		 * List.of(transparencyRay); return new Grid(nXY,distanceGrid ,
+		 * gs,v.getOrtogonal(),v,transparencyRay.getHead()).gridRays(1,null);
+		 * 
+		 * // return gridRays(n, transparencyRay, 1, gd); }
+		 */
+	/*
+	 * /** creates a reflection ray
 	 * 
 	 * @param gp geoPoint of shape
-	 * @param v  reflected ray direction
-	 * @param n  normal to the shape
+	 * 
+	 * @param v reflected ray direction
+	 * 
+	 * @param n normal to the shape
+	 * 
 	 * @return the reflected ray
-	 */
-	private List< Ray >constructReflectedRays(Point p, Vector v, Vector n, double gs) {	
-		double vn = v.dotProduct(n);
-	if (isZero(vn))
-		return null;
-	Vector reflectionDirection = (v.subtract(n.scale(2 * vn))).normalize();
-	if (isZero(gs))
-		return List.of(new Ray(p, reflectionDirection, n));
-	Ray ray=new Ray(p, reflectionDirection, n);
-	return new Grid(nXY,distanceGrid ,gs,reflectionDirection.getOrtogonal(),reflectionDirection, ray.getHead()).gridRays(-1,null);
-	// return gridRays(n, new Ray(p, reflectionDirection, n), -1, gd);
-
-}
-	
+	 *//*
+		 * private List< Ray >constructReflectedRays(Point p, Vector v, Vector n, double
+		 * gs) { double vn = v.dotProduct(n); if (isZero(vn)) return null; Vector
+		 * reflectionDirection = (v.subtract(n.scale(2 * vn))).normalize(); if
+		 * (isZero(gs)) return List.of(new Ray(p, reflectionDirection, n)); Ray ray=new
+		 * Ray(p, reflectionDirection, n); return new Grid(nXY,distanceGrid
+		 * ,gs,reflectionDirection.getOrtogonal(),reflectionDirection,
+		 * ray.getHead()).gridRays(-1,null); // return gridRays(n, new Ray(p,
+		 * reflectionDirection, n), -1, gd);
+		 * 
+		 * }
+		 */
 	/**
 	 * creates a Refraction ray
 	 * 
@@ -277,7 +275,7 @@ public class RayTracerBasic extends RayTracerBase {
 
 		return isZero(gp.geometry.getNormal(gp.point).dotProduct(ray.getDir())) ? Color.BLACK
 				: calcColor(gp, ray, level - 1, kkx).scale(kx);
-	
+
 	}
 
 	/**
@@ -305,6 +303,5 @@ public class RayTracerBasic extends RayTracerBase {
 	private Double3 calcDiffusive(Material material, double nl) {
 		return material.kD.scale(nl < 0 ? -nl : nl);
 	}
-	
-	
+
 }

@@ -1,13 +1,8 @@
 package renderer;
 
-import java.util.List;
 import java.util.MissingResourceException;
-import java.util.function.Function;
-import java.util.LinkedList;
-import geometries.Plane;
+
 import primitives.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /***
  * Class representing camera
@@ -53,45 +48,31 @@ public class Camera {
 	 */
 	private RayTracerBase rayTracer;
 
-	private int threads = 1;
-	private final int SPARE_THREADS = 2;
-	private boolean print = false;
-	
-	/** Depth Of Filed properties. **/
-
-
-
 	/**
 	 * number with integer square for the matrix of points.
 	 */
 	private int numOfRays = 1;
-	boolean isAdeptive = false;
-	Grid apature;
-	boolean anti = false;
-/*
-	public Camera SetAnti(boolean bool, int num) {
-		this.anti = bool;
-		this.numOfRays = num;
-		return this;
-	}
-	*/
-
-	private int numOfPointsOnAperture = 81;
+	/**
+	 * flag for adaptive super-sapling
+	 */
+	private boolean isAdaptive = false;
+	/**
+	 * an instance of a grid-for aperture
+	 */
+	InvertedGrid aperture;
+	/**
+	 * numOfPointsOnAperture
+	 */
+	private int numOfPointsOnAperture = 0;
 	/**
 	 * Declaring a variable called apertureSize of type double.
 	 */
 	private double apertureSize = 0;
-	/**
-	 * Creating an array of Point objects.
-	 */
-
-
-	private double apertureDistance = 0;
 
 	/**
-	 * Plane variable called FOCAL_PLANE .
+	 * focal Plane Distance
 	 */
-	private double focalPlain = 10;
+	private double focalDistance = 10;
 
 	/***
 	 * Constructor for camera based on location point v-up, and v-to
@@ -127,7 +108,7 @@ public class Camera {
 	 * @return the updated camera
 	 */
 	public Camera isAdeptive(boolean adp) {
-		this.isAdeptive = true;
+		this.isAdaptive = adp;
 		return this;
 	}
 
@@ -148,19 +129,6 @@ public class Camera {
 		return this;
 
 	}
-/*
-	/**
-	 * sets for the depth of field to true or false.
-	 *
-	 * @param isDepthOfField If true, the camera will have a depth of field effect.
-	 * @return The camera object itself.
-	 */
-	/*
-	public Camera setDepthOfField(boolean isDepthOfField) {
-		this.isDepthOfField = isDepthOfField;
-		return this;
-	}
-	*/
 
 	/**
 	 * set NumOfPointsOnAperture
@@ -191,34 +159,9 @@ public class Camera {
 	 * @return The camera object itself.
 	 */
 	public Camera setfocalPlaneDistance(double distance1) {
-		this.focalPlain = distance1;
+		this.focalDistance = distance1;
 		return this;
 	}
-
-	/**
-	 * setter for the distance of Aperture from camera
-	 * 
-	 * @param distance distance to set
-	 * @return updated camera
-	 */
-	public Camera setApertureDictance(double distance1) {
-		this.apertureDistance = distance1;
-		return this;
-
-	}
-/*
-	/**
-	 * setter for number of points of DoF
-	 * 
-	 * @param numOfPoints to set
-	 * @return the updated camera
-	 */
-	/*
-	public Camera setNumOfRays(int numOfPoints) {
-		this.numOfRays = numOfPoints;
-		return this;
-	}
-	*/
 
 	/***
 	 * setting the view plane's distance
@@ -233,7 +176,17 @@ public class Camera {
 		return this;
 	}
 
-	private Color constructthoughtBeemRay(int nX, int nY, int j, int i) {
+	/**
+	 * calculate the color in a given indexed pixel for beam of rays
+	 * 
+	 * @param nX numbers of columns
+	 * @param nY numbers of rows
+	 * @param j  y index of pixel to construct the ray through
+	 * @param i  x index of pixel to construct the ray through
+	 * @return the color of the beam of rays starts at the camera and go though the
+	 *         given pixel
+	 */
+	private Color castRayBeam(int nX, int nY, int j, int i) {
 		Point pIJ = location.add(to.scale(distance));
 
 		double rY = Util.alignZero(height / nY);
@@ -247,63 +200,24 @@ public class Camera {
 
 		if (!Util.isZero(yI))
 			pIJ = pIJ.add(up.scale(yI));
-
 		Vector vIJ = pIJ.subtract(location).normalize();
 
-		Grid anti = new Grid(this.numOfRays, this.distance, rY, up, vIJ, this.location);
-		if (this.isAdeptive) {
-			/*
-			 * if(this.apertureSize>0&&this.numOfRays>1) {
-			 * 
-			 * return anti.superSampling(location, pIJ,
-			 * rY,ray->this.adaptiveDofAnti(ray),this.numOfRays); }
-			 */
-			if (this.numOfRays > 1)
-				return anti.superSampling(this.location, pIJ, rY, ray -> this.rayTracer.traceRay(ray), 1);
-			if (this.apertureSize > 0) {
+		Grid anti = new Grid((int) Math.sqrt(this.numOfRays), this.distance, rY, up, vIJ, this.location,
+				ray -> this.rayTracer.traceRay(ray));
+		if (this.numOfRays > 1)
+			return this.isAdaptive //
+					? anti.superSampling(pIJ)
+					: anti.castGridRays();
 
-				double top = pIJ.distance(this.location) * (this.focalPlain / this.distance);
-				return (Color) this.apature.superSamplingForAppture(this.location.add(vIJ.scale(top)),
-						this.location.add(apertureDistance == 0 ? to : to.scale(this.apertureDistance)),
-						this.apertureSize, ray1 -> this.rayTracer.traceRay(ray1), this.numOfPointsOnAperture)[0];
-			}
-
-		}
-
-		if (this.apertureSize > 0 && this.numOfRays > 1) {
-			List<Ray> rays = anti.gridRays(0, null);
-			List<Ray> dof = new LinkedList<Ray>();
-			for (Ray ray : rays)
-				dof.addAll(this.apature.gridRays(2, ray.getPoint(focalPlain)));
-			return rayTracer.traceRays(dof);
-		}
-		if (this.apertureSize > 0) {
-
-			double top = pIJ.distance(this.location) * (this.focalPlain / this.distance);
-
-			return this.rayTracer.traceRays(this.apature.gridRays(2, this.location.add(vIJ.scale(top))));
-		}
-		return this.rayTracer.traceRays(anti.gridRays(0, null));
-
+		double distanceToFocalPoint = pIJ.distance(this.location) * (this.focalDistance / this.distance);
+		Point focalPoint = this.location.add(vIJ.scale(distanceToFocalPoint));
+		return this.isAdaptive //
+				? this.aperture.superSamplingInverted(focalPoint)
+				// old code // this.aperture.superSamplingInverted(focalPoint,
+				// this.location.add(to), this.apertureSize, ray1 ->
+				// this.rayTracer.traceRay(ray1), this.numOfPointsOnAperture)//old code
+				: this.aperture.castGridRaysInverted(focalPoint);
 	}
-	/*
-	 * private Color adaptiveDofAnti(Ray ray) {
-	 * 
-	 * Function<Ray,List<Ray>>
-	 * traceRays2=ray1->(List<Ray>)(this.apature.superSamplingForAppture(ray1.
-	 * getPoint(top),this.location.add(apertureDistance==0?to:to.scale(this.
-	 * apertureDistance)),
-	 * this.apertureSize,traceRay1,this.numOfPointsOnAperture)[1])));
-	 * Function<Ray,List<Ray>> traceRays3=this.rayTracer.traceRay()
-	 * 
-	 * double top= pIJ.distance(this.location)*(this.focalPlain/this.distance);
-	 * Function<Ray,Color> traceRay1=ray2->this.rayTracer.traceRay(ray2);
-	 * Function<Ray,Color>
-	 * fun=ray1->(Color)(this.rayTracer.traceRays((List<Ray>)(this.apature.
-	 * superSamplingForAppture(ray1.getPoint(top),this.location.add(apertureDistance
-	 * ==0?to:to.scale(this.apertureDistance)),
-	 * this.apertureSize,traceRay1,this.numOfPointsOnAperture)[0]))); return null; }
-	 */
 
 	/***
 	 * construct a ray through a pixel
@@ -376,19 +290,22 @@ public class Camera {
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		if (this.rayTracer == null)
 			throw new MissingResourceException("rayTracer is missing", "RayTracerBase", "rayTracer");
-		if (this.apertureSize > 0 && this.focalPlain == 0)
+		if (this.apertureSize > 0 && this.focalDistance == 0)
 			throw new MissingResourceException("you must set a distance for focal plane", "Plane", "focal plane");
-		if (this.apertureSize > 0) {
+		if (this.apertureSize > 0)
+			this.aperture = new InvertedGrid((int) Math.sqrt(this.numOfPointsOnAperture), 0, this.apertureSize, this.up,
+					this.to, this.location, ray -> this.rayTracer.traceRay(ray));
 
-			this.apature = new Grid((int) Math.sqrt(this.numOfPointsOnAperture), this.apertureDistance,
-					this.apertureSize, this.up, this.to, this.location);
-		}
 		int nx = this.imageWriter.getNx();
 		int ny = this.imageWriter.getNy();
 		for (int i = 0; i < nx; i++)
 			for (int j = 0; j < ny; j++) {
-				this.imageWriter.writePixel(i, j, castRay(i, j, nx, ny));
+				this.imageWriter.writePixel(i, j, //
+						this.numOfRays > 1 || this.numOfPointsOnAperture > 1 //
+								? castRayBeam(nx, ny, i, j) //
+								: castRay(i, j, nx, ny));
 			}
+
 		return this;
 	}
 
@@ -397,16 +314,13 @@ public class Camera {
 	 * 
 	 * @param i - x index parameter
 	 * @param j - j index parameter
-	 * @return the color of a pixel in a given index
 	 */
 	private Color castRay(int i, int j, int nx, int ny) {
-
-		if (this.numOfRays > 1 || this.isAdeptive || this.apertureSize > 0)
-			return constructthoughtBeemRay(nx, ny, i, j);
-
-		Ray ray = constructRay(nx, ny, i, j);
-
-		return rayTracer.traceRay(ray);
+		// this.imageWriter.writePixel(i, j, //
+		// .numOfRays > 1 || this.numOfPointsOnAperture > 1 //
+		// ? castRayBeam(nx, ny, i, j) //
+		// :
+		return rayTracer.traceRay(constructRay(nx, ny, i, j));
 	}
 
 	/***
@@ -415,7 +329,7 @@ public class Camera {
 	 * @param interval the size of a pixel
 	 * @param color    color to color the lines at
 	 */
-	public void printGrid(int interval, Color color) {
+	public Camera printGrid(int interval, Color color) {
 		if (this.imageWriter == null)
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		int nx = this.imageWriter.getNx();
@@ -424,7 +338,7 @@ public class Camera {
 			for (int j = 0; j < ny; j++)
 				if (i % interval == 0 || j % interval == 0)
 					this.imageWriter.writePixel(i, j, color);
-
+		return this;
 	}
 
 	/***
@@ -435,34 +349,5 @@ public class Camera {
 			throw new MissingResourceException("imageWriter is missing", "ImageWriter", "imageWriter");
 		this.imageWriter.writeToImage();
 	}
-    /**
-     * Setter for multithreading
-     *
-     * @param threads number of threads
-     * @return the updated camera 
-     */
-    public Camera setMultithreading(int threads) {
-        if (threads < 0)
-            throw new IllegalArgumentException("Multithreading parameter must be 0 or higher");
-        if (threads != 0)
-            this.threads = threads;
-        else {        
-        	// if threads == 0 - number of cores less 2 is taken
-            int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
-            if (cores <= 2)
-            	this.threads = 1;
-            else
-            	this.threads = cores;
-        }
-        return this;
-    }
-    /**
-     * Set debug threads printing on 
-     *
-     * @return the updated camera
-     */
-    public Camera setDebugPrint() {
-        this.print = true;
-        return this;
-    }
+
 }

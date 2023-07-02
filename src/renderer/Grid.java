@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 
 import primitives.Color;
@@ -11,38 +12,47 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 import renderer.Camera;
+
 /**
  * class for representing grid
  */
 public class Grid {
+	/** The resolution of the Blackboard */
+	protected final int nXY;
 
-	private final int nXY;
+	/** The vTo Vector of the Grid */
+	protected final Vector toVec;
 
-	private final Vector toVec;
+	/** The vUp Vector of the Grid */
+	protected final Vector upVec;
+	/** The vRight Vector of the Grid */
+	protected final Vector rightVec;
+	/** The distance to the Grid */
+	protected final double distance;
 
-	private final Vector upVec;
-
-	private final Vector rightVec;
-
-	private final double distance;
-
-	private final double gridSize;
-
-	private final Point p0;
-
-	private Map<Ray, Color> pointsColors;
+	/** The length and height size of the Grid **/
+	protected final double gridSize;
+	/** The head point to construct ray from **/
+	protected final Point p0;
+	/** map of point-color **/
+	protected Map<Point, Color> pointsColors;
+	/**
+	 * Faction to trace the rays with
+	 */
+	protected final Function<Ray, Color> traceRay;
 
 	/**
-	 * Constructs a Blackboard object with the specified parameters.
-	 *
-	 * @param nXY      The number of pixels in each row/column of the grid.
-	 * @param gs     The size of the grid.
+	 * Constructs a Grid object with the specified parameters.
 	 * 
-	 * @param distance The distance between the blackboard and the main ray's
-	 *                 origin.
-	 * 
+	 * @param nXY      The number of Grid in each row/column of the grid.
+	 * @param distance The distance of the grid from p0
+	 * @param gs       the Grid size
+	 * @param upVec    the up direction of the Grid
+	 * @param toVec    direction of the Grid (to)
+	 * @param p0       The head point to construcrt ray from
 	 */
-	public Grid(int nXY, double distance, double gs, Vector upVec, Vector toVec, Point p0) {
+	public Grid(int nXY, double distance, double gs, Vector upVec, Vector toVec, Point p0,
+			Function<Ray, Color> traceRay) {
 		this.nXY = nXY;
 		this.toVec = toVec.normalize();
 		this.upVec = upVec.normalize();
@@ -50,43 +60,26 @@ public class Grid {
 		this.distance = distance;
 		this.gridSize = gs;
 		this.p0 = p0;
+		this.traceRay = traceRay;
 
 	}
 
 	/**
-	 * Generates jittered grid rays for a given scene.
-	 *
-	 * @return A list of Ray objects representing the jittered grid rays.
-	 */
-	public List<Ray> gridRays(int direction, Point pointo) {
-		List<Ray> rays = new LinkedList<>();
-
-		Point[] p = generateTargertAreaPoints(p0, this.nXY, this.gridSize, 0.1, this.upVec, this.toVec, this.rightVec,
-				this.distance);
-
-		if (direction == 2)
-			for (Point point : p)
-				rays.add(new Ray(point, pointo.subtract(point)));
-
-		if (direction == -1 | direction == 1)
-			for (Point point : p) {
-				Vector tempRayVector = point.subtract(p0);
-				rays.add(new Ray(p0, tempRayVector));}
-			
-		if (direction == 0)
-			for (Point point : p)
-				rays.add(new Ray(p0, point.subtract(p0)));
-
-		return rays;
-	}
-
-	/**
-	 * gives a random number between 2 given numbers
+	 * Cast rays thought a grid
 	 * 
-	 * @param min minimum number
-	 * @param max maximum number
-	 * @return random number between min and max
+	 * @return the averaged colors of the grid rays.
 	 */
+	public Color castGridRays() {
+
+		Point[][] p = generateTargertAreaPoints();
+		Color color = Color.BLACK;
+		for (int j = 0; j < this.nXY; j++)
+			for (int i = 0; i < this.nXY; i++)
+				color = color.add(traceRay.apply(new Ray(p0, p[j][i].subtract(p0))));
+
+		return color.reduce(p.length * p.length);
+	}
+
 	/**
 	 * gives a random number between 2 given numbers
 	 * 
@@ -99,78 +92,147 @@ public class Grid {
 		return min == 0 ? max : min;
 	}
 
-	/**
-	 * 
-	 * generate the Target Area Points
-	 * 
-	 * @param numOfPoints to set on the target area
-	 * @param targetSize  the size of the target area
-	 * @param jitter      the level of jitter to get the point at
-	 * @param p           to build the target area from
-	 * @param upvec       the up direction
-	 * @param tovec       the to direction
-	 * @return an array of the target area points.
-	 * 
+	/*
+	 * protected Point rand1(int interval,Point point) {Random random1 = new
+	 * Random(); double n1 = random1.nextDouble() * interval - interval / 2; double
+	 * n2 = random1.nextDouble() * interval - interval / 2; if (n1 != 0) point =
+	 * point.add(this.rightVec.scale(n1)); if (n2 != 0) point =
+	 * point.add(this.upVec.scale(n2));    return point; }
 	 */
-	public static Point[] generateTargertAreaPoints(Point location, int numOfPoints, double targetSize, double jitter,
-			Vector upvec, Vector tovec, Vector rightvec, double distance) {
 
-		int numOfPointsOnLine = numOfPoints;
-		double space = targetSize / numOfPointsOnLine;
+	protected Point[][] generateTargertAreaPoints() {
+		/*
+		 * double space = targetSize / numOfPoints; Random random = new Random(); Point
+		 * p = location.add(upvec.scale(targetSize - space /
+		 * 2)).add(rightvec.scale(-targetSize + space / 2)) .add(distance == 0 ? tovec :
+		 * tovec.scale(distance)); List<Point> TargerAreaPointList = new LinkedList<>();
+		 * double jit=space/2; for (int j = 0; j < numOfPoints; j++) { for (int i = 0; i
+		 * < numOfPoints; i++) {
+		 * 
+		 * double xOffset = random.nextDouble() * space- jit; double yOffset =
+		 * random.nextDouble() * space- jit; p = p.add(rightvec.scale(space));
+		 * TargerAreaPointList.add(p); }
+		 */
 
-		Point p = location.add(upvec.scale(targetSize - space / 2)).add(rightvec.scale(-targetSize + space / 2))
-				.add(distance == 0 ? tovec : tovec.scale(distance));
-		List<Point> TargerAreaPointList = new LinkedList<>();
+		double space = this.gridSize / this.nXY;
+		;
 
-		for (int j = 0; j < numOfPointsOnLine; j++) {
-			Vector vec;
-			for (int i = 1; i < numOfPointsOnLine; i++) {
-				p = p.add(rightvec.scale(space));
-				 vec=rightvec.scale(getRandom(-jitter, jitter));
-				TargerAreaPointList.add(p.add(vec));// .add(vec));
+		Point p = p0.add(distance != 0 ? toVec.scale(distance).add(  upVec.scale((this.gridSize - space) / 2)).add(rightVec.scale((-this.gridSize + space) / 2)): upVec.scale((this.gridSize - space )/ 2)).add(rightVec.scale((-this.gridSize + space )/ 2));
+		Point TargerAreaPoint[][] = new Point[this.nXY][this.nXY];
+		for (int j = 0; j < this.nXY; j++) {
+			for (int i = 0; i < this.nXY; i++) {
+				p = p.add(rightVec.scale(space));
+			
+				TargerAreaPoint[j][i] = p;
 			}
-			p = p.add(rightvec.scale(-space * (numOfPointsOnLine - 1)).add(upvec.scale(-space)));
-			vec=upvec.scale(getRandom(-jitter,
-			jitter)).add((rightvec).scale(getRandom(-jitter, jitter)));
-			TargerAreaPointList.add(p.add(vec));// .add(vec));
-
+			p = p.add(rightVec.scale(-space * (this.nXY )).add(upVec.scale(-space)));
 		}
+/*
+		for (int j = 0; j < this.nXY; j++) {
+			// Vector vec;
+			for (int i = 1; i < this.nXY; i++) {
+				p = p.add(rightVec.scale(space));
+				// vec=rightvec.scale(getRandom(-0.9, 0.9));
+				TargerAreaPoint[j][i] = p;
+				// TargerAreaPointList.add(p);//.add(vec));
+			}
+			p = p.add(rightVec.scale(-space * (this.nXY - 1)).add(upVec.scale(-space)));
+			// vec=upvec.scale(getRandom(-0.9,
+			// 0.9)).add((rightvec).scale(getRandom(-0.9, 0.9)));
+			TargerAreaPoint[j][0] = p;// .add(vec));*/
 
-		return TargerAreaPointList.toArray(new Point[TargerAreaPointList.size()]);
+		//}
+
+		return TargerAreaPoint;
+
 	}
 
+	/**
+	 * cast rays thought the grid adaptively
+	 * 
+	 * @param center   center point of the grid
+	 * @param traceRay function to trace the beam of rays whith
+	 * @return the color of the beam of rays of the grid
+	 */
+	public Color superSampling(Point center) {
+		int num = this.nXY * this.nXY;
+		this.pointsColors = new HashMap<>();
+		double space = 0.5 * gridSize;
+		Vector upv = this.upVec.scale(space);
+		Vector rightv = this.rightVec.scale(space);
+		Point upLeft = center.add(upv).subtract(rightv);
+		Point upRight = center.add(upv).add(rightv);
+		Point downLeft = center.subtract(upv).subtract(rightv);
+		Point downRight = center.subtract(upv).add(rightv);
+		Ray ray;
 
-	public Color superSamplingRecursive(Point location, Point upLeft, Point upRight, Point downLeft, Point downRight,
-			double pixcelSize, Function<Ray, Color> traceRay, int num) {
-		Color color;
+		ray = new Ray(p0, upLeft.subtract(p0));
+		pointsColors.put(upLeft, traceRay.apply(ray));
 
-		Ray ray1 = new Ray(location, upLeft.subtract(location));
-		if (!pointsColors.containsKey(ray1))
-			pointsColors.put(ray1, traceRay.apply(ray1));
+		ray = new Ray(p0, upRight.subtract(p0));
+		pointsColors.put(upRight, traceRay.apply(ray));
 
-		Ray ray2 = new Ray(location, upRight.subtract(location));
-		if (!pointsColors.containsKey(ray2)) {
+		ray = new Ray(p0, downRight.subtract(p0));
+		pointsColors.put(downRight, traceRay.apply(ray));
 
-			pointsColors.put(ray2, traceRay.apply(ray2));
+		ray = new Ray(p0, downLeft.subtract(p0));
+		pointsColors.put(downLeft, traceRay.apply(ray));
+
+		if (num > 1 && !(pointsColors.get(upLeft).equals(pointsColors.get(upRight))
+				&& pointsColors.get(upLeft).equals(pointsColors.get(downLeft))
+				&& pointsColors.get(upLeft).equals(pointsColors.get(downRight))
+				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
+				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
+				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
+			// ray = new Ray(location, center.subtract(location));
+			// pointsColors.put(center, traceRay.apply(ray));
+			Point upMid = center.add(upv);
+			Point leftMid = center.subtract(rightv);
+			Point rightMid = center.add(rightv);
+			Point dounMid = center.subtract(upv);
+			return superSamplingRecursive(upLeft, upMid, leftMid, center, space, num / 4)
+					.add(superSamplingRecursive(upMid, upRight, center, rightMid, space, num / 4)
+							.add(superSamplingRecursive(leftMid, center, downLeft, dounMid, space, num / 4))
+							.add(superSamplingRecursive(center, rightMid, dounMid, downRight, space, num / 4)))
+					.reduce(4);
+
+		}
+		return pointsColors.get(upLeft).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft))
+				.add(pointsColors.get(downRight)).reduce(4);
+
+	}
+
+	private Color superSamplingRecursive(Point upLeft, Point upRight, Point downLeft, Point downRight,
+			double pixcelSize, int num) {
+
+		Ray ray;
+		if (!pointsColors.containsKey(upLeft)) {
+			ray = new Ray(p0, upLeft.subtract(p0));
+			pointsColors.put(upLeft, traceRay.apply(ray));
 		}
 
-		Ray ray3 = new Ray(location, upRight.subtract(location));
-		if (!pointsColors.containsKey(ray3)) {
-
-			pointsColors.put(ray3, traceRay.apply(ray3));
+		if (!pointsColors.containsKey(upRight)) {
+			ray = new Ray(p0, upRight.subtract(p0));
+			pointsColors.put(upRight, traceRay.apply(ray));
 		}
 
-		Ray ray4 = new Ray(location, downRight.subtract(location));
-		if (!pointsColors.containsKey(ray4)) {
-			pointsColors.put(ray4, traceRay.apply(ray4));
+		if (!pointsColors.containsKey(downRight)) {
+			ray = new Ray(p0, downRight.subtract(p0));
+			pointsColors.put(downRight, traceRay.apply(ray));
 		}
 
-		if (num > 0 && !(pointsColors.get(ray1).equals(pointsColors.get(ray2))
-				&& pointsColors.get(ray1).equals(pointsColors.get(ray3))
-				&& pointsColors.get(ray1).equals(pointsColors.get(ray4))
-				&& pointsColors.get(ray2).equals(pointsColors.get(ray3))
-				&& pointsColors.get(ray2).equals(pointsColors.get(ray4))
-				&& pointsColors.get(ray3).equals(pointsColors.get(ray4)))) {
+		if (!pointsColors.containsKey(downLeft)) {
+			ray = new Ray(p0, downLeft.subtract(p0));
+			pointsColors.put(downLeft, traceRay.apply(ray));
+		}
+
+		if (num > 0 && !(pointsColors.get(upLeft).equals(pointsColors.get(upRight))
+				&& pointsColors.get(upLeft).equals(pointsColors.get(downLeft))
+				&& pointsColors.get(upLeft).equals(pointsColors.get(downRight))
+				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
+				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
+				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
+
 			double space = pixcelSize / 2;
 			Vector upv = this.upVec.scale(space);
 			Vector rightv = this.rightVec.scale(space);
@@ -179,215 +241,14 @@ public class Grid {
 			Point leftMid = center.subtract(rightv);
 			Point rightMid = center.add(rightv);
 			Point dounMid = center.subtract(upv);
-			color = superSamplingRecursive(location, upLeft, upMid, leftMid, center, space, traceRay, num / 4)
-					.add(superSamplingRecursive(location, upMid, upRight, center, rightMid, space, traceRay, num / 4))
-					.add(superSamplingRecursive(location, leftMid, center, downLeft, dounMid, space, traceRay, num / 4))
-					.add(superSamplingRecursive(location, center, rightMid, dounMid, downRight, space, traceRay,
-							num / 4));
-			color = color.reduce(4);
-		} else {
-			Color color1 = pointsColors.get(ray1);
-			Color color2 = pointsColors.get(ray2);
-			Color color3 = pointsColors.get(ray3);
-			Color color4 = pointsColors.get(ray4);
-			color = color1.add(color2).add(color3).add(color4).reduce(4);
+			return superSamplingRecursive(upLeft, upMid, leftMid, center, space, num / 4)
+					.add(superSamplingRecursive(upMid, upRight, center, rightMid, space, num / 4))
+					.add(superSamplingRecursive(leftMid, center, downLeft, dounMid, space, num / 4))
+					.add(superSamplingRecursive(center, rightMid, dounMid, downRight, space, num / 4)).reduce(4);
+
 		}
-		return color;
-
-	}
-
-	public Color superSampling(Point location, Point center, double pixcelSize, Function<Ray, Color> traceRay,
-			int num) {
-		Color color;
-		double space = 0.5 * pixcelSize;
-		Vector upv = this.upVec.scale(space);
-		Vector rightv = this.rightVec.scale(space);
-		Point upLeft = center.add(upv).subtract(rightv);
-		Point upRight = center.add(upv).add(rightv);
-		Point downLeft = center.subtract(upv).subtract(rightv);
-		Point downRight = center.subtract(upv).add(rightv);
-		this.pointsColors = new HashMap<>();
-
-		Ray ray0 = new Ray(location, center.subtract(location));
-		if (!pointsColors.containsKey(ray0)) {
-
-			pointsColors.put(ray0, traceRay.apply(ray0));
-		}
-		Ray ray1 = new Ray(location, upLeft.subtract(location));
-		if (!pointsColors.containsKey(ray1))
-			pointsColors.put(ray1, traceRay.apply(ray1));
-
-		Ray ray2 = new Ray(location, upRight.subtract(location));
-		if (!pointsColors.containsKey(ray2)) {
-
-			pointsColors.put(ray2, traceRay.apply(ray2));
-		}
-
-		Ray ray3 = new Ray(location, upRight.subtract(location));
-		if (!pointsColors.containsKey(ray3)) {
-
-			pointsColors.put(ray3, traceRay.apply(ray3));
-		}
-
-		Ray ray4 = new Ray(location, downRight.subtract(location));
-		if (!pointsColors.containsKey(ray4)) {
-			pointsColors.put(ray4, traceRay.apply(ray4));
-		}
-		if (num > 1 && !(pointsColors.get(ray1).equals(pointsColors.get(ray2))
-				&& pointsColors.get(ray1).equals(pointsColors.get(ray3))
-				&& pointsColors.get(ray1).equals(pointsColors.get(ray4))
-				&& pointsColors.get(ray2).equals(pointsColors.get(ray3))
-				&& pointsColors.get(ray2).equals(pointsColors.get(ray4))
-				&& pointsColors.get(ray3).equals(pointsColors.get(ray4)))) {
-			Point upMid = center.add(upv);
-			Point leftMid = center.subtract(rightv);
-			Point rightMid = center.add(rightv);
-			Point dounMid = center.subtract(upv);
-			color = superSamplingRecursive(location, upLeft, upMid, leftMid, center, space, traceRay, (num / 2) - 1)
-					.add(superSamplingRecursive(location, upMid, upRight, center, rightMid, space, traceRay,
-							(num - 1) / 2)
-							.add(superSamplingRecursive(location, leftMid, center, downLeft, dounMid, space, traceRay,
-									(num - 1) / 2)
-									.add(superSamplingRecursive(location, center, rightMid, dounMid, downRight, space,
-											traceRay, (num - 1) / 2))));
-			color = color.reduce(4);
-		} else {
-			Color color1 = pointsColors.get(ray1);
-			Color color2 = pointsColors.get(ray2);
-			Color color3 = pointsColors.get(ray3);
-			Color color4 = pointsColors.get(ray4);
-			Color color5 = pointsColors.get(ray0);
-			color = color1.add(color2).add(color3).add(color4).add(color5).reduce(5);
-		}
-		return color;
-
-	}
-
-	public Color superSamplingRecursiveForAppture(Point focal, Point upLeft, Point upRight, Point downLeft,
-			Point downRight, double pixcelSize, Function<Ray, Color> traceRay, int num) {
-		Color color;
-
-		Ray ray1 = new Ray(upLeft, focal.subtract(upLeft));
-		if (!pointsColors.containsKey(ray1))
-			pointsColors.put(ray1, traceRay.apply(ray1));
-
-		Ray ray2 = new Ray(upRight, focal.subtract(upRight));
-		if (!pointsColors.containsKey(ray2)) {
-
-			pointsColors.put(ray2, traceRay.apply(ray2));
-		}
-
-		Ray ray3 = new Ray(downLeft, focal.subtract(downLeft));
-		if (!pointsColors.containsKey(ray3)) {
-
-			pointsColors.put(ray3, traceRay.apply(ray3));
-		}
-
-		Ray ray4 = new Ray(downRight, focal.subtract(downRight));
-		if (!pointsColors.containsKey(ray4)) {
-			pointsColors.put(ray4, traceRay.apply(ray4));
-		}
-
-		if (num > 1 && !(pointsColors.get(ray1).equals(pointsColors.get(ray2))
-				&& pointsColors.get(ray1).equals(pointsColors.get(ray3))
-				&& pointsColors.get(ray1).equals(pointsColors.get(ray4))
-				&& pointsColors.get(ray2).equals(pointsColors.get(ray3))
-				&& pointsColors.get(ray2).equals(pointsColors.get(ray4))
-				&& pointsColors.get(ray3).equals(pointsColors.get(ray4)))) {
-			double space = pixcelSize / 2;
-			Vector upv = this.upVec.scale(space);
-			Vector rightv = this.rightVec.scale(space);
-			Point center = upLeft.add(rightv).subtract(upv);
-			Point upMid = center.add(upv);
-			Point leftMid = center.subtract(rightv);
-			Point rightMid = center.add(rightv);
-			Point dounMid = center.subtract(upv);
-			color = superSamplingRecursiveForAppture(focal, upLeft, upMid, leftMid, center, space, traceRay, num / 4)
-					.add(superSamplingRecursiveForAppture(focal, upMid, upRight, center, rightMid, space, traceRay,
-							num / 4))
-					.add(superSamplingRecursiveForAppture(focal, leftMid, center, downLeft, dounMid, space, traceRay,
-							num / 4))
-					.add(superSamplingRecursiveForAppture(focal, center, rightMid, dounMid, downRight, space, traceRay,
-							num / 4));
-			color = color.reduce(4);
-		} else {
-			Color color1 = pointsColors.get(ray1);
-			Color color2 = pointsColors.get(ray2);
-			Color color3 = pointsColors.get(ray3);
-			Color color4 = pointsColors.get(ray4);
-			color = color1.add(color2).add(color3).add(color4).reduce(4);
-		}
-		return color;
-
-	}
-
-	public Object[] superSamplingForAppture(Point focal, Point center, double pixcelSize, Function<Ray, Color> traceRay,
-			int num) {
-		Color color;
-		double space = 0.5 * pixcelSize;
-		Vector upv = this.upVec.scale(space);
-		Vector rightv = this.rightVec.scale(space);
-		Point upLeft = center.add(upv).subtract(rightv);
-		Point upRight = center.add(upv).add(rightv);
-		Point downLeft = center.subtract(upv).subtract(rightv);
-		Point downRight = center.subtract(upv).add(rightv);
-		this.pointsColors = new HashMap<>();
-
-		Ray ray0 = new Ray(center, focal.subtract(center));
-		if (!pointsColors.containsKey(ray0)) {
-
-			pointsColors.put(ray0, traceRay.apply(ray0));
-		}
-		Ray ray1 = new Ray(upLeft, focal.subtract(upLeft));
-		if (!pointsColors.containsKey(ray1)) {
-
-			pointsColors.put(ray1, traceRay.apply(ray1));
-		}
-		Ray ray2 = new Ray(upRight, focal.subtract(upRight));
-		if (!pointsColors.containsKey(ray2)) {
-			pointsColors.put(ray2, traceRay.apply(ray2));
-		}
-		Ray ray3 = new Ray(downLeft, focal.subtract(downLeft));
-		if (!pointsColors.containsKey(ray3)) {
-
-			pointsColors.put(ray3, traceRay.apply(ray3));
-		}
-		Ray ray4 = new Ray(downRight, focal.subtract(downRight));
-		if (!pointsColors.containsKey(ray4)) {
-
-			pointsColors.put(ray4, traceRay.apply(ray4));
-		}
-		if (num > 4 && !(pointsColors.get(ray1).equals(pointsColors.get(ray2))
-				&& pointsColors.get(ray1).equals(pointsColors.get(ray3))
-				&& pointsColors.get(ray1).equals(pointsColors.get(ray4))
-				&& pointsColors.get(ray2).equals(pointsColors.get(ray3))
-				&& pointsColors.get(ray2).equals(pointsColors.get(ray4))
-				&& pointsColors.get(ray3).equals(pointsColors.get(ray4)))) {
-			Point upMid = center.add(upv);
-			Point leftMid = center.subtract(rightv);
-			Point rightMid = center.add(rightv);
-			Point dounMid = center.subtract(upv);
-			color = superSamplingRecursiveForAppture(focal, upLeft, upMid, leftMid, center, space, traceRay,
-					(num - 1) / 4)
-					.add(superSamplingRecursiveForAppture(focal, upMid, upRight, center, rightMid, space, traceRay,
-							(num - 1) / 4)
-							.add(superSamplingRecursiveForAppture(focal, leftMid, center, downLeft, dounMid, space,
-									traceRay, (num - 1) / 4)
-									.add(superSamplingRecursiveForAppture(focal, center, rightMid, dounMid, downRight,
-											space, traceRay, (num - 1) / 4))));
-			color = color.reduce(4);
-		} else {
-			Color color1 = pointsColors.get(ray1);
-			Color color2 = pointsColors.get(ray2);
-			Color color3 = pointsColors.get(ray3);
-			Color color4 = pointsColors.get(ray4);
-			Color color5 = pointsColors.get(ray0);
-			color = color1.add(color2).add(color3).add(color4).add(color5).reduce(5);
-		}
-		Object[] tuple = new Object[2];
-		tuple[0] = color;
-		tuple[1] = this.pointsColors;
-		return tuple;
+		return pointsColors.get(upLeft).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft))
+				.add(pointsColors.get(downRight)).reduce(4);
 
 	}
 
