@@ -20,11 +20,12 @@ import renderer.Camera;
 import renderer.ImageWriter;
 import renderer.RayTracerBasic;
 import scene.Scene;
+import static java.awt.Color.*;
 
 public class finalResult {
 	private final ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 800, 800);
 
-	private final Camera camera = new Camera(new Point(0, 0, -1000), new Vector(0.500,0,1010), new Vector(0, 1, 0)) //
+	private final Camera camera = new Camera(new Point(0,-1000,0), new Vector(0.5,1000,13),new Vector(-1000, 0.5, 0).crossProduct(new Vector(-0.5,-1000,-13))) //
 			.setVPDistance(1000).setVPSize(200, 200) //
 			.setImageWriter(imageWriter) //
 			.setMultithreading(3).setDebugPrint(0.1);
@@ -40,14 +41,14 @@ public class finalResult {
 		List<Triangle> geo = convertSTLToTriangles(path);
 		for (Intersectable g : geo) 
 		{ 
-			((Triangle)g).setEmission(color).setMaterial(mat);
+			((Triangle)g).setEmission(new Color(YELLOW)).setMaterial(mat);
 			scene.geometries.add(g);
 		}		
 		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, 1, -0.5)));
 
 		ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 500, 500);
 		camera.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene)) //
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(9).setNumOfRays(81).setfocalPlaneDistance(1000).isAdeptive(true)//
 				.renderImage() //
 				.writeToImage(); //
 	}

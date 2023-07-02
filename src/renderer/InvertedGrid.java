@@ -81,8 +81,6 @@ public class InvertedGrid extends Grid {
 				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
 				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
 				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
-			// ray = new Ray(location, center.subtract(location));
-			// pointsColors.put(center, traceRay.apply(ray));
 			int num1 = (this.nXY / 2);// -1;
 			int upLeftJ = 0;
 			int upLeftI = 0;
@@ -102,10 +100,6 @@ public class InvertedGrid extends Grid {
 			int dounMidI = num1;
 			int downRighJ = num;
 			int downRighI = num;
-			// Point upMid = points[0][num1];
-			// Point leftMid = points[num1][0];
-			// Point rightMid =points[num][num1];
-			// Point dounMid = points[num1][num];
 			return superSamplingRecursiveInverted(focal, upLeftJ, upLeftJ, upMidJ, upMidI, leftMidJ, leftMidI, centerJ,
 					centerI, num / 2,pointsColors)
 					.add(superSamplingRecursiveInverted(focal, upMidJ, upMidI, upRightJ, upRightI, centerJ, centerI,
@@ -121,7 +115,21 @@ public class InvertedGrid extends Grid {
 				.add(pointsColors.get(downRight)).reduce(4);
 
 	}
-
+/**
+ * 
+ * @param focal
+ * @param upLeftJ
+ * @param upLeftI
+ * @param upRightJ
+ * @param upRightI
+ * @param downLeftJ
+ * @param downLeftI
+ * @param downRightJ
+ * @param downRightI
+ * @param num
+ * @param pointsColors
+ * @return
+ */
 	private Color superSamplingRecursiveInverted(Point focal, int upLeftJ, int upLeftI, int upRightJ, int upRightI,
 			int downLeftJ, int downLeftI, int downRightJ, int downRightI, int num, Map<Point, Color> pointsColors) {
 
@@ -155,28 +163,20 @@ public class InvertedGrid extends Grid {
 				&& pointsColors.get(points[downRightJ][downRightI])
 						.equals(pointsColors.get(points[downLeftJ][downLeftI]))) {
 			int num1 = (this.nXY / 2);// -1;
-			// upLeftJ=0;
-			// upLeftI=0;
 			int upMidJ = upLeftJ;
 			int upMidI = num1 + upLeftI;
 			int leftMidJ = num1 + upLeftJ;
 			int leftMidI = upLeftI;
 			int centerJ = num1 + upLeftJ;
 			int centerI = num1 + upLeftI;
-			// upRightJ=upLeftJ;
-			// upRightI=num+upLeftI;
-			int rightMidJ = num1 + upLeftJ;
+					int rightMidJ = num1 + upLeftJ;
 			int rightMidI = num + upLeftI;
-			// downLeftJ=num;
-			// downLeftI=0;
+			
 			int dounMidJ = num + upLeftJ;
 			int dounMidI = num1 + upLeftI;
 			int downRighJ = num + upLeftJ;
 			int downRighI = num + upLeftI;
-			// Point upMid = points[0][num1];
-			// Point leftMid = points[num1][0];
-			// Point rightMid =points[num][num1];
-			// Point dounMid = points[num1][num];
+			
 			return superSamplingRecursiveInverted(focal, upLeftJ, upLeftJ, upMidJ, upMidI, leftMidJ, leftMidI, centerJ,
 					centerI, num / 2,pointsColors)
 					.add(superSamplingRecursiveInverted(focal, upMidJ, upMidI, upRightJ, upRightI, centerJ, centerI,
@@ -191,119 +191,6 @@ public class InvertedGrid extends Grid {
 		return pointsColors.get(points[upLeftJ][upLeftI]).add(pointsColors.get(points[upRightJ][upRightI]))
 				.add(pointsColors.get(points[downLeftJ][downLeftI]))
 				.add(pointsColors.get(points[downRightJ][downRightI])).reduce(4);
-	}
-
-	// old code
-	public Color superSamplingRecursiveInverted(Point focal, Point upLeft, Point upRight, Point downLeft,
-			Point downRight, double pixcelSize, Function<Ray, Color> traceRay, int num,Map<Point, Color> pointsColors) {
-
-		Ray ray;
-		if (!pointsColors.containsKey(upLeft)) {
-			ray = new Ray(upLeft, focal.subtract(upLeft));
-			pointsColors.put(upLeft, traceRay.apply(ray));
-		}
-
-		if (!pointsColors.containsKey(upRight)) {
-			ray = new Ray(upRight, focal.subtract(upRight));
-			pointsColors.put(upRight, traceRay.apply(ray));
-		}
-
-		if (!pointsColors.containsKey(downRight)) {
-			ray = new Ray(downRight, focal.subtract(downRight));
-			pointsColors.put(downRight, traceRay.apply(ray));
-		}
-
-		if (!pointsColors.containsKey(downLeft)) {
-			ray = new Ray(downLeft, focal.subtract(downLeft));
-			pointsColors.put(downLeft, traceRay.apply(ray));
-		}
-
-		if (num > 0 && !(pointsColors.get(upLeft).equals(pointsColors.get(upRight))
-				&& pointsColors.get(upLeft).equals(pointsColors.get(downLeft))
-				&& pointsColors.get(upLeft).equals(pointsColors.get(downRight))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
-				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
-			double space = pixcelSize / 2;
-			Vector upv = this.upVec.scale(space);
-			Vector rightv = this.rightVec.scale(space);
-			Point center = upLeft.add(rightv).subtract(upv);
-			Point upMid = center.add(upv);
-			Point leftMid = center.subtract(rightv);
-			Point rightMid = center.add(rightv);
-			Point dounMid = center.subtract(upv);
-			return superSamplingRecursiveInverted(focal, upLeft, upMid, leftMid, center, space, traceRay, num / 4,pointsColors)
-					.add(superSamplingRecursiveInverted(focal, upMid, upRight, center, rightMid, space, traceRay,
-							num / 4,pointsColors))
-					.add(superSamplingRecursiveInverted(focal, leftMid, center, downLeft, dounMid, space, traceRay,
-							num / 4,pointsColors))
-					.add(superSamplingRecursiveInverted(focal, center, rightMid, dounMid, downRight, space, traceRay,
-							num / 4,pointsColors))
-					.reduce(4);
-		}
-		return pointsColors.get(upLeft).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft))
-				.add(pointsColors.get(downRight)).reduce(4);
-
-	}
-
-	// old code
-	/**
-	 * rerurn the color of a grid invertedlly
-	 * 
-	 * @param focal
-	 * @param center
-	 * @param pixcelSize
-	 * @param traceRay
-	 * @param num
-	 * @return
-	 */
-	public Color superSamplingInverted(Point focal, Point center, double pixcelSize, Function<Ray, Color> traceRay,
-			int num,Map<Point, Color> pointsColors) {
-
-		double space = 0.5 * pixcelSize;
-		Vector upv = this.upVec.scale(space);
-		Vector rightv = this.rightVec.scale(space);
-		Point upLeft = center.add(upv).subtract(rightv);
-		Point upRight = center.add(upv).add(rightv);
-		Point downLeft = center.subtract(upv).subtract(rightv);
-		Point downRight = center.subtract(upv).add(rightv);
-		Ray ray;
-
-		ray = new Ray(upLeft, focal.subtract(upLeft));
-		pointsColors.put(upLeft, traceRay.apply(ray));
-
-		ray = new Ray(upRight, focal.subtract(upRight));
-		pointsColors.put(upRight, traceRay.apply(ray));
-
-		ray = new Ray(downRight, focal.subtract(downRight));
-		pointsColors.put(downRight, traceRay.apply(ray));
-
-		ray = new Ray(downLeft, focal.subtract(downLeft));
-		pointsColors.put(downLeft, traceRay.apply(ray));
-		if (num > 1 && !(pointsColors.get(upLeft).equals(pointsColors.get(upRight))
-				&& pointsColors.get(upLeft).equals(pointsColors.get(downLeft))
-				&& pointsColors.get(upLeft).equals(pointsColors.get(downRight))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
-				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
-			// ray = new Ray(location, center.subtract(location));
-			// pointsColors.put(center, traceRay.apply(ray));
-			Point upMid = center.add(upv);
-			Point leftMid = center.subtract(rightv);
-			Point rightMid = center.add(rightv);
-			Point dounMid = center.subtract(upv);
-			return superSamplingRecursiveInverted(focal, upLeft, upMid, leftMid, center, space, traceRay, num / 4,pointsColors).add(
-					superSamplingRecursiveInverted(focal, upMid, upRight, center, rightMid, space, traceRay, num / 4,pointsColors)
-							.add(superSamplingRecursiveInverted(focal, leftMid, center, downLeft, dounMid, space,
-									traceRay, num / 4,pointsColors)
-									.add(superSamplingRecursiveInverted(focal, center, rightMid, dounMid, downRight,
-											space, traceRay, num / 4,pointsColors))))
-					.reduce(4);
-
-		}
-		return pointsColors.get(upLeft).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft))
-				.add(pointsColors.get(downRight)).reduce(4);
-
 	}
 
 }

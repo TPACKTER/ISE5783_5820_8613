@@ -50,6 +50,7 @@ public class Grid {
 	 * @param upVec    the up direction of the Grid
 	 * @param toVec    direction of the Grid (to)
 	 * @param p0       The head point to construcrt ray from
+	 * @param traceRay - trace the ray with
 	 */
 	public Grid(int nXY, double distance, double gs, Vector upVec, Vector toVec, Point p0,
 			Function<Ray, Color> traceRay) {
@@ -92,31 +93,8 @@ public class Grid {
 		return min == 0 ? max : min;
 	}
 
-	/*
-	 * protected Point rand1(int interval,Point point) {Random random1 = new
-	 * Random(); double n1 = random1.nextDouble() * interval - interval / 2; double
-	 * n2 = random1.nextDouble() * interval - interval / 2; if (n1 != 0) point =
-	 * point.add(this.rightVec.scale(n1)); if (n2 != 0) point =
-	 * point.add(this.upVec.scale(n2));    return point; }
-	 */
-
 	protected Point[][] generateTargertAreaPoints() {
-		/*
-		 * double space = targetSize / numOfPoints; Random random = new Random(); Point
-		 * p = location.add(upvec.scale(targetSize - space /
-		 * 2)).add(rightvec.scale(-targetSize + space / 2)) .add(distance == 0 ? tovec :
-		 * tovec.scale(distance)); List<Point> TargerAreaPointList = new LinkedList<>();
-		 * double jit=space/2; for (int j = 0; j < numOfPoints; j++) { for (int i = 0; i
-		 * < numOfPoints; i++) {
-		 * 
-		 * double xOffset = random.nextDouble() * space- jit; double yOffset =
-		 * random.nextDouble() * space- jit; p = p.add(rightvec.scale(space));
-		 * TargerAreaPointList.add(p); }
-		 */
-
 		double space = this.gridSize / this.nXY;
-		;
-
 		Point p = p0
 				.add(distance != 0
 						? toVec.scale(distance).add(upVec.scale((this.gridSize - space) / 2))
@@ -132,27 +110,11 @@ public class Grid {
 			}
 			p = p.add(rightVec.scale(-space * (this.nXY)).add(upVec.scale(-space)));
 		}
-		/*
-		 * for (int j = 0; j < this.nXY; j++) { // Vector vec; for (int i = 1; i <
-		 * this.nXY; i++) { p = p.add(rightVec.scale(space)); //
-		 * vec=rightvec.scale(getRandom(-0.9, 0.9)); TargerAreaPoint[j][i] = p; //
-		 * TargerAreaPointList.add(p);//.add(vec)); } p = p.add(rightVec.scale(-space *
-		 * (this.nXY - 1)).add(upVec.scale(-space))); // vec=upvec.scale(getRandom(-0.9,
-		 * // 0.9)).add((rightvec).scale(getRandom(-0.9, 0.9))); TargerAreaPoint[j][0] =
-		 * p;// .add(vec));
-		 */
-
-		// }
-
-		return TargerAreaPoint;
-
-	}
-
+		
 	/**
 	 * cast rays thought the grid adaptively
 	 * 
 	 * @param center   center point of the grid
-	 * @param traceRay function to trace the beam of rays whith
 	 * @return the color of the beam of rays of the grid
 	 */
 	public Color superSampling(Point center) {
@@ -185,8 +147,7 @@ public class Grid {
 				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
 				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
 				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
-			// ray = new Ray(location, center.subtract(location));
-			// pointsColors.put(center, traceRay.apply(ray));
+			
 			Point upMid = center.add(upv);
 			Point leftMid = center.subtract(rightv);
 			Point rightMid = center.add(rightv);
@@ -202,7 +163,17 @@ public class Grid {
 				.add(pointsColors.get(downRight)).reduce(4);
 
 	}
-
+/**
+ * 
+ * @param upLeft
+ * @param upRight
+ * @param downLeft
+ * @param downRight
+ * @param pixcelSize
+ * @param num
+ * @param pointsColors
+ * @return
+ */
 	private Color superSamplingRecursive(Point upLeft, Point upRight, Point downLeft, Point downRight,
 			double pixcelSize, int num, Map<Point, Color> pointsColors ) {
 

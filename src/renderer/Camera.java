@@ -369,13 +369,12 @@ public class Camera {
 	 * 
 	 * @param i - x index parameter
 	 * @param j - j index parameter
+	 * @param nx - the resulution num of rows
+	 * @param ny - the resulution num of colums
+	 * @return the color of the ray
 	 */
 	private Color castRay(int i, int j, int nx, int ny) {
-		// this.imageWriter.writePixel(i, j, //
-		// .numOfRays > 1 || this.numOfPointsOnAperture > 1 //
-		// ? castRayBeam(nx, ny, i, j) //
-		// :
-		return rayTracer.traceRay(constructRay(nx, ny, i, j));
+				return rayTracer.traceRay(constructRay(nx, ny, i, j));
 	}
 
 	/***
@@ -383,6 +382,7 @@ public class Camera {
 	 * 
 	 * @param interval the size of a pixel
 	 * @param color    color to color the lines at
+	 * @return the camera
 	 */
 	public Camera printGrid(int interval, Color color) {
 		if (this.imageWriter == null)
