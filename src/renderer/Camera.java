@@ -86,9 +86,7 @@ public class Camera {
 	 * interval of debug prints option
 	 */
 	private double print = 0;
-	/*
-	 * 
-	 */
+
 	private final int SPARE_THREADS = 2;
 
 	/***

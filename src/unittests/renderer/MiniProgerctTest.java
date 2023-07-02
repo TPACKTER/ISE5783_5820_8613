@@ -1,51 +1,68 @@
 package unittests.renderer;
 
-import static java.awt.Color.BLACK;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.RED;
-import static java.awt.Color.WHITE;
-import static java.awt.Color.YELLOW;
+import static java.awt.Color.*;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import geometries.Plane;
-import geometries.Polygon;
-import geometries.Sphere;
-import geometries.Triangle;
-import geometries.Tube;
-import lighting.AmbientLight;
-import lighting.PointLight;
-import primitives.Color;
-import primitives.Material;
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
-import renderer.Camera;
-import renderer.ImageWriter;
-import renderer.RayTracerBasic;
-import scene.Scene;
+import geometries.*;
+import lighting.*;
+import primitives.*;
+import renderer.*;
+import scene.*;
+
+import org.junit.jupiter.api.Test;
+
+
 
 /**
- * test calss foe dof
+ * testing depth of field, anti aliasing, and adaptive super sampling
  * 
  * @author Ayala and Tamar
  *
  */
-class DepthOfFieldTesr {
+class MiniProgerctTest {
 	private Scene scene = new Scene("Test scene");
+	private  Scene scene1 = new Scene("Test scene");
+	private Camera camera1 = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0))
+			.setVPSize(150, 150).setVPDistance(1000);
+	
+			
 
+	private static final int SHININESS = 301;
+	private static final double KD = 0.5;
+
+
+	private static final double KS = 0.5;
+
+
+	private final Color sphereColor = new Color(BLUE).reduce(2);
+
+	private final Point sphereCenter = new Point(0, 0, -50);
+	private static final double SPHERE_RADIUS = 50d;
+
+
+
+	private Point spPL = new Point(-50, -50, 25); // Sphere test Position of Light
+	private Color spCL = new Color(800, 500, 0); // Sphere test Color of Light
+
+	private final Geometry sphere = new Sphere(sphereCenter, SPHERE_RADIUS).setEmission(sphereColor)
+			.setMaterial(new Material().setKd(KD).setKs(KS).setShininess(SHININESS));
+	
 	/***
-	 * testing dof
+	 * testing depth of field
 	 */
 	@Test
 	void dof() {
-
+		
 		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
 		scene.geometries.add(
 				new Tube(5, new Ray(new Point(1000, 10, 20), new Vector(-1, 0, 0.1))).setEmission(new Color(BLUE))
 						.setMaterial(new Material().setKd(0.4)),
 				new Sphere(new Point(800, 10, 40), 10).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.4)),
+						new Sphere(new Point(800, 800, 400), 10).setEmission(new Color(GREEN))
 						.setMaterial(new Material().setKd(0.4)),
 				new Sphere(new Point(900, 10, 30), 10).setEmission(new Color(YELLOW))
 						.setMaterial(new Material().setKd(0.4)),
@@ -65,8 +82,7 @@ class DepthOfFieldTesr {
 		Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1)) //
 				.setVPSize(200, 200).setVPDistance(800);// 800
 		camera.setImageWriter(new ImageWriter("dof", 600, 600)) //
-				.setRayTracer(new RayTracerBasic(scene)) //
-				// .renderImage() //
+		.setRayTracer(new RayTracerBasic(scene))
 				.setfocalPlaneDistance(400)//
 				.setApertureSize(9).setNumOfPointsOnAperture(81)//
 				.renderImage() //
@@ -74,8 +90,11 @@ class DepthOfFieldTesr {
 
 	}
 
+	/**
+	 * tasting antialAlysing
+	 */
 	@Test
-	void antialaysing() {
+	void antialAlysing() {
 
 		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
 		scene.geometries.add(
@@ -108,8 +127,11 @@ class DepthOfFieldTesr {
 
 	}
 
+	/**
+	 * test for regular picture
+	 */
 	@Test
-	void reg() {
+	void regular() {
 
 		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
 		scene.geometries.add(
@@ -141,38 +163,11 @@ class DepthOfFieldTesr {
 
 	}
 
-	/*
-	 * @Test void adaptiveantiandddof() {
-	 * 
-	 * scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
-	 * scene.geometries.add( new Tube(5, new Ray(new Point(1000, 10, 20), new
-	 * Vector(-1, 0, 0.1))).setEmission(new Color(BLUE)) .setMaterial(new
-	 * Material().setKd(0.4)), new Sphere(new Point(800, 10, 40),
-	 * 10).setEmission(new Color(GREEN)) .setMaterial(new Material().setKd(0.4)),
-	 * new Sphere(new Point(900, 10, 30), 10).setEmission(new Color(YELLOW))
-	 * .setMaterial(new Material().setKd(0.4)), new Sphere(new Point(1000, 10, 20),
-	 * 10).setEmission(new Color(RED)) .setMaterial(new Material().setKd(0.4)), new
-	 * Sphere(new Point(1100, 10, 10), 10).setEmission(new Color(GREEN))
-	 * .setMaterial(new Material().setKd(0.4)), new Sphere(new Point(1200, 10, 0),
-	 * 10).setEmission(new Color(YELLOW)) .setMaterial(new Material().setKd(0.4)),
-	 * new Sphere(new Point(1300, 10, -10), 10).setEmission(new Color(RED))
-	 * .setMaterial(new Material().setKd(0.4)), new Sphere(new Point(1400, 10, -20),
-	 * 10).setEmission(new Color(GREEN)) .setMaterial(new Material().setKd(0.4)));
-	 * scene.lights.add(new PointLight(new Color(700, 400, 400), new Point(1300, 20,
-	 * 20)) // .setKl(4E-12).setKq(2E-10));
-	 * 
-	 * Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new
-	 * Vector(0, 0, 1)) // .setVPSize(200, 200).setVPDistance(800);// 800
-	 * camera.setImageWriter(new ImageWriter("adaptiveantiandddof", 600, 600)) //
-	 * .setRayTracer(new RayTracerBasic(scene)) //
-	 * .setDepthOfField(true).setfocalPlaneDistance(400)//
-	 * .setApertureSize(9).setNumOfPointsOnAperture(81).SetAnti(true,
-	 * 40).isAdeptive(true) .renderImage() // .writeToImage();
-	 * 
-	 * }
+	/**
+	 * test for adaptive depth of field
 	 */
 	@Test
-	void adaptiveanti() {
+	void adaptiveDof() {
 
 		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
 		scene.geometries.add(
@@ -197,109 +192,51 @@ class DepthOfFieldTesr {
 
 		Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1)) //
 				.setVPSize(200, 200).setVPDistance(800);// 800
-		camera.setImageWriter(new ImageWriter("adaptiveandanti", 600, 600)) //
-				.setRayTracer(new RayTracerBasic(scene)) //
-				.isAdeptive(true).setNumOfRays(40)//
-				.renderImage() //
-				.writeToImage();
-
-	}
-
-	@Test
-	void adaptivedof() {
-
-		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
-		scene.geometries.add(
-				new Tube(5, new Ray(new Point(1000, 10, 20), new Vector(-1, 0, 0.1))).setEmission(new Color(BLUE))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(800, 10, 40), 10).setEmission(new Color(GREEN))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(900, 10, 30), 10).setEmission(new Color(YELLOW))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1000, 10, 20), 10).setEmission(new Color(RED))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1100, 10, 10), 10).setEmission(new Color(GREEN))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1200, 10, 0), 10).setEmission(new Color(YELLOW))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1300, 10, -10), 10).setEmission(new Color(RED))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1400, 10, -20), 10).setEmission(new Color(GREEN))
-						.setMaterial(new Material().setKd(0.4)));
-		scene.lights.add(new PointLight(new Color(700, 400, 400), new Point(1300, 20, 20)) //
-				.setKl(4E-12).setKq(2E-10));
-
-		Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1)) //
-				.setVPSize(200, 200).setVPDistance(800);// 800
-		camera.setImageWriter(new ImageWriter("adaptiveanfdof", 600, 600)) //
-				.setRayTracer(new RayTracerBasic(scene)).setfocalPlaneDistance(400)//
-				.setApertureSize(9).setNumOfPointsOnAperture(81)//
-				.isAdeptive(true)//
-				.renderImage() //
-				.writeToImage();
-
-	}
-
-	@Test
-	void supersamplinganddof() {
-
-		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
-		scene.geometries.add(
-				new Tube(5, new Ray(new Point(1000, 10, 20), new Vector(-1, 0, 0.1))).setEmission(new Color(BLUE))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(800, 10, 40), 10).setEmission(new Color(GREEN))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(900, 10, 30), 10).setEmission(new Color(YELLOW))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1000, 10, 20), 10).setEmission(new Color(RED))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1100, 10, 10), 10).setEmission(new Color(GREEN))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1200, 10, 0), 10).setEmission(new Color(YELLOW))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1300, 10, -10), 10).setEmission(new Color(RED))
-						.setMaterial(new Material().setKd(0.4)),
-				new Sphere(new Point(1400, 10, -20), 10).setEmission(new Color(GREEN))
-						.setMaterial(new Material().setKd(0.4)));
-		scene.lights.add(new PointLight(new Color(700, 400, 400), new Point(1300, 20, 20)) //
-				.setKl(4E-12).setKq(2E-10));
-
-		Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1)) //
-				.setVPSize(200, 200).setVPDistance(800);// 800
-		camera.setImageWriter(new ImageWriter("antialaysinganddof", 600, 600)) //
+		camera.setImageWriter(new ImageWriter("adaptiveDof", 600, 600)) //
 				.setRayTracer(new RayTracerBasic(scene)) //
 				.setfocalPlaneDistance(400)//
-				.setApertureSize(9).setNumOfPointsOnAperture(81).setNumOfRays(40)//
+				.setApertureSize(9).setNumOfPointsOnAperture(81).isAdeptive(true)//
 				.renderImage() //
 				.writeToImage();
 
 	}
 
-	/*
-	 * @Test public void reflactiomamdrefrecction() { Camera camera = new Camera(new
-	 * Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1))
-	 * 
-	 * .setVPSize(200, 200).setVPDistance(1000);
-	 * 
-	 * scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
-	 * 
-	 * scene.geometries.add( //
-	 * 
-	 * new Sphere(new Point(0, 0, 0), 60d).setEmission(new Color(RED)) // head
-	 * .setMaterial(new
-	 * Material().setKs(0.15).setShininess(10).setKd(0.2).setKt(0)),
-	 * 
-	 * new Plane(new Point(0, 0, -63), new Point(1, 0, -63), new Point(0, 1, -63))
-	 * .setEmission(new Color(30, 30, 30))
-	 * 
-	 * .setMaterial(new Material().setKr(0.5).setGs(40)));
-	 * 
-	 * scene.lights.add(new PointLight(new Color(700, 400, 400), new Point(250, 0,
-	 * 125)) // .setKl(4E-12).setKq(2E-10));
-	 * 
-	 * ImageWriter imageWriter = new ImageWriter("refray", 600, 600);
-	 * camera.setImageWriter(imageWriter).setRayTracer(new
-	 * RayTracerBasic(scene)).renderImage() // .writeToImage(); }
+	/**
+	 * tasting adeptiveAntialAlysing
 	 */
+	@Test
+	void adeptiveAntialAlysing() {
+
+		scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
+		scene.geometries.add(
+				new Tube(5, new Ray(new Point(1000, 10, 20), new Vector(-1, 0, 0.1))).setEmission(new Color(BLUE))
+						.setMaterial(new Material().setKd(0.4)),
+				new Sphere(new Point(800, 10, 40), 10).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.4)),
+				new Sphere(new Point(900, 10, 30), 10).setEmission(new Color(YELLOW))
+						.setMaterial(new Material().setKd(0.4)),
+				new Sphere(new Point(1000, 10, 20), 10).setEmission(new Color(RED))
+						.setMaterial(new Material().setKd(0.4)),
+				new Sphere(new Point(1100, 10, 10), 10).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.4)),
+				new Sphere(new Point(1200, 10, 0), 10).setEmission(new Color(YELLOW))
+						.setMaterial(new Material().setKd(0.4)),
+				new Sphere(new Point(1300, 10, -10), 10).setEmission(new Color(RED))
+						.setMaterial(new Material().setKd(0.4)),
+				new Sphere(new Point(1400, 10, -20), 10).setEmission(new Color(GREEN))
+						.setMaterial(new Material().setKd(0.4)));
+		scene.lights.add(new PointLight(new Color(700, 400, 400), new Point(1300, 20, 20)) //
+				.setKl(4E-12).setKq(2E-10));
+
+		Camera camera = new Camera(new Point(1600, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1)) //
+				.setVPSize(200, 200).setVPDistance(800);// 800
+		camera.setImageWriter(new ImageWriter("adeptiveAntialaysing", 600, 600)) //
+				.setRayTracer(new RayTracerBasic(scene)) //
+				.setNumOfRays(40)//
+				.isAdeptive(true)
+				.renderImage() //
+				.writeToImage();
+
+	}
 
 }
