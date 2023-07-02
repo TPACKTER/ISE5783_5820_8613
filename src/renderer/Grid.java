@@ -34,8 +34,8 @@ public class Grid {
 	protected final double gridSize;
 	/** The head point to construct ray from **/
 	protected final Point p0;
-	/** map of point-color **/
-	protected Map<Point, Color> pointsColors;
+
+
 	/**
 	 * Faction to trace the rays with
 	 */
@@ -157,7 +157,7 @@ public class Grid {
 	 */
 	public Color superSampling(Point center) {
 		int num = this.nXY * this.nXY;
-		this.pointsColors = new HashMap<>();
+		Map<Point, Color> pointsColors = new HashMap<>();
 		double space = 0.5 * gridSize;
 		Vector upv = this.upVec.scale(space);
 		Vector rightv = this.rightVec.scale(space);
@@ -191,10 +191,10 @@ public class Grid {
 			Point leftMid = center.subtract(rightv);
 			Point rightMid = center.add(rightv);
 			Point dounMid = center.subtract(upv);
-			return superSamplingRecursive(upLeft, upMid, leftMid, center, space, num / 4)
-					.add(superSamplingRecursive(upMid, upRight, center, rightMid, space, num / 4)
-							.add(superSamplingRecursive(leftMid, center, downLeft, dounMid, space, num / 4))
-							.add(superSamplingRecursive(center, rightMid, dounMid, downRight, space, num / 4)))
+			return superSamplingRecursive(upLeft, upMid, leftMid, center, space, num / 4,pointsColors )
+					.add(superSamplingRecursive(upMid, upRight, center, rightMid, space, num / 4,pointsColors )
+							.add(superSamplingRecursive(leftMid, center, downLeft, dounMid, space, num / 4,pointsColors ))
+							.add(superSamplingRecursive(center, rightMid, dounMid, downRight, space, num / 4,pointsColors )))
 					.reduce(4);
 
 		}
@@ -204,7 +204,7 @@ public class Grid {
 	}
 
 	private Color superSamplingRecursive(Point upLeft, Point upRight, Point downLeft, Point downRight,
-			double pixcelSize, int num) {
+			double pixcelSize, int num, Map<Point, Color> pointsColors ) {
 
 		Ray ray;
 		if (!pointsColors.containsKey(upLeft)) {
@@ -242,10 +242,10 @@ public class Grid {
 			Point leftMid = center.subtract(rightv);
 			Point rightMid = center.add(rightv);
 			Point dounMid = center.subtract(upv);
-			return superSamplingRecursive(upLeft, upMid, leftMid, center, space, num / 4)
-					.add(superSamplingRecursive(upMid, upRight, center, rightMid, space, num / 4))
-					.add(superSamplingRecursive(leftMid, center, downLeft, dounMid, space, num / 4))
-					.add(superSamplingRecursive(center, rightMid, dounMid, downRight, space, num / 4)).reduce(4);
+			return superSamplingRecursive(upLeft, upMid, leftMid, center, space, num / 4,pointsColors)
+					.add(superSamplingRecursive(upMid, upRight, center, rightMid, space, num / 4,pointsColors))
+					.add(superSamplingRecursive(leftMid, center, downLeft, dounMid, space, num / 4,pointsColors))
+					.add(superSamplingRecursive(center, rightMid, dounMid, downRight, space, num / 4,pointsColors)).reduce(4);
 
 		}
 		return pointsColors.get(upLeft).add(pointsColors.get(upRight)).add(pointsColors.get(downLeft))

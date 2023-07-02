@@ -39,7 +39,7 @@ public class finalResult {
 
 	@Test
 	public void airBaloonTest() {
-		String path ="C:/Users/S/eclipse-workspace/ISE5873_5820_8613/air balloon.stl";
+		String path ="C:/Users/S/Desktop/air balloon.stl";
 		List<Triangle> geo = convertSTLToTriangles(path);
 		for (Intersectable g : geo) 
 		{ 

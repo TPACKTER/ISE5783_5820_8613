@@ -1567,7 +1567,7 @@ public class TeapotTest {
 		);
 		scene.lights.add(new PointLight(new Color(500, 500, 500), new Point(100, 0, -100)).setKq(0.000001));
 
-		camera.setRayTracer(new RayTracerBasic(scene)).renderImage().printGrid(50, new Color(YELLOW)).writeToImage();
+		camera.setRayTracer(new RayTracerBasic(scene)).renderImage().setNumOfRays(81).setApertureSize(9).setfocalPlaneDistance(1020).printGrid(50, new Color(YELLOW)).writeToImage();
 	}
 
 }
