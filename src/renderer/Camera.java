@@ -6,6 +6,7 @@ import java.util.MissingResourceException;
 //import javax.imageio.ImageWriter;
 
 import primitives.*;
+import java.util.stream.*;
 
 /***
  * Class representing camera
@@ -80,11 +81,11 @@ public class Camera {
 	/*
 	 * number of threads
 	 */
-	private int _threads = 0;
+	private int threads = 0;
 	/*
 	 * interval of debug prints option
 	 */
-	private double _print = 0;
+	private double print = 0;
 	/*
 	 * 
 	 */
@@ -204,14 +205,14 @@ public class Camera {
 		if (threads < 0)
 			throw new IllegalArgumentException("Multithreading parameter must be 0 or bigger");
 		else if (threads > 0)
-			this._threads = threads;
+			this.threads = threads;
 		else {
 			// number of cores less the spare threads is taken
 			int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
 			if (cores <= 2)
-				this._threads = 1;
+				this.threads = 1;
 			else
-				this._threads = cores;
+				this.threads = cores;
 		}
 		return this;
 	}
@@ -225,7 +226,29 @@ public class Camera {
 	public Camera setDebugPrint(double interval) {
 		if (interval < 0)
 			throw new IllegalArgumentException("print interval must not be negative");
-		this._print = interval;
+		this.print = interval;
+		return this;
+	}
+
+	/***
+	 * set for camera's ImageWriter
+	 * 
+	 * @param imageWriter to set imageWriter field
+	 * @return the updated camera
+	 */
+	public Camera setImageWriter(ImageWriter imageWriter) {
+		this.imageWriter = imageWriter;
+		return this;
+	}
+
+	/***
+	 * set for camera's RayTracerBase
+	 * 
+	 * @param rayTracerBase to set rayTracerBase field
+	 * @return the updated camera
+	 */
+	public Camera setRayTracer(RayTracerBase rayTracerBase) {
+		this.rayTracer = rayTracerBase;
 		return this;
 	}
 
@@ -305,28 +328,6 @@ public class Camera {
 	}
 
 	/***
-	 * set for camera's ImageWriter
-	 * 
-	 * @param imageWriter to set imageWriter field
-	 * @return the updated camera
-	 */
-	public Camera setImageWriter(ImageWriter imageWriter) {
-		this.imageWriter = imageWriter;
-		return this;
-	}
-
-	/***
-	 * set for camera's RayTracerBase
-	 * 
-	 * @param rayTracerBase to set rayTracerBase field
-	 * @return the updated camera
-	 */
-	public Camera setRayTracer(RayTracerBase rayTracerBase) {
-		this.rayTracer = rayTracerBase;
-		return this;
-	}
-
-	/***
 	 * Throws an exception if one of the elements is missing
 	 * 
 	 * @return the rendered image
@@ -353,14 +354,15 @@ public class Camera {
 
 		int nx = this.imageWriter.getNx();
 		int ny = this.imageWriter.getNy();
-		for (int i = 0; i < nx; i++)
-			for (int j = 0; j < ny; j++) {
-				this.imageWriter.writePixel(i, j, //
-						this.numOfRays > 1 || this.numOfPointsOnAperture > 1 //
-								? castRayBeam(nx, ny, i, j) //
-								: castRay(i, j, nx, ny));
-			}
+		PixelManager pixel = new PixelManager(ny, nx, print);
+		IntStream.range(0, ny).parallel().forEach(i -> IntStream.range(0, nx).parallel().forEach(j -> {
+			this.imageWriter.writePixel(i, j, //
+					this.numOfRays > 1 || this.numOfPointsOnAperture > 1 //
+							? castRayBeam(nx, ny, i, j) //
+							: castRay(i, j, nx, ny));
 
+			pixel.pixelDone();
+		}));
 		return this;
 	}
 
