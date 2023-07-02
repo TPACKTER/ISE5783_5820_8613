@@ -92,5 +92,4 @@ class CameraRayIntegration {
 		assertEquals(res, numInterctions, "CameraRayIntegration");
 	}
 
-
 }

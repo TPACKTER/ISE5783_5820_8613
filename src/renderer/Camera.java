@@ -1,6 +1,9 @@
 package renderer;
 
 import java.util.MissingResourceException;
+//import java.util.Vector;
+
+//import javax.imageio.ImageWriter;
 
 import primitives.*;
 
@@ -74,6 +77,19 @@ public class Camera {
 	 */
 	private double focalDistance = 10;
 
+	/*
+	 * number of threads
+	 */
+	private int _threads = 0;
+	/*
+	 * interval of debug prints option
+	 */
+	private double _print = 0;
+	/*
+	 * 
+	 */
+	private final int SPARE_THREADS = 2;
+
 	/***
 	 * Constructor for camera based on location point v-up, and v-to
 	 * 
@@ -89,6 +105,8 @@ public class Camera {
 		this.right = this.to.crossProduct(this.up).normalize();
 		this.location = location;
 	}
+
+	/**************** setters ****************/
 
 	/**
 	 * setter for NumOfRays
@@ -175,6 +193,43 @@ public class Camera {
 		this.distance = distance;
 		return this;
 	}
+
+	/**
+	 * setter for multithreading
+	 * 
+	 * @param threads number of threads
+	 * @return the updated camera
+	 */
+	public Camera setMultithreading(int threads) {
+		if (threads < 0)
+			throw new IllegalArgumentException("Multithreading parameter must be 0 or bigger");
+		else if (threads > 0)
+			this._threads = threads;
+		else {
+			// number of cores less the spare threads is taken
+			int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
+			if (cores <= 2)
+				this._threads = 1;
+			else
+				this._threads = cores;
+		}
+		return this;
+	}
+
+	/**
+	 * interval setter for debug print
+	 * 
+	 * @param interval the print interval
+	 * @return the updated camera
+	 */
+	public Camera setDebugPrint(double interval) {
+		if (interval < 0)
+			throw new IllegalArgumentException("print interval must not be negative");
+		this._print = interval;
+		return this;
+	}
+
+	/**************** operations ****************/
 
 	/**
 	 * calculate the color in a given indexed pixel for beam of rays

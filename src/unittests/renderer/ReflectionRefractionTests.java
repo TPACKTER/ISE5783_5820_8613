@@ -2,13 +2,10 @@ package unittests.renderer;
 
 import static java.awt.Color.*;
 
-
-
 import org.junit.jupiter.api.Test;
 
 import geometries.*;
 import lighting.AmbientLight;
-
 
 import lighting.PointLight;
 import lighting.SpotLight;

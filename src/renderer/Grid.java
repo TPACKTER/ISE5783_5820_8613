@@ -117,31 +117,32 @@ public class Grid {
 		double space = this.gridSize / this.nXY;
 		;
 
-		Point p = p0.add(distance != 0 ? toVec.scale(distance).add(  upVec.scale((this.gridSize - space) / 2)).add(rightVec.scale((-this.gridSize + space) / 2)): upVec.scale((this.gridSize - space )/ 2)).add(rightVec.scale((-this.gridSize + space )/ 2));
+		Point p = p0
+				.add(distance != 0
+						? toVec.scale(distance).add(upVec.scale((this.gridSize - space) / 2))
+								.add(rightVec.scale((-this.gridSize + space) / 2))
+						: upVec.scale((this.gridSize - space) / 2))
+				.add(rightVec.scale((-this.gridSize + space) / 2));
 		Point TargerAreaPoint[][] = new Point[this.nXY][this.nXY];
 		for (int j = 0; j < this.nXY; j++) {
 			for (int i = 0; i < this.nXY; i++) {
 				p = p.add(rightVec.scale(space));
-			
-				TargerAreaPoint[j][i] = p;
-			}
-			p = p.add(rightVec.scale(-space * (this.nXY )).add(upVec.scale(-space)));
-		}
-/*
-		for (int j = 0; j < this.nXY; j++) {
-			// Vector vec;
-			for (int i = 1; i < this.nXY; i++) {
-				p = p.add(rightVec.scale(space));
-				// vec=rightvec.scale(getRandom(-0.9, 0.9));
-				TargerAreaPoint[j][i] = p;
-				// TargerAreaPointList.add(p);//.add(vec));
-			}
-			p = p.add(rightVec.scale(-space * (this.nXY - 1)).add(upVec.scale(-space)));
-			// vec=upvec.scale(getRandom(-0.9,
-			// 0.9)).add((rightvec).scale(getRandom(-0.9, 0.9)));
-			TargerAreaPoint[j][0] = p;// .add(vec));*/
 
-		//}
+				TargerAreaPoint[j][i] = p;
+			}
+			p = p.add(rightVec.scale(-space * (this.nXY)).add(upVec.scale(-space)));
+		}
+		/*
+		 * for (int j = 0; j < this.nXY; j++) { // Vector vec; for (int i = 1; i <
+		 * this.nXY; i++) { p = p.add(rightVec.scale(space)); //
+		 * vec=rightvec.scale(getRandom(-0.9, 0.9)); TargerAreaPoint[j][i] = p; //
+		 * TargerAreaPointList.add(p);//.add(vec)); } p = p.add(rightVec.scale(-space *
+		 * (this.nXY - 1)).add(upVec.scale(-space))); // vec=upvec.scale(getRandom(-0.9,
+		 * // 0.9)).add((rightvec).scale(getRandom(-0.9, 0.9))); TargerAreaPoint[j][0] =
+		 * p;// .add(vec));
+		 */
+
+		// }
 
 		return TargerAreaPoint;
 
