@@ -15,41 +15,39 @@ import org.junit.jupiter.api.Test;
 
 import primitives.*;
 import geometries.*;
-import lighting.AmbientLight;
-import lighting.DirectionalLight;
+import lighting.*;
 import renderer.Camera;
 import renderer.ImageWriter;
 import renderer.RayTracerBasic;
 import scene.Scene;
 
 public class finalResult {
-	private final Scene scene1 = new Scene("Test scene");
+	private final ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 800, 800);
 
-	private final Camera camera1 = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0))
-			.setVPSize(150, 150).setVPDistance(1000);
+	private final Camera camera = new Camera(new Point(0, 0, -1000), new Vector(0.500,0,1010), new Vector(0, 1, 0)) //
+			.setVPDistance(1000).setVPSize(200, 200) //
+			.setImageWriter(imageWriter) //
+			.setMultithreading(3).setDebugPrint(0.1);
 
-	private static final int SHININESS = 301;
-	private static final double KD = 0.5;
-	private static final Double3 KD3 = new Double3(0.2, 0.6, 0.4);
+	private final Scene scene = new Scene("Test scene");
 
-	private static final double KS = 0.5;
-	private static final Double3 KS3 = new Double3(0.2, 0.4, 0.3);
-
-	private final Material material = new Material().setKd(KD3).setKs(KS3).setShininess(SHININESS);
+	private static final Color color = new Color(200, 0, 0);
+	private static final Material mat = new Material().setKd(0.5).setKs(0.5).setShininess(60);
 
 	@Test
-	public void airBaloonTest() {
-		String path ="C:/Users/S/Desktop/air balloon.stl";
+	public void AngryBirdsButBetterTest() {
+		String path ="C:/Users/S/Desktop/ImageToStl.com_model.stl";
 		List<Triangle> geo = convertSTLToTriangles(path);
 		for (Intersectable g : geo) 
 		{ 
-			scene1.geometries.add(g);
+			((Triangle)g).setEmission(color).setMaterial(mat);
+			scene.geometries.add(g);
 		}		
-		scene1.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, 1, -0.5)));
+		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, 1, -0.5)));
 
-		ImageWriter imageWriter = new ImageWriter("airBaloonTest", 500, 500);
-		camera1.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene1)) //
+		ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 500, 500);
+		camera.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene)) //
 				.renderImage() //
 				.writeToImage(); //
 	}
