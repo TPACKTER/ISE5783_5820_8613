@@ -110,6 +110,8 @@ public class Grid {
 			}
 			p = p.add(rightVec.scale(-space * (this.nXY)).add(upVec.scale(-space)));
 		}
+		return TargerAreaPoint;
+	}
 		
 	/**
 	 * cast rays thought the grid adaptively
@@ -164,15 +166,16 @@ public class Grid {
 
 	}
 /**
+ * calc the color for the grid
  * 
- * @param upLeft
- * @param upRight
- * @param downLeft
- * @param downRight
- * @param pixcelSize
- * @param num
- * @param pointsColors
- * @return
+ * @param upLeft the upLeft point of grid
+ * @param upRight the upRight point of grid
+ * @param downLeft the downLeft point of grid
+ * @param downRight the downRight point of grid
+ * @param pixcelSize the size of the pixel
+ * @param num number of rays to intersect the grid
+ * @param pointsColors hashMap for saving point's color
+ * @return the color of the grid
  */
 	private Color superSamplingRecursive(Point upLeft, Point upRight, Point downLeft, Point downRight,
 			double pixcelSize, int num, Map<Point, Color> pointsColors ) {

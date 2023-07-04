@@ -25,7 +25,7 @@ import static java.awt.Color.*;
 public class finalResult {
 	private final ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 800, 800);
 
-	private final Camera camera = new Camera(new Point(0,-1000,0), new Vector(0.5,1000,13),new Vector(-1000, 0.5, 0).crossProduct(new Vector(-0.5,-1000,-13))) //
+	private final Camera camera = new Camera(new Point(0,-1000,0), new Vector(0,1000,0),new Vector(-1000, 0, 0).crossProduct(new Vector(0,1000,0))) //
 			.setVPDistance(1000).setVPSize(200, 200) //
 			.setImageWriter(imageWriter) //
 			.setMultithreading(3).setDebugPrint(0.1);
@@ -37,13 +37,25 @@ public class finalResult {
 
 	@Test
 	public void AngryBirdsButBetterTest() {
-		String path ="C:/Users/S/Desktop/ImageToStl.com_model.stl";
-		List<Triangle> geo = convertSTLToTriangles(path);
+		String pathOfPattal = "C:/Users/S/eclipse-workspace/ISE5873_5820_8613/flower up1.stl";
+		String pathOfLeaves = "C:/Users/S/eclipse-workspace/ISE5873_5820_8613/flower doun1.stl";
+		List<Triangle> geo = convertSTLToTriangles(pathOfPattal);
 		for (Intersectable g : geo) 
 		{ 
-			((Triangle)g).setEmission(new Color(YELLOW)).setMaterial(mat);
+			((Triangle)g).setEmission(color).setMaterial(mat);
 			scene.geometries.add(g);
-		}		
+		}
+		List<Triangle> geo1 = convertSTLToTriangles(pathOfLeaves);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,100,0)).setMaterial(mat);
+			try {
+			scene.geometries.add(g);
+			}
+			catch(Exception e) {
+
+			}
+		}	
 		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, 1, -0.5)));
 
 		ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 500, 500);

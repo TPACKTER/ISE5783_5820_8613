@@ -288,7 +288,7 @@ public class Camera {
 		double distanceToFocalPoint = pIJ.distance(this.location) * (this.focalDistance / this.distance);
 		Point focalPoint = this.location.add(vIJ.scale(distanceToFocalPoint));
 		return this.isAdaptive //
-				? this.aperture.superSamplingInverted(focalPoint)
+				? this.aperture.superSampling(focalPoint)
 				// old code // this.aperture.superSamplingInverted(focalPoint,
 				// this.location.add(to), this.apertureSize, ray1 ->
 				// this.rayTracer.traceRay(ray1), this.numOfPointsOnAperture)//old code

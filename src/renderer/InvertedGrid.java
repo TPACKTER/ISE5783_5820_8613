@@ -54,7 +54,8 @@ public class InvertedGrid extends Grid {
 	 * @param focal    point to make rays through
 	 * @return the color of the beam of rays of the grid
 	 */
-	public Color superSamplingInverted(Point focal) {
+	@Override 
+	public Color superSampling(Point focal) {
 
 		int num = this.nXY - 1;
 		Point upLeft = points[0][0];
@@ -116,19 +117,20 @@ public class InvertedGrid extends Grid {
 
 	}
 /**
+ * calc the color for the grid
  * 
- * @param focal
- * @param upLeftJ
- * @param upLeftI
- * @param upRightJ
- * @param upRightI
- * @param downLeftJ
- * @param downLeftI
- * @param downRightJ
- * @param downRightI
- * @param num
- * @param pointsColors
- * @return
+ * @param focal the focal point to castray for
+ * @param upLeftJ the upLeft Y val of grid
+ * @param upLeftI the upLeft X val of grid
+ * @param upRightJ the upRight Y val of grid
+ * @param upRightI the upRight X val of grid
+ * @param downLeftJ the downLeft Y val of grid
+ * @param downLeftI the downLeft X val of grid
+ * @param downRightJ the downRight Y val of grid
+ * @param downRightI the downRight X val of grid
+ * @param num num of points on the grid 
+ * @param pointsColors hashMap for saving point's color
+ * @return the color of the grid
  */
 	private Color superSamplingRecursiveInverted(Point focal, int upLeftJ, int upLeftI, int upRightJ, int upRightI,
 			int downLeftJ, int downLeftI, int downRightJ, int downRightI, int num, Map<Point, Color> pointsColors) {
