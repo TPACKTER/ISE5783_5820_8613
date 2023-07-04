@@ -1,8 +1,6 @@
 package renderer;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -23,7 +21,8 @@ public class InvertedGrid extends Grid {
 	 * @param gs       the Grid size
 	 * @param upVec    the up direction of the Grid
 	 * @param toVec    direction of the Grid (to)
-	 * @param p0       The head point to construcrt ray from
+	 * @param p0       The head point to construct ray from
+	 * @param traceRay the function to trace ray with
 	 */
 	public InvertedGrid(int nXY, double distance, double gs, Vector upVec, Vector toVec, Point p0,
 			Function<Ray, Color> traceRay) {
@@ -101,7 +100,7 @@ public class InvertedGrid extends Grid {
 			int dounMidI = num1;
 			int downRighJ = num;
 			int downRighI = num;
-			return superSamplingRecursiveInverted(focal, upLeftJ, upLeftJ, upMidJ, upMidI, leftMidJ, leftMidI, centerJ,
+			return superSamplingRecursiveInverted(focal, upLeftJ, upLeftI, upMidJ, upMidI, leftMidJ, leftMidI, centerJ,
 					centerI, num / 2,pointsColors)
 					.add(superSamplingRecursiveInverted(focal, upMidJ, upMidI, upRightJ, upRightI, centerJ, centerI,
 							rightMidJ, rightMidI, num / 2,pointsColors)
@@ -179,7 +178,7 @@ public class InvertedGrid extends Grid {
 			int downRighJ = num + upLeftJ;
 			int downRighI = num + upLeftI;
 			
-			return superSamplingRecursiveInverted(focal, upLeftJ, upLeftJ, upMidJ, upMidI, leftMidJ, leftMidI, centerJ,
+			return superSamplingRecursiveInverted(focal, upLeftJ, upLeftI, upMidJ, upMidI, leftMidJ, leftMidI, centerJ,
 					centerI, num / 2,pointsColors)
 					.add(superSamplingRecursiveInverted(focal, upMidJ, upMidI, upRightJ, upRightI, centerJ, centerI,
 							rightMidJ, rightMidI, num / 2,pointsColors)

@@ -1,7 +1,6 @@
 package unittests.renderer;
 
-import static java.awt.Color.BLUE;
-import static java.awt.Color.WHITE;
+import static java.awt.Color.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
@@ -16,55 +15,317 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 import geometries.*;
 import lighting.*;
-import renderer.Camera;
-import renderer.ImageWriter;
-import renderer.RayTracerBasic;
-import scene.Scene;
-import static java.awt.Color.*;
-
+import renderer.*;
+import scene.*;
+/**
+ * 
+ * @author Ayala AND Tamar
+ * 
+ */
 public class finalResult {
-	private final ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 800, 800);
+//	private final ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 800, 800);
 
-	private final Camera camera = new Camera(new Point(0,-1000,0), new Vector(0,1000,0),new Vector(-1000, 0, 0).crossProduct(new Vector(0,1000,0))) //
+	private final Camera camera = new Camera(new Point(0,-700,0), new Vector(0,700,0),new Vector(-700, 0, 0).crossProduct(new Vector(0,-700,0))) //
 			.setVPDistance(1000).setVPSize(200, 200) //
-			.setImageWriter(imageWriter) //
 			.setMultithreading(3).setDebugPrint(0.1);
 
 	private final Scene scene = new Scene("Test scene");
 
 	private static final Color color = new Color(200, 0, 0);
 	private static final Material mat = new Material().setKd(0.5).setKs(0.5).setShininess(60);
-
+/**
+ * testing Adaptive DoF
+ */
 	@Test
-	public void AngryBirdsButBetterTest() {
-		String pathOfPattal = "C:/Users/S/eclipse-workspace/ISE5873_5820_8613/flower up1.stl";
-		String pathOfLeaves = "C:/Users/S/eclipse-workspace/ISE5873_5820_8613/flower doun1.stl";
-		List<Triangle> geo = convertSTLToTriangles(pathOfPattal);
-		for (Intersectable g : geo) 
-		{ 
-			((Triangle)g).setEmission(color).setMaterial(mat);
-			scene.geometries.add(g);
-		}
+	public void chesDofAddeptive() {
+	
+		String pathOfLeaves ="C:/Users/User/Downloads/Chess set1.stl";
+	
+	
+		
 		List<Triangle> geo1 = convertSTLToTriangles(pathOfLeaves);
 		for (Intersectable g : geo1) 
 		{ 
 			((Triangle)g).setEmission(new Color(0,100,0)).setMaterial(mat);
-			try {
+			
 			scene.geometries.add(g);
-			}
-			catch(Exception e) {
-
-			}
+		
 		}	
 		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, 1, -0.5)));
 
-		ImageWriter imageWriter = new ImageWriter("AngryBirdsButBetter", 500, 500);
+		ImageWriter imageWriter = new ImageWriter("ches dof adeptive", 500, 500);
 		camera.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(9).setNumOfRays(81).setfocalPlaneDistance(1000).isAdeptive(true)//
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(513).setfocalPlaneDistance(700).isAdeptive(true)//
+				.renderImage() //
+				.writeToImage(); //
+	}
+	/*
+	 * testing Dof
+	 */
+	@Test
+	public void chesDof() {
+
+		String pathOfLeaves ="C:/Users/User/Downloads/Chess set1.stl";
+	
+	
+		
+		List<Triangle> geo1 = convertSTLToTriangles(pathOfLeaves);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,100,0)).setMaterial(mat);
+		
+			scene.geometries.add(g);
+			
+		}	
+		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, 1, -0.5)));
+
+		ImageWriter imageWriter = new ImageWriter("chesDof", 500, 500);
+		camera.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(9).setNumOfRays(513).setfocalPlaneDistance(700)//
+				.renderImage() //
+				.writeToImage(); //
+	}
+	/**
+	 * testing another adaptive DoF
+	 */
+	@Test
+	public void ches1DofAddeptive() {
+	
+		String ches1 ="C:/Users/User/Downloads/ch1.stl";
+		String ches2 ="C:/Users/User/Downloads/ch2.stl";
+		String ches3 ="C:/Users/User/Downloads/ch3.stl";
+		String ches4 ="C:/Users/User/Downloads/ch4.stl";
+	
+	
+		
+		List<Triangle> geo1 = convertSTLToTriangles(ches1);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,0,43)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}	
+		
+		 geo1 = convertSTLToTriangles(ches2);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,100,0)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}
+		 geo1 = convertSTLToTriangles(ches3);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(75,0,130)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}
+		 geo1 = convertSTLToTriangles(ches4);
+			for (Intersectable g : geo1) 
+			{ 
+				((Triangle)g).setEmission(color).setMaterial(mat);
+				
+				scene.geometries.add(g);
+				
+			}
+		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(-7, 5, -5)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(10, -10, -5)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(15, -10, 10)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, -1, 20)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(-15, -1, 20)));
+
+		ImageWriter imageWriter = new ImageWriter("ches1 dof adeptive", 500, 500);
+		camera.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(513).setfocalPlaneDistance(700).isAdeptive(true)//
+				.renderImage() //
+				.writeToImage(); //
+	}
+/**
+ * testing another Dof 
+ */
+	@Test
+	public void ches1Dop() {
+	
+		String ches1 ="C:/Users/User/Downloads/ch1.stl";
+		String ches2 ="C:/Users/User/Downloads/ch2.stl";
+		String ches3 ="C:/Users/User/Downloads/ch3.stl";
+		String ches4 ="C:/Users/User/Downloads/ch4.stl";
+	
+	
+		
+		List<Triangle> geo1 = convertSTLToTriangles(ches1);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,0,43)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}	
+		
+		 geo1 = convertSTLToTriangles(ches2);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,100,0)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}
+		 geo1 = convertSTLToTriangles(ches3);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(75,0,130)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}
+		 geo1 = convertSTLToTriangles(ches4);
+			for (Intersectable g : geo1) 
+			{ 
+				((Triangle)g).setEmission(color).setMaterial(mat);
+				
+				scene.geometries.add(g);
+				
+			}
+		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(-7, 5, -5)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(10, -10, -5)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(15, -10, 10)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, -1, 20)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(-15, -1, 20)));
+
+		ImageWriter imageWriter = new ImageWriter("ches1 dof ", 500, 500);
+		camera.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(513).setfocalPlaneDistance(700)//
 				.renderImage() //
 				.writeToImage(); //
 	}
 	
+/**
+ * testing anti-aliasing 
+ */
+	@Test
+	public void ches1anti() {
+	
+		String ches1 ="C:/Users/User/Downloads/ch1.stl";
+		String ches2 ="C:/Users/User/Downloads/ch2.stl";
+		String ches3 ="C:/Users/User/Downloads/ch3.stl";
+		String ches4 ="C:/Users/User/Downloads/ch4.stl";
+	
+	
+		
+		List<Triangle> geo1 = convertSTLToTriangles(ches1);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,0,43)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}	
+		
+		 geo1 = convertSTLToTriangles(ches2);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,100,0)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}
+		 geo1 = convertSTLToTriangles(ches3);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(75,0,130)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}
+		 geo1 = convertSTLToTriangles(ches4);
+			for (Intersectable g : geo1) 
+			{ 
+				((Triangle)g).setEmission(color).setMaterial(mat);
+				
+				scene.geometries.add(g);
+				
+			}
+		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(-7, 5, -5)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(10, -10, -5)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(15, -10, 10)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, -1, 20)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(-15, -1, 20)));
+
+		ImageWriter imageWriter = new ImageWriter("ches1 anti", 500, 500);
+		camera.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene)).setNumOfRays(513)//
+				.renderImage() //
+				.writeToImage(); //
+	}
+	/**
+	 * testing anti-super
+	 */
+	@Test
+	public void ches1antisuper() {
+	
+		String ches1 ="C:/Users/User/Downloads/ch1.stl";
+		String ches2 ="C:/Users/User/Downloads/ch2.stl";
+		String ches3 ="C:/Users/User/Downloads/ch3.stl";
+		String ches4 ="C:/Users/User/Downloads/ch4.stl";
+	
+	
+		
+		List<Triangle> geo1 = convertSTLToTriangles(ches1);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,0,43)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}	
+		
+		 geo1 = convertSTLToTriangles(ches2);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(0,100,0)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}
+		 geo1 = convertSTLToTriangles(ches3);
+		for (Intersectable g : geo1) 
+		{ 
+			((Triangle)g).setEmission(new Color(75,0,130)).setMaterial(mat);
+			
+			scene.geometries.add(g);
+			
+		}
+		 geo1 = convertSTLToTriangles(ches4);
+			for (Intersectable g : geo1) 
+			{ 
+				((Triangle)g).setEmission(color).setMaterial(mat);
+				
+				scene.geometries.add(g);
+				
+			}
+		scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(-7, 5, -5)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(10, -10, -5)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(15, -10, 10)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(1, -1, 20)));
+				scene.lights.add(new DirectionalLight(Color.Mustred, new Vector(-15, -1, 20)));
+				
+				
+
+		ImageWriter imageWriter = new ImageWriter("ches1 anti and super", 500, 500);
+		camera.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene)).setNumOfRays(513).isAdeptive(true)//
+				.renderImage() //
+				.writeToImage(); //
+	}
+	
+	/**
+	 * gets a path of STL file and converting it to triangles
+	 * @param filePath path of file to convert
+	 * @return List of Triangles
+	 */
     private static List<Triangle> convertSTLToTriangles(String filePath) {
         List<Triangle> triangles = new LinkedList<>();
 
@@ -105,7 +366,7 @@ public class finalResult {
                 triangles.add(triangle);
                 }
                 catch(Exception e) {
-                	System.out.println("1");
+                	System.out.println("error");
                 }
             }
         } catch (IOException e) {
@@ -114,5 +375,6 @@ public class finalResult {
 
         return triangles;
     }
+
 
 }
