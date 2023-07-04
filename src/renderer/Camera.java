@@ -289,9 +289,6 @@ public class Camera {
 		Point focalPoint = this.location.add(vIJ.scale(distanceToFocalPoint));
 		return this.isAdaptive //
 				? this.aperture.superSampling(focalPoint)
-				// old code // this.aperture.superSamplingInverted(focalPoint,
-				// this.location.add(to), this.apertureSize, ray1 ->
-				// this.rayTracer.traceRay(ray1), this.numOfPointsOnAperture)//old code
 				: this.aperture.castGridRaysInverted(focalPoint);
 	}
 

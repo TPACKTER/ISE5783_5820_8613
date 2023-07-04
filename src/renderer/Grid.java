@@ -92,7 +92,10 @@ public class Grid {
 		min = min + Math.random() * (max - min);
 		return min == 0 ? max : min;
 	}
-
+/**
+ * generate Targert Area Points
+ * @return target area points
+ */
 	protected Point[][] generateTargertAreaPoints() {
 		double space = this.gridSize / this.nXY;
 		Point p = p0
