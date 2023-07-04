@@ -65,7 +65,7 @@ public class Camera {
 	 */
 	InvertedGrid aperture;
 	/**
-	 * numOfPointsOnAperture
+	 * numOfPointsOnAperture (Dof)
 	 */
 	private int numOfPointsOnAperture = 0;
 	/**
