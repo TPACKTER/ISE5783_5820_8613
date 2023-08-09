@@ -78,9 +78,7 @@ public class InvertedGrid extends Grid {
 		if (num > 1 && !(pointsColors.get(upLeft).equals(pointsColors.get(upRight))
 				&& pointsColors.get(upLeft).equals(pointsColors.get(downLeft))
 				&& pointsColors.get(upLeft).equals(pointsColors.get(downRight))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
-				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
+				)) {
 			int num1 = (this.nXY / 2);// -1;
 			int upLeftJ = 0;
 			int upLeftI = 0;
@@ -155,14 +153,11 @@ public class InvertedGrid extends Grid {
 			pointsColors.put(points[downLeftJ][downLeftI], traceRay.apply(ray));
 		}
 
-		if (num > 0
-				&& !(pointsColors.get(points[upLeftJ][upLeftI]).equals(pointsColors.get(points[upRightJ][upRightI])))
+		if (num > 4
+				&& !(pointsColors.get(points[upLeftJ][upLeftI]).equals(pointsColors.get(points[upRightJ][upRightI]))
 				&& pointsColors.get(points[upLeftJ][upLeftI]).equals(pointsColors.get(points[downLeftJ][downLeftI]))
 				&& pointsColors.get(points[upLeftJ][upLeftI]).equals(pointsColors.get(points[downRightJ][downRightI]))
-				&& pointsColors.get(points[upRightJ][upRightI]).equals(pointsColors.get(points[downLeftJ][downLeftI]))
-				&& pointsColors.get(points[upRightJ][upRightI]).equals(pointsColors.get(points[downRightJ][downRightI]))
-				&& pointsColors.get(points[downRightJ][downRightI])
-						.equals(pointsColors.get(points[downLeftJ][downLeftI]))) {
+			)) {
 			int num1 = (this.nXY / 2);// -1;
 			int upMidJ = upLeftJ;
 			int upMidI = num1 + upLeftI;

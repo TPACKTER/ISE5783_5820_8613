@@ -149,9 +149,7 @@ public class Grid {
 		if (num > 1 && !(pointsColors.get(upLeft).equals(pointsColors.get(upRight))
 				&& pointsColors.get(upLeft).equals(pointsColors.get(downLeft))
 				&& pointsColors.get(upLeft).equals(pointsColors.get(downRight))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
-				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
+				)) {
 			
 			Point upMid = center.add(upv);
 			Point leftMid = center.subtract(rightv);
@@ -207,9 +205,8 @@ public class Grid {
 		if (num > 0 && !(pointsColors.get(upLeft).equals(pointsColors.get(upRight))
 				&& pointsColors.get(upLeft).equals(pointsColors.get(downLeft))
 				&& pointsColors.get(upLeft).equals(pointsColors.get(downRight))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downLeft))
-				&& pointsColors.get(upRight).equals(pointsColors.get(downRight))
-				&& pointsColors.get(downLeft).equals(pointsColors.get(downRight)))) {
+				
+				)) {
 
 			double space = pixcelSize / 2;
 			Vector upv = this.upVec.scale(space);

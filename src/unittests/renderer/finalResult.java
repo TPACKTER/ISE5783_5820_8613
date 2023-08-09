@@ -39,7 +39,7 @@ public class finalResult {
 	@Test
 	public void chesDofAddeptive() {
 	
-		String pathOfLeaves ="C:/Users/User/Downloads/Chess set1.stl";
+		String pathOfLeaves ="C://Users//Ayala//Downloads//Chess set1.stl";
 	
 	
 		
@@ -55,7 +55,7 @@ public class finalResult {
 
 		ImageWriter imageWriter = new ImageWriter("ches dof adeptive", 500, 500);
 		camera.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(513).setfocalPlaneDistance(700).isAdeptive(true)//
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(289).setfocalPlaneDistance(700).isAdeptive(true)//
 				.renderImage() //
 				.writeToImage(); //
 	}
@@ -65,7 +65,7 @@ public class finalResult {
 	@Test
 	public void chesDof() {
 
-		String pathOfLeaves ="C:/Users/User/Downloads/Chess set1.stl";
+		String pathOfLeaves ="C://Users//Ayala//Downloads//Chess set1.stl";
 	
 	
 		
@@ -81,7 +81,7 @@ public class finalResult {
 
 		ImageWriter imageWriter = new ImageWriter("chesDof", 500, 500);
 		camera.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(9).setNumOfRays(513).setfocalPlaneDistance(700)//
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(9).setNumOfRays(289).setfocalPlaneDistance(700)//
 				.renderImage() //
 				.writeToImage(); //
 	}
@@ -91,10 +91,10 @@ public class finalResult {
 	@Test
 	public void ches1DofAddeptive() {
 	
-		String ches1 ="C:/Users/User/Downloads/ch1.stl";
-		String ches2 ="C:/Users/User/Downloads/ch2.stl";
-		String ches3 ="C:/Users/User/Downloads/ch3.stl";
-		String ches4 ="C:/Users/User/Downloads/ch4.stl";
+		String ches1 ="C://Users//Ayala//Downloads//ch1.stl";
+		String ches2 ="C://Users//Ayala//Downloads//ch2.stl";
+		String ches3 ="C://Users//Ayala//Downloads//ch3.stl";
+		String ches4 ="C://Users//Ayala//Downloads//ch4.stl";
 	
 	
 		
@@ -139,7 +139,7 @@ public class finalResult {
 
 		ImageWriter imageWriter = new ImageWriter("ches1 dof adeptive", 500, 500);
 		camera.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(513).setfocalPlaneDistance(700).isAdeptive(true)//
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(289).setfocalPlaneDistance(700).isAdeptive(true)//
 				.renderImage() //
 				.writeToImage(); //
 	}
@@ -149,11 +149,10 @@ public class finalResult {
 	@Test
 	public void ches1Dop() {
 	
-		String ches1 ="C:/Users/User/Downloads/ch1.stl";
-		String ches2 ="C:/Users/User/Downloads/ch2.stl";
-		String ches3 ="C:/Users/User/Downloads/ch3.stl";
-		String ches4 ="C:/Users/User/Downloads/ch4.stl";
-	
+		String ches1 ="C://Users//Ayala//Downloads//ch1.stl";
+		String ches2 ="C://Users//Ayala//Downloads//ch2.stl";
+		String ches3 ="C://Users//Ayala//Downloads//ch3.stl";
+		String ches4 ="C://Users//Ayala//Downloads//ch4.stl";
 	
 		
 		List<Triangle> geo1 = convertSTLToTriangles(ches1);
@@ -197,7 +196,7 @@ public class finalResult {
 
 		ImageWriter imageWriter = new ImageWriter("ches1 dof ", 500, 500);
 		camera.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(513).setfocalPlaneDistance(700)//
+				.setRayTracer(new RayTracerBasic(scene)).setApertureSize(15).setNumOfPointsOnAperture(289).setfocalPlaneDistance(700)//
 				.renderImage() //
 				.writeToImage(); //
 	}
@@ -208,10 +207,10 @@ public class finalResult {
 	@Test
 	public void ches1anti() {
 	
-		String ches1 ="C:/Users/User/Downloads/ch1.stl";
-		String ches2 ="C:/Users/User/Downloads/ch2.stl";
-		String ches3 ="C:/Users/User/Downloads/ch3.stl";
-		String ches4 ="C:/Users/User/Downloads/ch4.stl";
+		String ches1 ="C://Users//Ayala//Downloads//ch1.stl";
+		String ches2 ="C://Users//Ayala//Downloads//ch2.stl";
+		String ches3 ="C://Users//Ayala//Downloads//ch3.stl";
+		String ches4 ="C://Users//Ayala//Downloads//ch4.stl";
 	
 	
 		
@@ -256,7 +255,7 @@ public class finalResult {
 
 		ImageWriter imageWriter = new ImageWriter("ches1 anti", 500, 500);
 		camera.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene)).setNumOfRays(513)//
+				.setRayTracer(new RayTracerBasic(scene)).setNumOfRays(289)//
 				.renderImage() //
 				.writeToImage(); //
 	}
@@ -265,11 +264,10 @@ public class finalResult {
 	 */
 	@Test
 	public void ches1antisuper() {
-	
-		String ches1 ="C:/Users/User/Downloads/ch1.stl";
-		String ches2 ="C:/Users/User/Downloads/ch2.stl";
-		String ches3 ="C:/Users/User/Downloads/ch3.stl";
-		String ches4 ="C:/Users/User/Downloads/ch4.stl";
+		String ches1 ="C://Users//Ayala//Downloads//ch1.stl";
+		String ches2 ="C://Users//Ayala//Downloads//ch2.stl";
+		String ches3 ="C://Users//Ayala//Downloads//ch3.stl";
+		String ches4 ="C://Users//Ayala//Downloads//ch4.stl";
 	
 	
 		
@@ -316,7 +314,7 @@ public class finalResult {
 
 		ImageWriter imageWriter = new ImageWriter("ches1 anti and super", 500, 500);
 		camera.setImageWriter(imageWriter) //
-				.setRayTracer(new RayTracerBasic(scene)).setNumOfRays(513).isAdeptive(true)//
+				.setRayTracer(new RayTracerBasic(scene)).setNumOfRays(289).isAdeptive(true)//
 				.renderImage() //
 				.writeToImage(); //
 	}
